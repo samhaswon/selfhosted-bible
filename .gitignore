@@ -6,3 +6,4 @@ tests/gn1-3.txt
 .idea/inspectionProfiles/profiles_settings.xml
 .idea/ESV-web.iml
 __pycache__/main.cpython-39.pyc
+*.pyc
