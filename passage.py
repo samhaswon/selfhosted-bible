@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from datetime import timedelta
 from requests import get
 import requests_cache
