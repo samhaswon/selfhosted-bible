@@ -2,6 +2,8 @@
 
 from requests import get
 from typing import List
+from re import split as resplit
+from re import sub
 
 
 class PassageNotFound(Exception):
@@ -141,4 +143,5 @@ class Passage:
         return passage[passage.find('('):].replace("\\n\\n", "\n").replace("\\n", "\n")
 
     def split_verses(self, verses_in: str) -> List[str]:
-        pass
+        pre = list(filter(None, resplit('\[', sub(']', "", verses_in))))
+        return [sub(r"\s+$", "", verse) for verse in pre]
