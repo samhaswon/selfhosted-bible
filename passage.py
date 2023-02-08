@@ -1,9 +1,13 @@
 #!/usr/bin/env python
+
 from requests import get
 from typing import List
 
 
 class PassageNotFound(Exception):
+    """
+    Exception to be thrown whenever a query results in a passage not being found
+    """
     def __init__(self, verse: str):
         super().__init__(str)
         self.__verse = verse
@@ -13,6 +17,9 @@ class PassageNotFound(Exception):
 
 
 class Passage:
+    """
+    Gets a passage of scripture from the ESV API
+    """
     def __init__(self, key: str):
         """
         :param key: API key for requests
@@ -61,6 +68,11 @@ class Passage:
             return [self.__get_passage_esv(passage_name)]
 
     def get_chapter_esv(self, chapter_in) -> tuple:
+        """
+        Gets a full chapter of the ESV
+        :param chapter_in: Chapter to be queried
+        :return: The chapter
+        """
         params = {
             'q': chapter_in,
             'include-headings': True,
