@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from requests import get
-from typing import List
+from typing import List, Tuple
 
 
 class PassageNotFound(Exception):
@@ -9,7 +9,7 @@ class PassageNotFound(Exception):
         self.__verse = verse
 
     def __str__(self):
-        return "VerseNotFound {}".format(self.__verse)
+        return "PassageNotFound {}".format(self.__verse)
 
 
 class Passage:
@@ -35,9 +35,7 @@ class Passage:
             'include-passage-references': False
         }
 
-        headers = {
-            'Authorization': 'Token %s' % self.__API_KEY
-        }
+        headers = {'Authorization': 'Token %s' % self.__API_KEY}
 
         response = get(self.__API_URL, params=params, headers=headers)
 
@@ -61,3 +59,25 @@ class Passage:
             return [self.__get_passage_esv(x) for x in passage_name.split(';')]
         else:
             return [self.__get_passage_esv(passage_name)]
+
+    def get_chapter_esv(self, chapter_in) -> Tuple[str, str]:
+        params = {
+            'q': chapter_in,
+            'include-headings': True,
+            'include-footnotes': True,
+            'include-footnote-body': True,
+            'include-verse-numbers': True,
+            'include-short-copyright': False,
+            'include-passage-references': False
+        }
+
+        headers = {'Authorization': 'Token %s' % self.__API_KEY}
+
+        response = get(self.__API_URL, params=params, headers=headers).json()
+
+        passage = response['canonical'], response['passages']
+
+        if passage:
+            return passage
+        else:
+            raise PassageNotFound
