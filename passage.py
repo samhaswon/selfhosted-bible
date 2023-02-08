@@ -103,8 +103,8 @@ class Passage:
         # Format: {book: "", chapter: 0, verses: [], footnotes: ""}
         chapter_pre = self.get_chapter_esv(chapter_in)
         return {"book": chapter_pre[0:chapter_pre[0].rfind(' ')],
-                "chapter": int(chapter_pre[chapter_pre[0].rfind(' ') + 1:]),
-                "verses": [],
+                "chapter": chapter_pre[chapter_pre[0].rfind(' ') + 1:],
+                "verses": {heading: self.split_verses(chapter_pre[1][heading]) for heading in chapter_pre[1].keys()},
                 "footnotes": chapter_pre[2]}
 
     @staticmethod
@@ -143,5 +143,5 @@ class Passage:
         return passage[passage.find('('):].replace("\\n\\n", "\n").replace("\\n", "\n")
 
     def split_verses(self, verses_in: str) -> List[str]:
-        pre = list(filter(None, resplit('\[', sub(']', "", verses_in))))
-        return [sub(r"\s+$", "", verse) for verse in pre]
+        pre = resplit('\[', sub(']', "", verses_in))
+        return list(filter(None, [sub(r"\s+$", "", verse) for verse in pre]))
