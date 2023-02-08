@@ -81,3 +81,29 @@ class Passage:
             return passage
         else:
             raise PassageNotFound
+
+    @staticmethod
+    def parse_headings(passage: str):
+        """
+        Parses headings from a text based on leading spaces
+        :param passage: raw API passage output of a chapter
+        :return: parsed passage. Inserts "none" for sections without a heading
+        """
+        parsed: dict = {}
+        heading = "none"
+        for line in passage.splitlines():
+            is_not_end: bool = False
+            for char in line:
+                if char.isalnum():
+                    is_not_end = True
+                    break
+            # Add lines
+            if line[0:1].isspace() and is_not_end:
+                if heading in parsed.keys():
+                    parsed[heading] = parsed[heading] + line + '\n'
+                else:
+                    parsed.update({heading: line + '\n'})
+            elif len(line):
+                heading = line
+
+        return parsed
