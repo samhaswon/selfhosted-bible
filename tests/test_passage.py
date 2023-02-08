@@ -11,7 +11,7 @@ class TestPassage(TestCase):
     def test_get_passage_esv(self):
         """
         Test material comes from the English Standard Version
-        :return:
+        :return: None
         """
         # Test single passages
         self.assertEqual(self.passage.get_passage_esv("John 11:35")[0], "[35] Jesus wept.")
@@ -33,7 +33,7 @@ class TestPassage(TestCase):
     def test_get_chapter_esv(self):
         """
         Test material comes from the English Standard Version
-        :return:
+        :return: None
         """
         self.assertTupleEqual(self.passage.get_chapter_esv("Psalm 117"),
                               ('Psalm 117',
@@ -89,6 +89,10 @@ class TestPassage(TestCase):
                                 'even to subject all things to himself.\n'}))
 
     def test_parse_headings(self):
+        """
+        Test material comes from the English Standard Version
+        :return: None
+        """
         self.assertEqual(self.passage.parse_headings('The LORD’s Faithfulness Endures Forever\n\n'
                                                      '    [1] Praise the LORD, all nations!\n'
                                                      '        Extol him, all peoples!\n'
