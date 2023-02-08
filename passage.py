@@ -87,12 +87,23 @@ class Passage:
 
         response = get(self.__API_URL, params=params, headers=headers).json()
 
-        passage = response['canonical'], self.parse_headings(''.join(str(x) for x in response['passages']))
+        loc_footnotes = str(response['passages']).find('Footnotes')
+        footnotes = self.parse_footnotes(str(response['passages'])[loc_footnotes:-2]) if loc_footnotes is not -1 else ""
+
+        passage = response['canonical'], self.parse_headings(''.join(str(x) for x in response['passages'])), footnotes
 
         if passage:
             return passage
         else:
             raise PassageNotFound
+
+    def get_chapter_esv_json(self, chapter_in: str):
+        # Format: {book: "", chapter: 0, verses: [], footnotes: ""}
+        chapter_pre = self.get_chapter_esv(chapter_in)
+        return {"book": chapter_pre[0:chapter_pre[0].rfind(' ')],
+                "chapter": int(chapter_pre[chapter_pre[0].rfind(' ') + 1:]),
+                "verses": [],
+                "footnotes": chapter_pre[2]}
 
     @staticmethod
     def parse_headings(passage: str) -> dict:
@@ -119,3 +130,15 @@ class Passage:
                 heading = line
 
         return parsed
+
+    @staticmethod
+    def parse_footnotes(passage: str) -> str:
+        """
+        Parses footnotes from a text based on leading parenthesis
+        :param passage: raw API passage output of footnotes
+        :return: parsed footnotes
+        """
+        return passage[passage.find('('):].replace("\\n\\n", "\n").replace("\\n", "\n")
+
+    def split_verses(self, verses_in: str) -> List[str]:
+        pass

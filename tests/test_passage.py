@@ -45,7 +45,7 @@ class TestPassage(TestCase):
                                 '        Extol him, all peoples!\n'
                                 '    [2] For great is his steadfast love toward us,\n'
                                 '        and the faithfulness of the LORD endures forever.\n'
-                                '    Praise the LORD!\n'}))
+                                '    Praise the LORD!\n'}, ""))
         # Test of multiple headings
         self.assertTupleEqual(self.passage.get_chapter_esv("Philippians 3"),
                               ('Philippians 3',
@@ -90,7 +90,12 @@ class TestPassage(TestCase):
                                 'heaven, and from it we await a Savior, the Lord Jesus '
                                 'Christ, [21] who will transform our lowly body to be '
                                 'like his glorious body, by the power that enables him '
-                                'even to subject all things to himself.\n'}))
+                                'even to subject all things to himself.\n'},
+                               '(1) 3:1 Or *brothers and sisters*; also verses 13, 17\n(2) 3:3 Some manuscripts *God '
+                               'in spirit*\n(3) 3:6 Greek *in the law*\n'))
+
+    def test_get_chapter_esv_json(self):
+        pass
 
     def test_parse_headings(self):
         """
