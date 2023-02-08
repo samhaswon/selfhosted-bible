@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from requests import get
-from typing import List, Tuple
+from typing import List
 
 
 class PassageNotFound(Exception):
@@ -60,7 +60,7 @@ class Passage:
         else:
             return [self.__get_passage_esv(passage_name)]
 
-    def get_chapter_esv(self, chapter_in) -> Tuple[str, str]:
+    def get_chapter_esv(self, chapter_in) -> tuple:
         params = {
             'q': chapter_in,
             'include-headings': True,
@@ -75,7 +75,7 @@ class Passage:
 
         response = get(self.__API_URL, params=params, headers=headers).json()
 
-        passage = response['canonical'], response['passages']
+        passage = response['canonical'], self.parse_headings(''.join(str(x) for x in response['passages']))
 
         if passage:
             return passage
@@ -83,7 +83,7 @@ class Passage:
             raise PassageNotFound
 
     @staticmethod
-    def parse_headings(passage: str):
+    def parse_headings(passage: str) -> dict:
         """
         Parses headings from a text based on leading spaces
         :param passage: raw API passage output of a chapter
