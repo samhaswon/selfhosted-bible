@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from unittest import TestCase
 from passage import Passage
 
@@ -35,6 +37,7 @@ class TestPassage(TestCase):
         Test material comes from the English Standard Version
         :return: None
         """
+        # Basic test for heading at the beginning
         self.assertTupleEqual(self.passage.get_chapter_esv("Psalm 117"),
                               ('Psalm 117',
                                {'The LORD’s Faithfulness Endures Forever':
@@ -43,6 +46,7 @@ class TestPassage(TestCase):
                                 '    [2] For great is his steadfast love toward us,\n'
                                 '        and the faithfulness of the LORD endures forever.\n'
                                 '    Praise the LORD!\n'}))
+        # Test of multiple headings
         self.assertTupleEqual(self.passage.get_chapter_esv("Philippians 3"),
                               ('Philippians 3',
                                {'Righteousness Through Faith in Christ':
