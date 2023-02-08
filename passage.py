@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
+from datetime import timedelta
 from requests import get
-from typing import List
+import requests_cache
 from re import split as resplit
 from re import sub
+from typing import List
 
 
 class PassageNotFound(Exception):
@@ -28,6 +30,8 @@ class Passage:
         """
         self.__API_KEY = key
         self.__API_URL: str = 'https://api.esv.org/v3/passage/text/'
+        # Caching
+        requests_cache.install_cache('verses', expire_after=timedelta(days=7), stale_if_error=True)
 
     def __get_passage_esv(self, passage_name: str) -> str:
         """
@@ -90,7 +94,7 @@ class Passage:
         response = get(self.__API_URL, params=params, headers=headers).json()
 
         loc_footnotes = str(response['passages']).find('Footnotes')
-        footnotes = self.parse_footnotes(str(response['passages'])[loc_footnotes:-2]) if loc_footnotes is not -1 else ""
+        footnotes = self.parse_footnotes(str(response['passages'])[loc_footnotes:-2]) if loc_footnotes != -1 else ""
 
         passage = response['canonical'], self.parse_headings(''.join(str(x) for x in response['passages'])), footnotes
 
@@ -100,10 +104,16 @@ class Passage:
             raise PassageNotFound
 
     def get_chapter_esv_json(self, chapter_in: str):
-        # Format: {book: "", chapter: 0, verses: [], footnotes: ""}
+        """
+        Returns a dictionary (Format: {book: "", chapter: 0, verses: ["1 content..."], footnotes: ""}) for JSON-ish
+        usage for MongoDB or a similar database
+        :param chapter_in: The chapter to get from the API
+        :return: Dictionary of the chapter
+        """
+        #
         chapter_pre = self.get_chapter_esv(chapter_in)
-        return {"book": chapter_pre[0:chapter_pre[0].rfind(' ')],
-                "chapter": chapter_pre[chapter_pre[0].rfind(' ') + 1:],
+        return {"book": chapter_pre[0][0:chapter_pre[0].rfind(' ')],
+                "chapter": chapter_pre[0][chapter_pre[0].rfind(' ') + 1:],
                 "verses": {heading: self.split_verses(chapter_pre[1][heading]) for heading in chapter_pre[1].keys()},
                 "footnotes": chapter_pre[2]}
 
