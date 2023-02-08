@@ -7,3 +7,5 @@ tests/gn1-3.txt
 .idea/ESV-web.iml
 __pycache__/main.cpython-39.pyc
 *.pyc
+/verses.sqlite
+/tests/verses.sqlite
