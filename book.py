@@ -13,3 +13,6 @@ class Book(object):
     @property
     def chapter_count(self) -> int:
         return self.__chapter_count
+
+    def __eq__(self, other):
+        return other.title == self.__title
