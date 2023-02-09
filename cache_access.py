@@ -4,7 +4,7 @@ from passage import Passage
 import pymongo
 
 
-class CacheAccess:
+class CacheAccess(object):
     """
     A more robust, persistent cache of the ESV API
     """

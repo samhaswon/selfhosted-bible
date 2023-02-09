@@ -32,7 +32,7 @@ class PassageInvalid(Exception):
         return "Passage Invalid {}".format(self.__verse)
 
 
-class Passage:
+class Passage(object):
     """
     Gets a passage of scripture from the ESV API
     """
