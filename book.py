@@ -1,4 +1,4 @@
-class Book:
+class Book(object):
     """
     Defines a book of the Bible. Used for safety constraints
     """
