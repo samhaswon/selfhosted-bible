@@ -2,7 +2,7 @@
 
 from esv import ESV
 from book import Book
-from navigate import Navigate
+from navigate import Navigate, NavigateRel
 from flask import Flask, render_template, session, request, url_for, redirect
 from flask_bootstrap import Bootstrap
 from bokeh.resources import INLINE
@@ -39,6 +39,8 @@ def main_page():
         session['select_book'] = book
         session['select_chapter'] = form.select_chapter.data
 
+        print(session['select_book'] + " " + session['select_chapter'] if session['select_chapter'] else " ")
+
         chapter_count = 1
         for index in books:
             if index.title == book:
@@ -62,14 +64,34 @@ def chapter():
     # setup
     js_resources = INLINE.render_js()
     css_resources = INLINE.render_css()
-    print(session.get('select_book'))
-    print(session.get('select_chapter'))
-    selected = session.get('select_book') + " " + session.get('select_chapter')
+    book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
+    chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
+    selected = book_sel + " " + chapter_sel
+    script, div = None, None
+    debug = False
 
     print(selected)
+    form = NavigateRel()
 
-    html = render_template('chapter.html', title='Home')
+    if request.method == 'POST':
+        if request.form['Previous'] == 'previous':
+            print("Previous")
+        elif request.form['Next'] == 'next':
+            print("Next")
+        else:
+            pass
+
+    if form.validate_on_submit():
+        pass
+
+    html = render_template('chapter.html', title='Home', formtitle='ESV Web', plot_script=script, debug=debug,
+                           form=form, plot_div=div, js_resources=js_resources, css_resources=css_resources)
     return html
+
+
+@app.errorhandler(404)
+def not_found(e):
+    return render_template("404.html")
 
 
 if __name__ == '__main__':

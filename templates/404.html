@@ -1,0 +1,8 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}Page Not Found{% endblock %}
+{% block body %}
+<div class="center">
+  <h1>Oops! Looks like the page doesn't exist</h1>
+  <p><a href="{{ url_for('main_page') }}">Click Here</a> to go to the Home Page</p>
+</div>
+{% endblock %}
