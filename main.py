@@ -73,14 +73,6 @@ def chapter():
     print(selected)
     form = NavigateRel()
 
-    if request.method == 'POST':
-        if request.form['Previous'] == 'previous':
-            print("Previous")
-        elif request.form['Next'] == 'next':
-            print("Next")
-        else:
-            pass
-
     if form.validate_on_submit():
         pass
 

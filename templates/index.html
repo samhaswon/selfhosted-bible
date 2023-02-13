@@ -6,9 +6,6 @@
     {{ super() }}
     {{ js_resources|indent(3)|safe }}
     {{ css_resources|indent(3)|safe }}
-    {% if plot_script %}
-        {{ plot_script|indent(3)|safe }}
-    {% endif %}
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
@@ -16,8 +13,6 @@
 {% endblock %}
 {% block content %}
     <div class="container-fluid mw-100">
-
-    </div>
     <form method="post" role="form">
         {{ form.hidden_tag() }}
         {{ wtf.form_field(form.select_book) }}
@@ -26,4 +21,5 @@
         {{ wtf.form_field(form.select_chapter) }}
         {{ wtf.form_field(form.submit_chapter) }}
     </form>
+    </div>
 {% endblock %}

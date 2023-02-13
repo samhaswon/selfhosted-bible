@@ -1,15 +1,21 @@
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}{{ title }}{% endblock %}
 {% block styles %}
     {{ super() }}
     {{ js_resources|indent(3)|safe }}
     {{ css_resources|indent(3)|safe }}
-    {% if plot_script %}
-        {{ plot_script|indent(3)|safe }}
-    {% endif %}
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
 
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mw-100">
+    <form method="post" role="form">
+        {{ form.hidden_tag() }}{{ wtf.form_field(form.previous_button) }}{{ wtf.form_field(form.next_button) }}
+    </form>
+</div>
 {% endblock %}
