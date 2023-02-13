@@ -24,13 +24,10 @@
     </div>
     <form method="post" role="form">
         {{ form.hidden_tag() }}
-        {{ wtf.form_field(form.select_book, size=7) }}
+        {{ wtf.form_field(form.select_book) }}
         {{ wtf.form_field(form.submit_book) }}
-    </form>
-    <form method="post" role="form">
-        {{ form.hidden_tag() }}
-        {{ wtf.form_field(form.select_chapter, size=7) }}
+        <br>
+        {{ wtf.form_field(form.select_chapter) }}
         {{ wtf.form_field(form.submit_chapter) }}
     </form>
-
 {% endblock %}
