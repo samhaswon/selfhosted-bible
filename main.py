@@ -16,6 +16,8 @@ bootstrap = Bootstrap(app)
 esv_obj = ESV(False)
 books = esv_obj.books
 
+debug = False
+
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index.html', methods=['GET', 'POST'])
@@ -23,9 +25,6 @@ def main_page():
     # setup
     js_resources = INLINE.render_js()
     css_resources = INLINE.render_css()
-
-    script, div = None, None
-    debug = False
 
     choices = [book.title for book in books]
     type_sel = 'Select book'
@@ -49,12 +48,11 @@ def main_page():
 
         chapters: List[int] = [x for x in range(1, chapter_count + 1)]
         form = Navigate(choices=chapters)
-        if session['select_chapter']:
+        if session['select_chapter'] and form.select_chapter.data:
             return redirect(url_for('chapter'))
 
-    html = render_template('index.html', title='Home', formtitle='ESV Web', select_book=type_sel,
-                           books=choices, plot_script=script, debug=debug, form=form,
-                           plot_div=div, js_resources=js_resources, css_resources=css_resources)
+    html = render_template('index.html', title='Home', formtitle='ESV Web', select_book=type_sel, books=choices,
+                           debug=debug, form=form, js_resources=js_resources, css_resources=css_resources)
     return html
 
 
@@ -67,17 +65,20 @@ def chapter():
     book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
     chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
     selected = book_sel + " " + chapter_sel
-    script, div = None, None
-    debug = False
 
     print(selected)
     form = NavigateRel()
 
     if form.validate_on_submit():
-        pass
+        if form.next_button.data:
+            print("Next")
+            session['select_book'], session['select_chapter'] = esv_obj.next_passage(book_sel, chapter_sel)
+        elif form.previous_button.data:
+            print("Previous")
+            session['select_book'], session['select_chapter'] = esv_obj.previous_passage(book_sel, chapter_sel)
 
-    html = render_template('chapter.html', title='Home', formtitle='ESV Web', plot_script=script, debug=debug,
-                           form=form, plot_div=div, js_resources=js_resources, css_resources=css_resources)
+    html = render_template('chapter.html', title='Reading', formtitle='ESV Web', debug=debug,
+                           form=form, js_resources=js_resources, css_resources=css_resources)
     return html
 
 
