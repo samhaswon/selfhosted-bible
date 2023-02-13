@@ -17,19 +17,22 @@
     <h2>{{ content.get('book') }} {{ content.get('chapter') }}</h2>
     <form method="post" role="form">
         {{ form.hidden_tag() }}{{ wtf.form_field(form.previous_button) }}{{ wtf.form_field(form.next_button) }}
-    </form>
-    {% for heading, verses in content.get('verses').items() %}
-        {% if heading != 'none'%}
-            <h4>{{heading}}</h4>
-        {% endif %}
-        {% for verse in verses %}
-            <p>{{verse}}</p>
+
+        {% for heading, verses in content.get('verses').items() %}
+            {% if heading != 'none'%}
+                <h4>{{heading}}</h4>
+            {% endif %}
+            {% for verse in verses %}
+                <p>{{verse}}</p>
+            {% endfor %}
         {% endfor %}
-    {% endfor %}
-    <br><br>
-    {% if content.get('footnotes') %}
-            <h5>Footnotes:</h5>
-            <p>{{content.get('footnotes')}}</p>
-    {% endif %}
+        <br><br>
+        {% if content.get('footnotes') %}
+                <h5>Footnotes:</h5>
+                <p>{{content.get('footnotes')}}</p>
+        {% endif %}
+
+        {{ form.hidden_tag() }}{{ wtf.form_field(form.previous_button) }}{{ wtf.form_field(form.next_button) }}
+    </form>
 </div>
 {% endblock %}
