@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 
 from esv import ESV
-from book import Book
 from navigate import Navigate, NavigateRel
 from flask import Flask, render_template, session, request, url_for, redirect
 from flask_bootstrap import Bootstrap
 from bokeh.resources import INLINE
 from typing import List
-import json
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'b^lC08A7d@z3'
@@ -38,7 +36,6 @@ def main_page():
         session['select_book'] = book
         session['select_chapter'] = form.select_chapter.data
 
-        print(session['select_book'] + " " + session['select_chapter'] if session['select_chapter'] else " ")
 
         chapter_count = 1
         for index in books:
@@ -66,15 +63,12 @@ def chapter():
     chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
     selected = book_sel + " " + chapter_sel
 
-    print(selected)
     form = NavigateRel()
 
     if form.validate_on_submit():
         if form.next_button.data:
-            print("Next")
             session['select_book'], session['select_chapter'] = esv_obj.next_passage(book_sel, chapter_sel)
         elif form.previous_button.data:
-            print("Previous")
             session['select_book'], session['select_chapter'] = esv_obj.previous_passage(book_sel, chapter_sel)
 
     book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"

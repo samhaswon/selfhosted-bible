@@ -1,7 +1,7 @@
-from wtforms import SubmitField, BooleanField, IntegerField, SelectField
-from wtforms.validators import DataRequired, NumberRange, Optional
+from wtforms import SubmitField, SelectField
+from wtforms.validators import DataRequired, Optional
 from flask_wtf import FlaskForm
-from typing import List, Tuple
+from typing import List
 from esv import ESV
 
 

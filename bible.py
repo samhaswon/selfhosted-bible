@@ -1,5 +1,5 @@
 from book import Book
-from typing import List, Tuple
+from typing import List
 from abc import ABC, abstractmethod
 from multipledispatch import dispatch
 from typing import Tuple
