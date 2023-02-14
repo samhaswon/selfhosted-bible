@@ -44,7 +44,7 @@ class Passage(object):
         self.__API_KEY = key
         self.__API_URL: str = 'https://api.esv.org/v3/passage/text/'
         # Caching
-        requests_cache.install_cache('verses', expire_after=timedelta(days=7), stale_if_error=True)
+        requests_cache.install_cache('verses', expire_after=timedelta(days=777), stale_if_error=True)
 
     def __get_passage_esv(self, passage_name: str) -> str:
         """
@@ -106,10 +106,16 @@ class Passage(object):
 
         response = get(self.__API_URL, params=params, headers=headers).json()
 
-        loc_footnotes = str(response['passages']).find('Footnotes')
-        footnotes = self.parse_footnotes(str(response['passages'])[loc_footnotes:-2]) if loc_footnotes != -1 else ""
+        try:
+            loc_footnotes = str(response['passages']).find('Footnotes')
+            footnotes = self.parse_footnotes(str(response['passages'])[loc_footnotes:-2]) if loc_footnotes != -1 else ""
 
-        passage = response['canonical'], self.parse_headings(''.join(str(x) for x in response['passages'])), footnotes
+            passage = response['canonical'], self.parse_headings(
+                ''.join(str(x) for x in response['passages'])), footnotes
+
+        except KeyError:
+            return "API Overloaded", \
+                   {"try again later": "If this keeps happening, the app could be heavily throttled"}, ""
 
         if passage:
             return passage

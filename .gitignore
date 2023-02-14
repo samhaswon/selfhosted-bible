@@ -10,3 +10,6 @@ __pycache__/main.cpython-39.pyc
 *.pyc
 /verses.sqlite
 /tests/verses.sqlite
+dist/
+build/
+esv_web.egg-info/

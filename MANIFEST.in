@@ -1,0 +1,8 @@
+include flaskr/schema.sql
+graft ESV-web/static
+graft ESV-web/templates
+exclude api-key.txt
+recursive-exclude tests
+global-exclude *.pyc
+global-exclude *.png
+global-exclude *.svg

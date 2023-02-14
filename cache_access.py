@@ -31,7 +31,9 @@ class CacheAccess(object):
             else:
                 # Passage was not cached, so add it to the DB
                 passage = self.__passage.get_chapter_esv_json(book + " " + chapter)
-                self.add_chapter(passage)
+                if passage is not ("API Overloaded",
+                                   {"try again later": "If this keeps happening, the app could be heavily throttled"}, ""):
+                    self.add_chapter(passage)
                 return passage
         except ServerSelectionTimeoutError:
             # Assuming the server is down, don't try to add to the DB

@@ -6,9 +6,9 @@ from bible import Bible
 
 
 class ESV(Bible):
-    def __init__(self, use_cache=False):
+    def __init__(self, use_cache=False, key_in=(False, "")):
         super().__init__()
-        self.__passage: Passage = Passage(open("api-key.txt", "r").read())
+        self.__passage: Passage = Passage(open("api-key.txt", "r").read() if not key_in[0] else key_in[1])
         self.__cache: CacheAccess = CacheAccess() if use_cache else None
         self.__use_cache: bool = use_cache
 

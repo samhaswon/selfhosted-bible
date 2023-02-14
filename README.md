@@ -7,14 +7,22 @@ A self-hosted webapp connecting to Crossway's ESV API
 After creating an account at [esv.org](https://www.esv.org/), create an API key at [https://api.esv.org/account/create-application/](https://api.esv.org/account/create-application/). Then place the key in [api-key.txt](api-key.txt) in place of "<key-goes-here>".
 
 ## Running the application locally
-*Install requirements*
+#### *Install requirements*
 ```bash
 pip3 install -r requirements.txt
 ```
-*Execute*
+#### *Execute:*<br>
+*(Linux / Mac)*
 ```bash
 python3 main.py
 ```
+or<br>
+*Windows*
+```ps
+py main.py
+```
+#### *Navigate to the webpage*
+To access a locally hosted version of the application, go to [localhost:5080](http://localhost:5080) or [127.0.0.1:5080](http://127.0.0.1:5080)
 
 ## Copyright Notice:
 The code included in this repository is subject to the included license, but the content from external sources is not.
