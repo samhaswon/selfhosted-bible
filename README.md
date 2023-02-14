@@ -14,12 +14,12 @@ pip3 install -r requirements.txt
 #### *Execute:*<br>
 *(Linux / Mac)*
 ```bash
-python3 main.py
+python3 main.py <your_api_key_here>
 ```
 or<br>
 *Windows*
 ```ps
-py main.py
+py main.py <your_api_key_here>
 ```
 #### *Navigate to the webpage*
 To access a locally hosted version of the application, go to [localhost:5080](http://localhost:5080) or [127.0.0.1:5080](http://127.0.0.1:5080)
