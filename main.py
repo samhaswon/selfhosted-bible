@@ -87,6 +87,12 @@ def chapter():
     return html
 
 
+@app.route('/copyright', methods=['GET'])
+@app.route('/copyright.html', methods=['GET'])
+def copyright_notice():
+    return render_template("copyright.html")
+
+
 @app.errorhandler(404)
 def not_found(e):
     return render_template("404.html")
