@@ -1,8 +1,21 @@
-{% extends "bootstrap/base.html" %}
-{% block title %}Page Not Found{% endblock %}
-{% block body %}
-<h1>ESV Copyright Notice:</h1>
-<p>Scripture quotations marked “ESV” are from the ESV® Bible (The Holy Bible, English Standard Version®), copyright © 2001 by Crossway, a publishing ministry of Good News Publishers. Used by permission. All rights reserved. The ESV text may not be quoted in any publication made available to the public by a Creative Commons license. The ESV may not be translated into any other language.</p>
-<br>
-<p>Users may not copy or download more than 500 verses of the ESV Bible or more than one half of any book of the ESV Bible.</p>
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block styles %}
+    {{ super() }}
+    {{ js_resources|indent(3)|safe }}
+    {{ css_resources|indent(3)|safe }}
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mw-100">
+    <h1>ESV Copyright Notice:</h1>
+    <p>Scripture quotations marked “ESV” are from the ESV® Bible (The Holy Bible, English Standard Version®), copyright © 2001 by Crossway, a publishing ministry of Good News Publishers. Used by permission. All rights reserved. The ESV text may not be quoted in any publication made available to the public by a Creative Commons license. The ESV may not be translated into any other language.</p>
+    <br>
+    <p>Users may not copy or download more than 500 verses of the ESV Bible or more than one half of any book of the ESV Bible.</p>
+</div>
 {% endblock %}

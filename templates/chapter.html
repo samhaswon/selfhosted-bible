@@ -19,7 +19,7 @@
 
         {% for heading, verses in content.get('verses').items() %}
             {% if heading != 'none'%}
-                <h4>{{heading}}</h4>
+                <h4><em>{{heading}}</em></h4>
             {% endif %}
             {% for verse in verses %}
                 <p>{{verse}}</p>

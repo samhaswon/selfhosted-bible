@@ -87,7 +87,10 @@ def create_app(api_key=""):
     @app.route('/copyright', methods=['GET'])
     @app.route('/copyright.html', methods=['GET'])
     def copyright_notice():
-        return render_template("copyright.html")
+        js_resources = INLINE.render_js()
+        css_resources = INLINE.render_css()
+        return render_template("copyright.html", title="ESV Copyright Notice", debug=debug, js_resources=js_resources,
+                               css_resources=css_resources)
 
     @app.errorhandler(404)
     def not_found(e):
