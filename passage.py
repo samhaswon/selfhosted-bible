@@ -2,7 +2,7 @@ from datetime import timedelta
 from requests import get
 import requests_cache
 from re import split as resplit
-from re import sub
+from re import sub, search
 from typing import List
 
 
@@ -123,7 +123,44 @@ class Passage(object):
         :param chapter_in: The chapter to get from the API
         :return: Dictionary of the chapter
         """
-        #
+        # Check for 1 chapter books which the API returns (by name with 1) as only the first verse.
+        single_chapter_check = chapter_in[0:chapter_in.rfind(' ')]
+        if single_chapter_check in ["Obadiah", "Philemon", "2 John", "3 John", "Jude"]:
+            if single_chapter_check == "Obadiah":
+                chapter_pre = self.get_chapter_esv("Obadiah 1-21")
+                return {"book": "Obadiah",
+                        "chapter": "1",
+                        "verses": {heading: self.split_verses(chapter_pre[1][heading]) for heading in
+                                   chapter_pre[1].keys()},
+                        "footnotes": chapter_pre[2]}
+            elif single_chapter_check == "Philemon":
+                chapter_pre = self.get_chapter_esv("Philemon 1-25")
+                return {"book": "Philemon",
+                        "chapter": "1",
+                        "verses": {heading: self.split_verses(chapter_pre[1][heading]) for heading in
+                                   chapter_pre[1].keys()},
+                        "footnotes": chapter_pre[2]}
+            elif single_chapter_check == "2 John":
+                chapter_pre = self.get_chapter_esv("2 John 1-13")
+                return {"book": "2 John",
+                        "chapter": "1",
+                        "verses": {heading: self.split_verses(chapter_pre[1][heading]) for heading in
+                                   chapter_pre[1].keys()},
+                        "footnotes": chapter_pre[2]}
+            elif single_chapter_check == "3 John":
+                chapter_pre = self.get_chapter_esv("3 John 1-15")
+                return {"book": "3 John",
+                        "chapter": "1",
+                        "verses": {heading: self.split_verses(chapter_pre[1][heading]) for heading in
+                                   chapter_pre[1].keys()},
+                        "footnotes": chapter_pre[2]}
+            elif single_chapter_check == "Jude":
+                chapter_pre = self.get_chapter_esv("Jude 1-25")
+                return {"book": "Jude",
+                        "chapter": "1",
+                        "verses": {heading: self.split_verses(chapter_pre[1][heading]) for heading in
+                                   chapter_pre[1].keys()},
+                        "footnotes": chapter_pre[2]}
         chapter_pre = self.get_chapter_esv(chapter_in)
         return {"book": chapter_pre[0][0:chapter_pre[0].rfind(' ')],
                 "chapter": chapter_pre[0][chapter_pre[0].rfind(' ') + 1:],
@@ -146,13 +183,16 @@ class Passage(object):
                     is_not_end = True
                     break
             # Add lines
-            if line[0:1].isspace() and is_not_end:
+            # if search(r'^\s{4}[A-Z].*', line) and search(r'.*[a-zA-Z]\n$', line):
+            if search(r"^\s{4}[A-Z][a-zA-Z’\s]+$", line):
+                heading = sub(r"^\s+", "", sub(r"\s+$", "", line))
+            elif line[0:1].isspace() and is_not_end:
                 if heading in parsed.keys():
                     parsed[heading] = parsed[heading] + line + '\n'
                 else:
                     parsed.update({heading: line + '\n'})
             elif len(line):
-                heading = line
+                heading = sub(r"^\s+", "", sub(r"\s+$", "", line))
 
         return parsed
 

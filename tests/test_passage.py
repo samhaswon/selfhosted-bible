@@ -97,9 +97,9 @@ class TestPassage(TestCase):
                              {'book': 'Psalm',
                               'chapter': '117',
                               'verses': {'The LORD’s Faithfulness Endures Forever':
-                                         ['1 Praise the LORD, all nations!\n        Extol him, all peoples!',
-                                          '2 For great is his steadfast love toward us,\n        and the '
-                                          'faithfulness of the LORD endures forever.\n    Praise the LORD!']},
+                                             ['1 Praise the LORD, all nations!\n        Extol him, all peoples!',
+                                              '2 For great is his steadfast love toward us,\n        and the '
+                                              'faithfulness of the LORD endures forever.\n    Praise the LORD!']},
                               'footnotes': ''})
 
     def test_parse_headings(self):
@@ -114,11 +114,11 @@ class TestPassage(TestCase):
                                                      '        and the faithfulness of the LORD endures forever.\n'
                                                      '    Praise the LORD!\n    \n\n'),
                          {"The LORD’s Faithfulness Endures Forever":
-                          "    [1] Praise the LORD, all nations!\n"
-                          "        Extol him, all peoples!\n"
-                          "    [2] For great is his steadfast love toward us,\n"
-                          "        and the faithfulness of the LORD endures forever.\n"
-                          "    Praise the LORD!\n"}
+                              "    [1] Praise the LORD, all nations!\n"
+                              "        Extol him, all peoples!\n"
+                              "    [2] For great is his steadfast love toward us,\n"
+                              "        and the faithfulness of the LORD endures forever.\n"
+                              "    Praise the LORD!\n"}
                          )
 
     def test_split_verses(self):

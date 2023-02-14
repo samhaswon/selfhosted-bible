@@ -77,7 +77,10 @@ def chapter():
             print("Previous")
             session['select_book'], session['select_chapter'] = esv_obj.previous_passage(book_sel, chapter_sel)
 
-    content = esv_obj.get_passage(session.get('select_book'), int(session.get('select_chapter')))
+    book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
+    chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
+
+    content = esv_obj.get_passage(book_sel, int(chapter_sel))
 
     html = render_template('chapter.html', title='Reading', formtitle='ESV Web', debug=debug,
                            form=form, js_resources=js_resources, css_resources=css_resources, content=content)
