@@ -6,6 +6,7 @@ from flask import Flask, render_template, session, request, url_for, redirect
 from flask_bootstrap import Bootstrap
 from bokeh.resources import INLINE
 from typing import List
+from waitress import serve
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'b^lC08A7d@z3'
@@ -36,7 +37,6 @@ def main_page():
         session['select_book'] = book
         session['select_chapter'] = form.select_chapter.data
 
-
         chapter_count = 1
         for index in books:
             if index.title == book:
@@ -61,7 +61,6 @@ def chapter():
     css_resources = INLINE.render_css()
     book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
     chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
-    selected = book_sel + " " + chapter_sel
 
     form = NavigateRel()
 
@@ -93,4 +92,6 @@ def not_found(e):
 
 
 if __name__ == '__main__':
-    app.run()
+    # Dev start
+    # app.run()
+    serve(app, host="0.0.0.0", port=5080)
