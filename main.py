@@ -2,19 +2,25 @@
 
 from esv import ESV
 from navigate import Navigate, NavigateRel
-from flask import Flask, render_template, session, request, url_for, redirect
+from flask import Flask, render_template, session, url_for, redirect
 from flask_bootstrap import Bootstrap
 from bokeh.resources import INLINE
 from typing import List
-from passage import PassageNotFound
-from waitress import serve
 import sys
 
 
-def create_app(api_key=""):
+def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'b^lC08A7d@z3'
     bootstrap = Bootstrap(app)
+
+    try:
+        api_key = open("api-key.txt", "r").read()
+    except IOError:
+        try:
+            api_key = sys.argv[1]
+        except IndexError:
+            api_key = ""
 
     esv_obj = None
 
@@ -101,10 +107,6 @@ def create_app(api_key=""):
 
 if __name__ == '__main__':
     # Dev start is also: `flask --app main.py run`
-    try:
-        api_key = sys.argv[1]
-    except IndexError:
-        api_key = ""
-    app = create_app(api_key)
+    app = create_app()
     app.run()
     # serve(app, host="0.0.0.0", port=5080)
