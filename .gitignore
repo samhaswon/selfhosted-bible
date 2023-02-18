@@ -1,6 +1,7 @@
 icon.png
 icon.svg
 tests/gn1-3.txt
+.idea/
 .idea/vcs.xml
 .idea/modules.xml
 .idea/misc.xml
