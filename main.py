@@ -4,7 +4,6 @@ from esv import ESV
 from navigate import Navigate, NavigateRel
 from flask import Flask, render_template, session, url_for, redirect
 from flask_bootstrap import Bootstrap
-from bokeh.resources import INLINE
 from typing import List
 import sys
 
@@ -35,9 +34,6 @@ def create_app():
     @app.route('/', methods=['GET', 'POST'])
     @app.route('/index.html', methods=['GET', 'POST'])
     def main_page():
-        # setup
-        js_resources = INLINE.render_js()
-        css_resources = INLINE.render_css()
 
         choices = [book.title for book in books]
         type_sel = 'Select book'
@@ -63,18 +59,13 @@ def create_app():
                 return redirect(url_for('chapter'))
             elif form.submit_chapter.data:
                 error_mess = "Please submit the book first"
-
         html = render_template('index.html', title='Home', formtitle='ESV Web', select_book=type_sel, books=choices,
-                               debug=debug, form=form, js_resources=js_resources, css_resources=css_resources,
-                               error_mess=error_mess)
+                               debug=debug, form=form, error_mess=error_mess)
         return html
 
     @app.route('/chapter', methods=['GET', 'POST'])
     @app.route('/chapter.html', methods=['GET', 'POST'])
     def chapter():
-        # setup
-        js_resources = INLINE.render_js()
-        css_resources = INLINE.render_css()
         book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
         chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
         if not esv_obj.has_passage(book_sel, int(chapter_sel)):
@@ -94,16 +85,13 @@ def create_app():
         content = esv_obj.get_passage(book_sel, int(chapter_sel))
 
         html = render_template('chapter.html', title='Reading', formtitle='ESV Web', debug=debug,
-                               form=form, js_resources=js_resources, css_resources=css_resources, content=content)
+                               form=form, content=content)
         return html
 
     @app.route('/copyright', methods=['GET'])
     @app.route('/copyright.html', methods=['GET'])
     def copyright_notice():
-        js_resources = INLINE.render_js()
-        css_resources = INLINE.render_css()
-        return render_template("copyright.html", title="ESV Copyright Notice", debug=debug, js_resources=js_resources,
-                               css_resources=css_resources)
+        return render_template("copyright.html", title="ESV Copyright Notice", debug=debug,)
 
     @app.errorhandler(404)
     def not_found(e):
