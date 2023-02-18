@@ -25,9 +25,9 @@ py main.py
 
 ### In Docker
 #### Building the container
-*(Linux / Mac)*
+*Linux*
 ```sh
-docker build -t esv-web .
+sudo docker build -t esv-web .
 ```
 or<br>
 *Windows*
@@ -35,7 +35,7 @@ or<br>
 docker build -t esv-web .
 ```
 #### Run the container (detached)
-*(Linux / Mac)*
+*Linux*
 ```sh
 sudo docker run -dp 5000:5000 --restart=always --name esv-web -e API_KEY=key esv-web
 ```
