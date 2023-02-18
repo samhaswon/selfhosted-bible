@@ -23,3 +23,7 @@ class TestBible(TestCase):
         self.assertEqual(self.bible.next_passage("John", 4), ("John", "5"))
         self.assertEqual(self.bible.next_passage("Luke", 24), ("John", "1"))
         self.assertEqual(self.bible.next_passage("Revelation", 22), ("Genesis", "1"))
+
+    def test_has_passage(self):
+        self.assertTrue(self.bible.has_passage("Genesis", 50))
+        self.assertFalse(self.bible.has_passage("Genesis", 51))

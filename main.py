@@ -42,6 +42,7 @@ def create_app():
         choices = [book.title for book in books]
         type_sel = 'Select book'
 
+        error_mess = None
         form = Navigate(choices=choices)
 
         if form.validate_on_submit():
@@ -57,11 +58,15 @@ def create_app():
 
             chapters: List[int] = [x for x in range(1, chapter_count + 1)]
             form = Navigate(choices=chapters)
-            if session['select_chapter'] and form.select_chapter.data:
+            if session['select_chapter'] and form.submit_chapter.data and esv_obj.has_passage(session['select_book'], int(session['select_chapter'])):
+                # if esv_obj.has_passage(session['select_book'], int(session['select_chapter'])):
                 return redirect(url_for('chapter'))
+            elif form.submit_chapter.data:
+                error_mess = "Please submit the book first"
 
         html = render_template('index.html', title='Home', formtitle='ESV Web', select_book=type_sel, books=choices,
-                               debug=debug, form=form, js_resources=js_resources, css_resources=css_resources)
+                               debug=debug, form=form, js_resources=js_resources, css_resources=css_resources,
+                               error_mess=error_mess)
         return html
 
     @app.route('/chapter', methods=['GET', 'POST'])
@@ -72,6 +77,8 @@ def create_app():
         css_resources = INLINE.render_css()
         book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
         chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
+        if not esv_obj.has_passage(book_sel, int(chapter_sel)):
+            return redirect(url_for("404.html"))
 
         form = NavigateRel()
 
