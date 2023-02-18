@@ -7,6 +7,12 @@ from bible import Bible
 
 class ESV(Bible):
     def __init__(self, use_cache=False, key_in=(False, "")):
+        """
+        Gets a JSON formatted dictionary of an ESV passage
+        :param use_cache: Whether to use MongoDB for the cache or not. Requires MongoDB to be running at 127.0.0.1 on
+        port 27017 (unless Cache access constructor is changed).
+        :param key_in: (True, "API key"), with the default (False, "") being reading from the file api-key.txt
+        """
         super().__init__()
         self.__passage: Passage = Passage(open("api-key.txt", "r").read() if not key_in[0] else key_in[1])
         self.__cache: CacheAccess = CacheAccess() if use_cache else None
