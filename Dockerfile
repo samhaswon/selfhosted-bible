@@ -3,7 +3,7 @@ FROM debian:bullseye-slim
 
 # Setup app
 WORKDIR /usr/src/app
-COPY . .
+COPY --chmod=0755 . .
 
 # Setup debian
 RUN apt update; \
