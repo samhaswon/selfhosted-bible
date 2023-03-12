@@ -8,7 +8,7 @@ COPY --chmod=0755 . .
 # Setup debian
 RUN apt update; \
 	apt install -y --no-install-recommends --no-install-suggests \
-		python3-pip; \
+		python3-pip && \
       pip install --no-cache-dir setuptools && \
       python3 setup.py bdist_wheel && \
       pip install --no-cache-dir -e . && \
