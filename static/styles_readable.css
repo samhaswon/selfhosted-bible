@@ -373,6 +373,21 @@ label {
         padding-bottom: 15px
     }
 }
+@media (max-width: 767px) {
+    .navbar-nav {
+        float:left;
+        margin: 0
+    }
+
+    .navbar-nav>li {
+        float: left
+    }
+
+    .navbar-nav>li>a {
+        padding-top: 15px;
+        padding-bottom: 15px
+    }
+}
 
 .navbar-inverse {
     background-color: #222;

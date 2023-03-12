@@ -1,8 +1,8 @@
 from passage import Passage, PassageInvalid
 from cache_access import CacheAccess
-from book import Book
+from bibles.book import Book
 from typing import List
-from bible import Bible
+from bibles.bible import Bible
 
 
 class ESV(Bible):
