@@ -495,3 +495,51 @@ label {
 .navbar-inverse .btn-link[disabled]:focus,.navbar-inverse .btn-link[disabled]:hover,fieldset[disabled] .navbar-inverse .btn-link:focus,fieldset[disabled] .navbar-inverse .btn-link:hover {
     color: #444
 }
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #212435;
+        color: white;
+    }
+
+    .control-label {
+        color: white
+    }
+
+    .form-control {
+        background-color: #010420;
+        border-top-color: #a5b5f5;
+        border-right-color: #a5b5f5;
+        ;border-bottom-color: #a5b5f5;
+        ;border-left-color: #a5b5f5;
+        ;color: #fff;
+    }
+
+    .navbar-inverse {
+        background-color: #000331;
+    }
+
+    h2 {
+        color: white
+    }
+
+    h4 {
+        color: #bdbdbd
+    }
+
+    p {
+        color: #efdada
+    }
+
+    .btn-default {
+        background-color: #010420;
+        border-top-color: #a5b5f5;
+        border-right-color: #a5b5f5;
+        border-bottom-color: #a5b5f5;
+        border-left-color: #a5b5f5;
+        color: #fff;
+    }
+    .navbar-inverse .navbar-brand {
+        color: #e0e0e0;
+    }
+}
