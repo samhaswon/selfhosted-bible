@@ -29,7 +29,7 @@ class Bible(ABC):
                                                      ("Nehemiah", 13),
                                                      ("Esther", 10),
                                                      ("Job", 42),
-                                                     ("Psalm", 150),
+                                                     ("Psalms", 150),
                                                      ("Proverbs", 31),
                                                      ("Ecclesiastes", 12),
                                                      ("Song of Solomon", 8),
@@ -81,8 +81,12 @@ class Bible(ABC):
         self.__books_of_the_bible: dict = dict(books_of_the_bible)
 
     @property
-    def books(self):
+    def books(self) -> List[Book]:
         return self.__books
+
+    @property
+    def books_of_the_bible(self) -> dict:
+        return self.__books_of_the_bible
 
     @abstractmethod
     def get_passage(self, book, chapter):
@@ -119,7 +123,7 @@ class Bible(ABC):
             else:
                 previous_key = key
 
-    def has_passage(self, book_name: str, chapter: int):
+    def has_passage(self, book_name: str, chapter: int) -> bool:
         for book, chapters in self.__books_of_the_bible.items():
             if book == book_name and 0 < chapter <= chapters:
                 return True
