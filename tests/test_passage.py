@@ -1,5 +1,5 @@
 from unittest import TestCase
-from passage import Passage
+from bibles.esv import Passage
 
 
 class TestPassage(TestCase):

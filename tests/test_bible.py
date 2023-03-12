@@ -1,5 +1,5 @@
 from unittest import TestCase
-from bible import Bible
+from bibles.bible import Bible
 
 
 class BibleTest(Bible):
