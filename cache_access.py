@@ -1,6 +1,6 @@
 from multipledispatch import dispatch
 from pymongo.errors import ServerSelectionTimeoutError
-from passage import Passage
+from bibles.passage import Passage
 import pymongo
 
 
