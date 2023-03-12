@@ -1,4 +1,4 @@
-from book import Book
+from bibles.book import Book
 from typing import List
 from abc import ABC, abstractmethod
 from multipledispatch import dispatch

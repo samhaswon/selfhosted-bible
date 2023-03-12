@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from esv import ESV
+from bibles.esv import ESV
 from navigate import Navigate, NavigateRel
 from flask import Flask, render_template, session, url_for, redirect
 from flask_bootstrap import Bootstrap

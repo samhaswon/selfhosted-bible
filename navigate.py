@@ -2,7 +2,7 @@ from wtforms import SubmitField, SelectField
 from wtforms.validators import DataRequired, Optional
 from flask_wtf import FlaskForm
 from typing import List
-from esv import ESV
+from bibles.esv import ESV
 
 
 class NonValidatingSelectField(SelectField):
