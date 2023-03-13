@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from bibles.asv import ASV
 from bibles.esv import ESV
 from bibles.kjv import KJV
 from navigate import Navigate, NavigateRel, NavigateVersion
@@ -32,6 +33,7 @@ def create_app():
 
     # JSON Bibles
     kjv_obj = KJV()
+    asv_obj = ASV()
 
     books = esv_obj.books
 
@@ -96,7 +98,7 @@ def create_app():
         elif version_sel == 'KJV':
             content = kjv_obj.get_passage(book_sel, int(chapter_sel))
         elif version_sel == 'ASV':
-            content = ""
+            content = asv_obj.get_passage(book_sel, int(chapter_sel))
         else:
             content = {"book": "Invalid version", "chapter": "",
                        "verses": {"": ["Please clear your cookies and try again"]}}
