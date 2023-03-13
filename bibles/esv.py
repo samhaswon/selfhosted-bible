@@ -17,7 +17,7 @@ class ESV(Bible):
         """
         super().__init__()
         # API Setup
-        self.__API_KEY = open("api-key.txt", "r").read() if not key_in[0] else key_in[1]
+        self.__API_KEY = open("esv-api-key.txt", "r").read() if not key_in[0] else key_in[1]
         self.__API_URL: str = 'https://api.esv.org/v3/passage/text/'
         # Caching
         requests_cache.install_cache('verses', expire_after=timedelta(days=777), stale_if_error=True)
