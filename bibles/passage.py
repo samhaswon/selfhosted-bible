@@ -124,7 +124,7 @@ class Passage(object):
 
     def get_chapter_esv_json(self, chapter_in: str):
         """
-        Returns a dictionary (Format: {book: "", chapter: 0, verses: ["1 content..."], footnotes: ""}) for JSON-ish
+        Returns a dictionary (Format: {book: "", chapter: 0, verses: {'heading': ["1 content..."]}, footnotes: ""}) for JSON-ish
         usage for MongoDB or a similar database
         :param chapter_in: The chapter to get from the API
         :return: Dictionary of the chapter
