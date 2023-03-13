@@ -1,9 +1,9 @@
-# ESV-WEB
-A self-hosted webapp connecting to Crossway's ESV API
+# Self-hosted Bible
+A self-hosted webapp of various Bible versions including the KJV, ESV, and ASV.
 
 # Instructions
 
-## Generating a key:
+## Generating an API key for ESV access:
 After creating an account at [esv.org](https://www.esv.org/), create an API key at [https://api.esv.org/account/create-application/](https://api.esv.org/account/create-application/). Then place the key in [api-key.txt](api-key.txt) in place of "<key-goes-here>".
 
 ## Running the application
@@ -27,21 +27,21 @@ py main.py
 #### Building the container
 *Linux*
 ```sh
-sudo docker build -t esv-web .
+sudo docker build -t self-hosted-bible .
 ```
 or<br>
 *Windows*
 ```ps
-docker build -t esv-web .
+docker build -t self-hosted-bible .
 ```
 #### Run the container (detached)
 *Linux*
 ```sh
-sudo docker run -dp 5000:5000 --restart=always --name esv-web -e API_KEY=key esv-web
+sudo docker run -dp 5000:5000 --restart=always --name self-hosted-bible -e API_KEY=key self-hosted-bible
 ```
 *Windows*
 ```ps
-docker run -dp 5000:5000 --restart=always --name esv-web -e API_KEY=key esv-web
+docker run -dp 5000:5000 --restart=always --name self-hosted-bible -e API_KEY=key self-hosted-bible
 ```
 
 ## *Navigate to the webpage*
