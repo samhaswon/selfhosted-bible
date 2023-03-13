@@ -5,7 +5,8 @@ from bibles.esv import Passage
 class TestPassage(TestCase):
 
     def setUp(self) -> None:
-        self.passage = Passage(open("../api-key.txt", "r").read())
+        # self.passage = Passage(open("../api-key.txt", "r").read())
+        self.passage = Passage("unauthed")
         self.maxDiff = None
 
     def test_get_passage_esv(self):
