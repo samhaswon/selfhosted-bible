@@ -20,7 +20,7 @@ class KJV(JSONBible):
         :return:
         """
         if super().has_passage(book, chapter):
-            return {"book": book, "chapter": chapter, "verses": self.__kjv[book][str(chapter)]}
+            return {"book": book, "chapter": chapter, "verses": {'none': self.__kjv[book][str(chapter)]}}
         else:
             raise PassageInvalid
 
