@@ -18,7 +18,8 @@ def create_app():
     # Read the ESV API key or fallback to default of "unauthed"
     try:
         with open("api-key.txt", "r") as key_in:
-            if key := key_in.read() != "<key-goes-here>":
+            key = key_in.read()
+            if key != "<key-goes-here>":
                 api_key = key
             else:
                 api_key = "unauthed"
