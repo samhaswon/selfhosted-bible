@@ -3,8 +3,9 @@ A self-hosted webapp of various Bible versions including the KJV, ESV, and ASV.
 
 # Instructions
 
-## Generating an API key for ESV access:
-After creating an account at [esv.org](https://www.esv.org/), create an API key at [https://api.esv.org/account/create-application/](https://api.esv.org/account/create-application/). Then place the key in [api-key.txt](api-key.txt) in place of "<key-goes-here>".
+## Generating an API key for authorized ESV access:
+The ESV API may be used unauthorized, but it is recommended to use it authorized to avoid issues. <br>
+To start, make an account at [esv.org](https://www.esv.org/). After creating an account at [esv.org](https://www.esv.org/), create an API key at [https://api.esv.org/account/create-application/](https://api.esv.org/account/create-application/). Then place the key in [api-key.txt](api-key.txt) in place of "<key-goes-here>".
 
 ## Running the application
 ### Locally
