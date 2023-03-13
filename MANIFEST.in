@@ -1,6 +1,6 @@
 include flaskr/schema.sql
-graft ESV-web/static
-graft ESV-web/templates
+graft self-hosted-bible/static
+graft self-hosted-bible/templates
 exclude api-key.txt
 recursive-exclude tests
 global-exclude *.pyc

@@ -7,7 +7,7 @@ __pycache__/
 *.pyc
 dist/
 build/
-esv_web.egg-info/
+self-hosted-bible.egg-info/
 notes.txt
 .dockerignore
 .git*
@@ -19,3 +19,4 @@ venv/
 api-key.txt
 icon/icon.png
 icon/icon.svg
+bibles/json_bibles/esv.json
