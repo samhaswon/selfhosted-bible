@@ -11,6 +11,8 @@
     <div class="container-fluid mw-100">
     <form method="post" role="form">
         {{ form.hidden_tag() }}
+        {{ wtf.form_field(version_select.select_version) }}
+        <br>
         {{ wtf.form_field(form.select_book) }}
         {{ wtf.form_field(form.submit_book) }}
         <br>

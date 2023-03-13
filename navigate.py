@@ -33,5 +33,17 @@ class Navigate(FlaskForm):
 
 
 class NavigateRel(FlaskForm):
+    """
+    Two basic submit fields for chapter navigation
+    """
     next_button = SubmitField("Next")
     previous_button = SubmitField("Previous")
+
+
+class NavigateVersion(FlaskForm):
+    """
+    Field for selecting Bible version
+    """
+    select_version = SelectField('Select version', choices=['ASV', 'ESV', 'KJV'],
+                                 coerce=str, validators=[DataRequired()])
+

@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 from bibles.esv import ESV
-from navigate import Navigate, NavigateRel
+from bibles.kjv import KJV
+from navigate import Navigate, NavigateRel, NavigateVersion
 from flask import Flask, render_template, session, url_for, redirect
 from flask_bootstrap import Bootstrap
 from typing import List
@@ -13,6 +14,7 @@ def create_app():
     app.config['SECRET_KEY'] = 'b^lC08A7d@z3'
     bootstrap = Bootstrap(app)
 
+    # Read the ESV API key
     try:
         api_key = open("api-key.txt", "r").read()
     except IOError:
@@ -27,6 +29,10 @@ def create_app():
         esv_obj = ESV(False)
     else:
         esv_obj = ESV(False, (True, api_key))
+
+    # JSON Bibles
+    kjv_obj = KJV()
+
     books = esv_obj.books
 
     debug = False
@@ -40,9 +46,11 @@ def create_app():
 
         error_mess = None
         form = Navigate(choices=choices)
+        version_select = NavigateVersion()
 
         if form.validate_on_submit():
             book = form.select_book.data
+            session['select_version'] = version_select.data
             session['select_book'] = book
             session['select_chapter'] = form.select_chapter.data
 
@@ -54,13 +62,13 @@ def create_app():
 
             chapters: List[int] = [x for x in range(1, chapter_count + 1)]
             form = Navigate(choices=chapters)
-            if session['select_chapter'] and form.submit_chapter.data and esv_obj.has_passage(session['select_book'], int(session['select_chapter'])):
-                # if esv_obj.has_passage(session['select_book'], int(session['select_chapter'])):
+            if (session['select_chapter'] and form.submit_chapter.data and
+                    esv_obj.has_passage(session['select_book'], int(session['select_chapter']))):
                 return redirect(url_for('chapter'))
             elif form.submit_chapter.data:
                 error_mess = "Please submit the book first"
         html = render_template('index.html', title='Home', formtitle='ESV Web', select_book=type_sel, books=choices,
-                               debug=debug, form=form, error_mess=error_mess)
+                               debug=debug, form=form, error_mess=error_mess, version_select=version_select)
         return html
 
     @app.route('/chapter', methods=['GET', 'POST'])
@@ -81,8 +89,17 @@ def create_app():
 
         book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
         chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
+        version_sel = session.get('select_version')['select_version'] if session.get('select_version') else 'ESV'
 
-        content = esv_obj.get_passage(book_sel, int(chapter_sel))
+        if version_sel == 'ESV':
+            content = esv_obj.get_passage(book_sel, int(chapter_sel))
+        elif version_sel == 'KJV':
+            content = kjv_obj.get_passage(book_sel, int(chapter_sel))
+        elif version_sel == 'ASV':
+            content = ""
+        else:
+            content = {"book": "Invalid version", "chapter": "",
+                       "verses": {"": ["Please clear your cookies and try again"]}}
 
         html = render_template('chapter.html', title='Reading', formtitle='ESV Web', debug=debug,
                                form=form, content=content)
