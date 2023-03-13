@@ -15,21 +15,26 @@ def create_app():
     app.config['SECRET_KEY'] = 'b^lC08A7d@z3'
     bootstrap = Bootstrap(app)
 
-    # Read the ESV API key
+    # Read the ESV API key or fallback to default of "unauthed"
     try:
-        api_key = open("api-key.txt", "r").read()
+        with open("api-key.txt", "r") as key_in:
+            if key := key_in.read() != "<key-goes-here>":
+                api_key = key
+            else:
+                api_key = "unauthed"
     except IOError:
         try:
             api_key = sys.argv[1]
         except IndexError:
-            api_key = ""
+            # Default key for unauthorized requests
+            api_key = "unauthed"
 
     esv_obj = None
 
     if len(api_key):
-        esv_obj = ESV(False)
+        esv_obj = ESV()
     else:
-        esv_obj = ESV(False, (True, api_key))
+        esv_obj = ESV((True, api_key))
 
     # JSON Bibles
     kjv_obj = KJV()
