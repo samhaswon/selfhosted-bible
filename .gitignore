@@ -11,6 +11,6 @@ __pycache__/main.cpython-39.pyc
 /tests/verses.sqlite
 dist/
 build/
-esv_web.egg-info/
+self_hosted_bible.egg-info/
 notes.txt
 /bibles/json_bibles/esv.json
