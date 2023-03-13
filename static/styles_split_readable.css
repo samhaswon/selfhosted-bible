@@ -1,10 +1,24 @@
-.row {
-  display: flex;
-  justify-content: space-between;
-}
+@media (min-width: 1000px) {
+  .row {
+    display: inline-flex;
+  }
 
-.col {
-  flex-basis: 30%;
-  box-sizing: border-box;
-  border: none;
+  .column {
+    box-sizing: border-box;
+    height: 100%;
+    overflow: auto;
+    padding: 0 2%;
+  }
+}
+@media (max-width: 1000px) {
+  .row {
+    display: flex;
+  }
+
+  .column {
+    box-sizing: border-box;
+    height: 100%;
+    overflow: auto;
+    padding: 0 2%;
+  }
 }

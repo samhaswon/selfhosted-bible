@@ -165,7 +165,8 @@ def create_app():
                         "verses": {"": ["Please clear your cookies and try again"]}}
 
         html = render_template('chapter_split.html', title='Reading', formtitle='ESV Web', debug=debug,
-                               form=form, content=content, content2=content2, version=version_sel)
+                               form=form, content=content, content2=content2,
+                               version=''.join(v + ' ' for v in version_sel))
         return html
 
     @app.route('/copyright', methods=['GET'])
