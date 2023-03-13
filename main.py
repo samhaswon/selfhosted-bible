@@ -95,8 +95,8 @@ def create_app():
             elif form.previous_button.data:
                 session['select_book'], session['select_chapter'] = esv_obj.previous_passage(book_sel, chapter_sel)
 
-        book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
-        chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
+            book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
+            chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
         version_sel = session.get('select_version')['select_version'] if session.get('select_version') else 'ESV'
 
         if version_sel == 'ESV':
@@ -110,7 +110,7 @@ def create_app():
                        "verses": {"": ["Please clear your cookies and try again"]}}
 
         html = render_template('chapter.html', title='Reading', formtitle='ESV Web', debug=debug,
-                               form=form, content=content)
+                               form=form, content=content, version=version_sel)
         return html
 
     @app.route('/copyright', methods=['GET'])
