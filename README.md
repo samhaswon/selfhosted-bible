@@ -24,26 +24,18 @@ or<br>
 py main.py
 ```
 
-### In Docker
-#### Building the container
-*Linux*
-```sh
-sudo docker build -t self-hosted-bible .
-```
-or<br>
-*Windows*
-```ps
-docker build -t self-hosted-bible .
-```
-#### Run the container (detached)
-*Linux*
-```sh
-sudo docker run -dp 5000:5000 --restart=always --name self-hosted-bible -e API_KEY=key self-hosted-bible
-```
-*Windows*
-```ps
-docker run -dp 5000:5000 --restart=always --name self-hosted-bible -e API_KEY=key self-hosted-bible
-```
+<details>
+    <summary>In Docker</summary>
+    #### Building the container
+    ```sh
+    docker build -t self-hosted-bible .
+    ``` build -t self-hosted-bible .
+    ```
+    #### Run the container (detached)
+    ```sh
+    docker run -dp 5000:5000 --restart=always --name self-hosted-bible -e API_KEY=key self-hosted-bible
+    ```
+</details>
 
 ## *Navigate to the webpage*
 To access a locally hosted version of the application, go to [localhost:5080](http://localhost:5080) or [127.0.0.1:5080](http://127.0.0.1:5080)
