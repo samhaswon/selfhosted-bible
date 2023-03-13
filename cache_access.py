@@ -43,7 +43,7 @@ class CacheAccess(object):
     def get_chapter(self, book: str, chapter: int) -> dict:
         try:
             # Get passage from DB
-            passage = self.__collection.find_one({'book': book, 'chapter': chapter})
+            passage = self.__collection.find_one({'book': book, 'chapter': str(chapter)})
             if passage:
                 # Passage was cached
                 return dict(passage)
