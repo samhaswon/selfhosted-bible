@@ -121,6 +121,11 @@ a {
     text-decoration: none
 }
 
+.tab {
+    display: inline-block;
+    margin-left: 40px;
+}
+
 a:focus,a:hover {
     color: #23527c;
     text-decoration: underline
