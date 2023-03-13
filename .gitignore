@@ -1,5 +1,3 @@
-icon.png
-icon.svg
 tests/gn1-3.txt
 .idea/
 .idea/vcs.xml
@@ -15,3 +13,4 @@ dist/
 build/
 esv_web.egg-info/
 notes.txt
+/bibles/json_bibles/esv.json

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg5"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs2">
+    <rect
+       x="346.03992"
+       y="510.26225"
+       width="230.20453"
+       height="142.71704"
+       id="rect3006" />
+  </defs>
+  <g
+     id="layer1">
+    <circle
+       style="fill:#000000;stroke-width:0.264583;-inkscape-stroke:none;stop-color:#000000"
+       id="path846"
+       cx="113.93534"
+       cy="148.13423"
+       r="30" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,-7.1124319,1.6811202)"
+       id="text3004"
+       style="font-size:74.6667px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect3006)"><tspan
+         x="346.03906"
+         y="578.38241"
+         id="tspan19000"><tspan
+           style="-inkscape-font-specification:'sans-serif, Normal';fill:#d38d5f"
+           id="tspan18998">ESVW</tspan></tspan></text>
+  </g>
+</svg>
