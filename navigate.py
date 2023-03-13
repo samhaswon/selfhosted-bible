@@ -1,4 +1,4 @@
-from wtforms import SubmitField, SelectField
+from wtforms import SubmitField, SelectField, SelectMultipleField
 from wtforms.validators import DataRequired, Optional
 from flask_wtf import FlaskForm
 from typing import List
@@ -9,6 +9,7 @@ class NonValidatingSelectField(SelectField):
     """
     Class to ignore the SelectField validation
     """
+
     def pre_validate(self, form):
         """
         Does nothing
@@ -44,6 +45,5 @@ class NavigateVersion(FlaskForm):
     """
     Field for selecting Bible version
     """
-    select_version = SelectField('Select version', choices=['ASV', 'ESV', 'KJV'],
-                                 coerce=str, validators=[DataRequired()])
-
+    select_version = SelectMultipleField('Select version', choices=['ASV', 'ESV', 'KJV'],
+                                         coerce=str, validators=[DataRequired()])

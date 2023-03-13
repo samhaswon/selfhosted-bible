@@ -1,0 +1,10 @@
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.col {
+  flex-basis: 30%;
+  box-sizing: border-box;
+  border: none;
+}
