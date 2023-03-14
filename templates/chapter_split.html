@@ -15,22 +15,14 @@
     <form method="post" role="form">
         {{ form.hidden_tag() }}{{ wtf.form_field(form.previous_button) }}{{ wtf.form_field(form.next_button) }}
 
-        <div class="row">
-            <div class="column">
-                {% for heading, verses in content.get('verses').items() %}
-                    {% for verse in verses %}
-                        <p>{{verse}}</p>
-                    {% endfor %}
-                {% endfor %}
-            </div>
-            <div class="column">
-                {% for heading, verses in content2.get('verses').items() %}
-                    {% for verse in verses %}
-                        <p>{{verse}}</p>
-                    {% endfor %}
-                {% endfor %}
-            </div>
-        </div>
+        <table>
+        {% for verse, verse2 in zip(content.get('verses'), content2.get('verses')) %}
+            <tr>
+                <td>{{verse}}</td>
+                <td>{{verse2}}</td>
+            </tr>
+        {% endfor %}
+        </table>
         <div class="row">
             <div class="column">
                 {% if content.get('footnotes') %}

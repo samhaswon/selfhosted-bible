@@ -72,10 +72,10 @@ def create_app():
             chapters: List[int] = [x for x in range(1, chapter_count + 1)]
             form = Navigate(choices=chapters)
             if (session['select_chapter'] and form.submit_chapter.data and
-                    esv_obj.has_passage(session['select_book'], int(session['select_chapter']))) and len(versions) == 1:
+                    esv_obj.has_passage(session['select_book'], int(session['select_chapter']))) and len(versions['select_version']) == 1:
                 return redirect(url_for('chapter'))
             elif (session['select_chapter'] and form.submit_chapter.data and
-                    esv_obj.has_passage(session['select_book'], int(session['select_chapter']))) and len(versions) > 1:
+                    esv_obj.has_passage(session['select_book'], int(session['select_chapter']))) and len(versions['select_version']) > 1:
                 return redirect(url_for('chapter_split'))
             elif form.submit_chapter.data:
                 error_mess = "Please submit the book first"
@@ -164,8 +164,15 @@ def create_app():
             content2 = {"book": "Invalid version", "chapter": "",
                         "verses": {"": ["Please clear your cookies and try again"]}}
 
+        content = {'book': content['book'], 'chapter': content['chapter'], 'verses':
+                   [verse for heading, verses in content.get('verses').items() for verse in verses],
+                   'footnotes': content.get('footnotes')}
+        content2 = {'book': content2['book'], 'chapter': content2['chapter'], 'verses':
+                    [verse for heading, verses in content2.get('verses').items() for verse in verses],
+                    'footnotes': content2.get('footnotes')}
+
         html = render_template('chapter_split.html', title='Reading', formtitle='ESV Web', debug=debug,
-                               form=form, content=content, content2=content2,
+                               form=form, content=content, content2=content2, zip=zip,
                                version=''.join(v + ' ' for v in version_sel))
         return html
 
