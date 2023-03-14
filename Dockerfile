@@ -1,19 +1,23 @@
 # syntax=docker/dockerfile:1
-FROM debian:bullseye-slim
+FROM debian:stable-slim
 
 # Setup app
 WORKDIR /usr/src/app
 COPY --chmod=0755 . .
 
 # Setup debian
-RUN apt update; \
+RUN echo "***** Installing apt packages *****" && \
+    apt update && \
+    apt upgrade && \
 	apt install -y --no-install-recommends --no-install-suggests \
 		python3-pip && \
-      pip install --no-cache-dir setuptools && \
-      python3 setup.py bdist_wheel && \
-      pip install --no-cache-dir -e . && \
-      pip uninstall setuptools -y && \
-      rm -rf /usr/lib/python3/dist-packages/ && \
+    echo "***** Installing python packages *****" && \
+    pip install --no-cache-dir setuptools && \
+    python3 setup.py bdist_wheel && \
+    pip install --no-cache-dir -e . && \
+    echo "***** Cleaning up *****" && \
+    pip uninstall setuptools -y && \
+    rm -rf /usr/lib/python3/dist-packages/ && \
     apt remove python3-pip python-pip-whl python3-distutils python3-lib2to3 python3-wheel \
         ca-certificates python3-pkg-resources -y; \
     apt auto-clean -y && \
