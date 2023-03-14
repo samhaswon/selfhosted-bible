@@ -72,10 +72,12 @@ def create_app():
             chapters: List[int] = [x for x in range(1, chapter_count + 1)]
             form = Navigate(choices=chapters)
             if (session['select_chapter'] and form.submit_chapter.data and
-                    esv_obj.has_passage(session['select_book'], int(session['select_chapter']))) and len(versions['select_version']) == 1:
+                    esv_obj.has_passage(session['select_book'], int(session['select_chapter']))) and \
+                    len(versions['select_version']) == 1:
                 return redirect(url_for('chapter'))
             elif (session['select_chapter'] and form.submit_chapter.data and
-                    esv_obj.has_passage(session['select_book'], int(session['select_chapter']))) and len(versions['select_version']) > 1:
+                    esv_obj.has_passage(session['select_book'], int(session['select_chapter']))) and \
+                    len(versions['select_version']) > 1:
                 return redirect(url_for('chapter_split'))
             elif form.submit_chapter.data:
                 error_mess = "Please submit the book first"
