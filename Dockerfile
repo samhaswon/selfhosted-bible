@@ -8,7 +8,7 @@ COPY --chmod=0755 . .
 # Setup debian
 RUN echo "***** Installing apt packages *****" && \
     apt update && \
-    apt upgrade && \
+    apt upgrade -y --no-install-recommends --no-install-suggests && \
 	apt install -y --no-install-recommends --no-install-suggests \
 		python3-pip && \
     echo "***** Installing python packages *****" && \
@@ -22,7 +22,7 @@ RUN echo "***** Installing apt packages *****" && \
         ca-certificates python3-pkg-resources -y; \
     apt auto-clean -y && \
     rm requirements.txt && \
-    rm -rf build/ dist/ esv_web.egg-info/ && \
+    rm -rf build/ dist/ self_hosted_bible.egg-info/ && \
     rm -rf /usr/share/doc/ && \
     rm -rf /usr/lib/python3.9/pydoc_data && \
     rm -rf /usr/lib/python3.9/test && \
@@ -31,3 +31,4 @@ RUN echo "***** Installing apt packages *****" && \
 EXPOSE 5000
 
 CMD [ "/usr/src/app/daemon.sh" ]
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD curl -f http://localhost:5000/health

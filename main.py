@@ -187,6 +187,14 @@ def create_app():
     def not_found(e):
         return render_template("404.html")
 
+    @app.route('/health', methods=['GET'])
+    def health():
+        """
+        Docker Health check
+        :return:
+        """
+        return "Healthy: OK"
+
     return app
 
 
