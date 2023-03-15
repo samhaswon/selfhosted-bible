@@ -72,11 +72,11 @@ def create_app():
             chapters: List[int] = [x for x in range(1, chapter_count + 1)]
             form = Navigate(choices=chapters)
             if (session['select_chapter'] and form.submit_chapter.data and
-                    esv_obj.has_passage(session['select_book'], int(session['select_chapter']))) and \
+                esv_obj.has_passage(session['select_book'], int(session['select_chapter']))) and \
                     len(versions['select_version']) == 1:
                 return redirect(url_for('chapter'))
             elif (session['select_chapter'] and form.submit_chapter.data and
-                    esv_obj.has_passage(session['select_book'], int(session['select_chapter']))) and \
+                  esv_obj.has_passage(session['select_book'], int(session['select_chapter']))) and \
                     len(versions['select_version']) > 1:
                 return redirect(url_for('chapter_split'))
             elif form.submit_chapter.data:
@@ -167,10 +167,10 @@ def create_app():
                         "verses": {"": ["Please clear your cookies and try again"]}}
 
         content = {'book': content['book'], 'chapter': content['chapter'], 'verses':
-                   [verse for heading, verses in content.get('verses').items() for verse in verses],
+            [verse for heading, verses in content.get('verses').items() for verse in verses],
                    'footnotes': content.get('footnotes')}
         content2 = {'book': content2['book'], 'chapter': content2['chapter'], 'verses':
-                    [verse for heading, verses in content2.get('verses').items() for verse in verses],
+            [verse for heading, verses in content2.get('verses').items() for verse in verses],
                     'footnotes': content2.get('footnotes')}
 
         html = render_template('chapter_split.html', title='Reading', formtitle='ESV Web', debug=debug,
@@ -181,7 +181,7 @@ def create_app():
     @app.route('/copyright', methods=['GET'])
     @app.route('/copyright.html', methods=['GET'])
     def copyright_notice():
-        return render_template("copyright.html", title="ESV Copyright Notice", debug=debug,)
+        return render_template("copyright.html", title="ESV Copyright Notice", debug=debug, )
 
     @app.errorhandler(404)
     def not_found(e):
@@ -202,4 +202,4 @@ if __name__ == '__main__':
     # Dev start is also: `flask --app main.py run`
     app = create_app()
     app.run()
-    # serve(app, host="0.0.0.0", port=5080)
+    # serve(app, host="0.0.0.0", port=5000)

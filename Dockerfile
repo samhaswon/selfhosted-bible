@@ -1,32 +1,44 @@
 # syntax=docker/dockerfile:1
-FROM debian:stable-slim
+
+FROM python:3-alpine as build-stage
+
+RUN mkdir /svc
+WORKDIR /svc
+COPY requirements.txt /svc
+
+# Install required apk packages
+RUN echo "***** Getting required packages *****" && \
+    apk add --no-cache --update  \
+    gcc \
+    musl-dev \
+    linux-headers && \
+    pip install --upgrade pip
+
+# Build dependencies
+RUN echo "***** Building dependencies *****" && \
+    pip wheel -r /svc/requirements.txt --wheel-dir=/svc/wheels
+
+FROM python:3-alpine as application
+
+ENV PYTHONUNBUFFERED=TRUE
+
+# Get build-stage files
+COPY --from=build-stage /svc /usr/src/app
+WORKDIR /usr/src/app
+RUN echo "***** Installing dependencies *****" && \
+    pip install --no-index --find-links=/usr/src/app/wheels -r requirements.txt
 
 # Setup app
-WORKDIR /usr/src/app
 COPY --chmod=0755 . .
 
-# Setup debian
-RUN echo "***** Installing apt packages *****" && \
-    apt update && \
-    apt upgrade -y --no-install-recommends --no-install-suggests && \
-	apt install -y --no-install-recommends --no-install-suggests \
-		python3-pip && \
-    echo "***** Installing python packages *****" && \
-    pip install --no-cache-dir setuptools && \
+# Installing app
+RUN echo "***** Installing app *****" && \
     python3 setup.py bdist_wheel && \
     pip install --no-cache-dir -e . && \
     echo "***** Cleaning up *****" && \
     pip uninstall setuptools -y && \
-    rm -rf /usr/lib/python3/dist-packages/ && \
-    apt remove python3-pip python-pip-whl python3-distutils python3-lib2to3 python3-wheel \
-        ca-certificates python3-pkg-resources -y; \
-    apt auto-clean -y && \
     rm requirements.txt && \
-    rm -rf build/ dist/ self_hosted_bible.egg-info/ && \
-    rm -rf /usr/share/doc/ && \
-    rm -rf /usr/lib/python3.9/pydoc_data && \
-    rm -rf /usr/lib/python3.9/test && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf build/ dist/ self_hosted_bible.egg-info/
 
 EXPOSE 5000
 
