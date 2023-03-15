@@ -43,4 +43,4 @@ RUN echo "***** Installing app *****" && \
 EXPOSE 5000
 
 CMD [ "/usr/src/app/daemon.sh" ]
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD curl -f http://localhost:5000/health
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD wget http://localhost:5000/health -q -O - > /dev/null 2>&1
