@@ -547,3 +547,35 @@ label {
         color: #e0e0e0;
     }
 }
+
+.error {
+    text-align: center
+}
+
+@media (min-width: 1000px) {
+  .row {
+    display: inline-flex;
+  }
+
+  .column {
+    box-sizing: border-box;
+    height: 100%;
+    overflow: auto;
+    padding: 0 2%;
+  }
+}
+@media (max-width: 1000px) {
+  .row {
+    display: flex;
+  }
+
+  .column {
+    box-sizing: border-box;
+    height: 100%;
+    overflow: auto;
+    padding: 0 2%;
+  }
+}
+td {
+  padding: 5px;
+}
