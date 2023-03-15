@@ -8,6 +8,7 @@ from flask import Flask, render_template, session, url_for, redirect
 from flask_bootstrap import Bootstrap
 from typing import List
 import sys
+import re
 
 
 def create_app():
@@ -83,7 +84,7 @@ def create_app():
                 error_mess = "Please submit the book first"
         html = render_template('index.html', title='Home', formtitle='ESV Web', select_book=type_sel, books=choices,
                                debug=debug, form=form, error_mess=error_mess, version_select=version_select)
-        return html
+        return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', html)
 
     @app.route('/chapter', methods=['GET', 'POST'])
     @app.route('/chapter.html', methods=['GET', 'POST'])
@@ -117,7 +118,7 @@ def create_app():
 
         html = render_template('chapter.html', title='Reading', formtitle='ESV Web', debug=debug,
                                form=form, content=content, version=version_sel)
-        return html
+        return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', html)
 
     @app.route('/chapter_split', methods=['GET', 'POST'])
     @app.route('/chapter_split.html', methods=['GET', 'POST'])
@@ -176,16 +177,17 @@ def create_app():
         html = render_template('chapter_split.html', title='Reading', formtitle='ESV Web', debug=debug,
                                form=form, content=content, content2=content2, zip=zip,
                                version=''.join(v + ' ' for v in version_sel))
-        return html
+        return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', html)
 
     @app.route('/copyright', methods=['GET'])
     @app.route('/copyright.html', methods=['GET'])
     def copyright_notice():
-        return render_template("copyright.html", title="ESV Copyright Notice", debug=debug, )
+        return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', render_template("copyright.html", title="ESV Copyright Notice",
+                                                                         debug=debug, ))
 
     @app.errorhandler(404)
     def not_found(e):
-        return render_template("404.html")
+        return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', render_template("404.html"))
 
     @app.route('/health', methods=['GET'])
     def health():
