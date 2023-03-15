@@ -15,6 +15,8 @@ To start, make an account at [esv.org](https://www.esv.org/). After creating an 
 This application requires Python 3 to run. To install it on Windows, download and run the installer at [python.org](https://www.python.org/downloads/). For Linux installation, you likely already have Python installed but maybe not pip. In this case, install python3 (if not already installed) and py3-pip (or whatever the package name is for Python 3 pip in your package manager) through your package manager. <br><br>
 Then, verify Python was installed by running `python3 --version` on Linux or `py -version` on Windows.
 
+For more detailed installation instructions, see [realpython.com](https://realpython.com/installing-python/).
+
 #### *Install requirements*
 ```sh
 pip3 install -r requirements.txt
