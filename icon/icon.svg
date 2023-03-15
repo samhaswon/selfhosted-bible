@@ -14,8 +14,8 @@
     <rect
        x="346.03992"
        y="510.26225"
-       width="230.20453"
-       height="142.71704"
+       width="177.67282"
+       height="84.655676"
        id="rect3006" />
   </defs>
   <g
@@ -28,13 +28,13 @@
        r="30" />
     <text
        xml:space="preserve"
-       transform="matrix(0.26458333,0,0,0.26458333,-7.1124319,1.6811202)"
+       transform="matrix(0.26458333,0,0,0.26458333,1.0862321,2.7274028)"
        id="text3004"
        style="font-size:74.6667px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect3006)"><tspan
          x="346.03906"
          y="578.38241"
-         id="tspan19000"><tspan
+         id="tspan837"><tspan
            style="-inkscape-font-specification:'sans-serif, Normal';fill:#d38d5f"
-           id="tspan18998">ESVW</tspan></tspan></text>
+           id="tspan835">SHB</tspan></tspan></text>
   </g>
 </svg>
