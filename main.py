@@ -168,10 +168,10 @@ def create_app():
                         "verses": {"": ["Please clear your cookies and try again"]}}
 
         content = {'book': content['book'], 'chapter': content['chapter'], 'verses':
-            [verse for heading, verses in content.get('verses').items() for verse in verses],
+                   [verse for heading, verses in content.get('verses').items() for verse in verses],
                    'footnotes': content.get('footnotes')}
         content2 = {'book': content2['book'], 'chapter': content2['chapter'], 'verses':
-            [verse for heading, verses in content2.get('verses').items() for verse in verses],
+                    [verse for heading, verses in content2.get('verses').items() for verse in verses],
                     'footnotes': content2.get('footnotes')}
 
         html = render_template('chapter_split.html', title='Reading', formtitle='ESV Web', debug=debug,
@@ -187,7 +187,8 @@ def create_app():
 
     @app.errorhandler(404)
     def not_found(e):
-        return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', render_template("404.html"))
+        print(str(e))
+        return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', render_template("404.html")), 404
 
     @app.route('/health', methods=['GET'])
     def health():
@@ -202,6 +203,6 @@ def create_app():
 
 if __name__ == '__main__':
     # Dev start is also: `flask --app main.py run`
-    app = create_app()
-    app.run()
+    app_create = create_app()
+    app_create.run()
     # serve(app, host="0.0.0.0", port=5000)
