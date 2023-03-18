@@ -197,8 +197,7 @@ def create_app():
         Copyright notice page
         :return: Copyright notice
         """
-        return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', render_template("copyright.html", title="ESV Copyright Notice",
-                                                                         debug=debug, ))
+        return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', render_template("copyright.html", debug=debug, ))
 
     @app.errorhandler(500)
     def server_error(e):
