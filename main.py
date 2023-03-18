@@ -49,7 +49,10 @@ def create_app():
     @app.route('/', methods=['GET', 'POST'])
     @app.route('/index.html', methods=['GET', 'POST'])
     def main_page():
-
+        """
+        Main page for selecting version(s) and passage
+        :return: Main menu page
+        """
         choices = [book.title for book in books]
         type_sel = 'Select book'
 
@@ -89,6 +92,10 @@ def create_app():
     @app.route('/chapter', methods=['GET', 'POST'])
     @app.route('/chapter.html', methods=['GET', 'POST'])
     def chapter():
+        """
+        Reading view of a passage in a selected version
+        :return: Page of the selected passage
+        """
         book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
         chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
         if not esv_obj.has_passage(book_sel, int(chapter_sel)):
@@ -123,6 +130,10 @@ def create_app():
     @app.route('/chapter_split', methods=['GET', 'POST'])
     @app.route('/chapter_split.html', methods=['GET', 'POST'])
     def chapter_split():
+        """
+        Split between selected versions
+        :return: Split view page of a passage in selected versions
+        """
         book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
         chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
         if not esv_obj.has_passage(book_sel, int(chapter_sel)):
@@ -182,11 +193,30 @@ def create_app():
     @app.route('/copyright', methods=['GET'])
     @app.route('/copyright.html', methods=['GET'])
     def copyright_notice():
+        """
+        Copyright notice page
+        :return: Copyright notice
+        """
         return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', render_template("copyright.html", title="ESV Copyright Notice",
                                                                          debug=debug, ))
 
+    @app.errorhandler(500)
+    def server_error(e):
+        """
+        Error 500 handler
+        :param e: error
+        :return: error 500 page
+        """
+        str(e)
+        return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', render_template("500.html")), 500
+
     @app.errorhandler(404)
     def not_found(e):
+        """
+        Error 404 handler
+        :param e: error
+        :return: error 404 page
+        """
         print(str(e))
         return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', render_template("404.html")), 404
 
@@ -194,7 +224,7 @@ def create_app():
     def health():
         """
         Docker Health check
-        :return:
+        :return: "Healthy: OK"
         """
         return "Healthy: OK"
 
