@@ -1,11 +1,12 @@
 from bibles.bible import Bible
-from abc import abstractmethod, ABC
+from abc import abstractmethod
 
 
-class JSONBible(Bible, ABC):
+class JSONBible(Bible):
     """
     Base class for Bibles in a JSON format
     """
+
     def __init__(self):
         super().__init__()
 
@@ -16,4 +17,3 @@ class JSONBible(Bible, ABC):
         :return: dictionary of the Bible
         """
         raise NotImplementedError
-
