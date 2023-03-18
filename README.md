@@ -52,7 +52,7 @@ docker run -dp 5000:5000 --restart=always --name self-hosted-bible self-hosted-b
 </details>
 
 ## *Navigate to the webpage*
-To access a locally hosted version of the application, go to [localhost:5000](http://localhost:5000) or [127.0.0.1:5000](http://127.0.0.1:5000)
+To access a locally hosted version of the application, go to [localhost:5000](http://localhost:5000) or [127.0.0.1:5000](http://127.0.0.1:5000). To access the application running in Docker on another machine, go to <machine_ip>:5000 .
 
 ## Copyright Notice:
 The code included in this repository is subject to the included license, but the content from external sources is not.
@@ -80,5 +80,5 @@ The code included in this repository is subject to the included license, but the
 > Rights or permission requests (including but not limited to reproduction in commercial publications) that exceed the above guidelines must be directed to the Permissions Department, Cambridge University Press, University Printing House, Shaftesbury Road, Cambridge CB2 8BS, UK (https://www.cambridge.org/about-us/rights-permissions) and approved in writing.
 </details>
 
-## Other Credits
+## Credits
 Credit to [@bibleapi](https://github.com/bibleapi/bibleapi-bibles-json) for KJV and ASV original JSON
