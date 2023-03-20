@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}{{ Reading }}{% endblock %}
 {% block styles %}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
@@ -10,32 +10,19 @@
 
 {% block content %}
 <div class="container-fluid mw-100">
-    <h2>{{ content.get('book') }} {{ content.get('chapter') }}</h2><h6>©{{ version }}</h6>
+    <h2>{{ title }}</h2><h6>©{{ version }}</h6>
     <form method="post" role="form">
         {{ form.hidden_tag() }}{{ wtf.form_field(form.previous_button) }}{{ wtf.form_field(form.next_button) }}
 
         <table>
-        {% for verse, verse2 in zip(content.get('verses'), content2.get('verses')) %}
-            <tr>
-                <td>{{verse}}</td>
-                <td>{{verse2}}</td>
-            </tr>
-        {% endfor %}
+            {% for verses in content %}
+                <tr>
+                    {% for verse in verses %}
+                        <td>{{verse}}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
         </table>
-        <div class="row">
-            <div class="column">
-                {% if content.get('footnotes') %}
-                    <h5>Footnotes:</h5>
-                    <p>{{content.get('footnotes')}}</p>
-                {% endif %}
-            </div>
-            <div class="column">
-                {% if content2.get('footnotes') %}
-                    <h5>Footnotes:</h5>
-                    <p>{{content2.get('footnotes')}}</p>
-                {% endif %}
-            </div>
-        </div>
         <br><br>
 
         {{ form.hidden_tag() }}{{ wtf.form_field(form.previous_button) }}{{ wtf.form_field(form.next_button) }}

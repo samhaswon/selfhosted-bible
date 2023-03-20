@@ -31,12 +31,7 @@ def create_app():
             # Default key for unauthorized requests
             api_key = "unauthed"
 
-    esv_obj = None
-
-    if len(api_key):
-        esv_obj = ESV()
-    else:
-        esv_obj = ESV((True, api_key))
+    esv_obj = ESV() if not len(api_key) else ESV((True, api_key))
 
     # JSON Bibles
     kjv_obj = KJV()
@@ -151,42 +146,16 @@ def create_app():
             chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
         version_sel = session.get('select_version')['select_version'] if session.get('select_version') else ['ESV',
                                                                                                              'KJV']
-        if version_sel[0]:
-            if version_sel[0] == 'ESV':
-                content = esv_obj.get_passage(book_sel, int(chapter_sel))
-            elif version_sel[0] == 'KJV':
-                content = kjv_obj.get_passage(book_sel, int(chapter_sel))
-            elif version_sel[0] == 'ASV':
-                content = asv_obj.get_passage(book_sel, int(chapter_sel))
+        content = []
+        for version in version_sel:
+            if version in bibles.keys():
+                tmp_content = bibles[version].get_passage(book_sel, int(chapter_sel))
+                content.append([verse for heading, verses in tmp_content.get('verses').items() for verse in verses])
             else:
-                content = {"book": "Invalid version", "chapter": "",
-                           "verses": {"": ["Please clear your cookies and try again"]}}
-        else:
-            content = {"book": "Invalid version", "chapter": "",
-                       "verses": {"": ["Please clear your cookies and try again"]}}
-        if version_sel[1]:
-            if version_sel[1] == 'ESV':
-                content2 = esv_obj.get_passage(book_sel, int(chapter_sel))
-            elif version_sel[1] == 'KJV':
-                content2 = kjv_obj.get_passage(book_sel, int(chapter_sel))
-            elif version_sel[1] == 'ASV':
-                content2 = asv_obj.get_passage(book_sel, int(chapter_sel))
-            else:
-                content2 = {"book": "Invalid version", "chapter": "",
-                            "verses": {"": ["Please clear your cookies and try again"]}}
-        else:
-            content2 = {"book": "Invalid version", "chapter": "",
-                        "verses": {"": ["Please clear your cookies and try again"]}}
-
-        content = {'book': content['book'], 'chapter': content['chapter'], 'verses':
-                   [verse for heading, verses in content.get('verses').items() for verse in verses],
-                   'footnotes': content.get('footnotes')}
-        content2 = {'book': content2['book'], 'chapter': content2['chapter'], 'verses':
-                    [verse for heading, verses in content2.get('verses').items() for verse in verses],
-                    'footnotes': content2.get('footnotes')}
-
-        html = render_template('chapter_split.html', title='Reading', formtitle='ESV Web', debug=debug,
-                               form=form, content=content, content2=content2, zip=zip,
+                content.append(["Invalid version", "Please clear your cookies and try again"])
+        content = list(zip(*content))
+        html = render_template('chapter_split.html', title=book_sel + " " + chapter_sel, formtitle='ESV Web',
+                               debug=debug, form=form, content=content,
                                version=''.join(v + ' ' for v in version_sel))
         return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', html)
 
