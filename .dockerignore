@@ -12,7 +12,7 @@ Dockerfile
 LICENSE
 tests/
 venv/
-api-key.txt
+esv-api-key.txt
 icon/icon.png
 icon/icon.svg
 icon/
