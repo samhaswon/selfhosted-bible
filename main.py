@@ -42,6 +42,8 @@ def create_app():
     kjv_obj = KJV()
     asv_obj = ASV()
 
+    bibles = {'ASV': asv_obj, 'ESV': esv_obj, 'KJV': kjv_obj}
+
     books = esv_obj.books
 
     debug = False
@@ -98,6 +100,7 @@ def create_app():
         """
         book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
         chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
+        # Invalid passage protection
         if not esv_obj.has_passage(book_sel, int(chapter_sel)):
             return redirect(url_for("404.html"))
 
@@ -113,12 +116,8 @@ def create_app():
             chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
         version_sel = session.get('select_version')['select_version'][0] if session.get('select_version') else 'ESV'
 
-        if version_sel == 'ESV':
-            content = esv_obj.get_passage(book_sel, int(chapter_sel))
-        elif version_sel == 'KJV':
-            content = kjv_obj.get_passage(book_sel, int(chapter_sel))
-        elif version_sel == 'ASV':
-            content = asv_obj.get_passage(book_sel, int(chapter_sel))
+        if version_sel in bibles.keys():
+            content = bibles[version_sel].get_passage(book_sel, int(chapter_sel))
         else:
             content = {"book": "Invalid version", "chapter": "",
                        "verses": {"": ["Please clear your cookies and try again"]}}
@@ -136,6 +135,7 @@ def create_app():
         """
         book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
         chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
+        # Invalid passage protection
         if not esv_obj.has_passage(book_sel, int(chapter_sel)):
             return redirect(url_for("404.html"))
 
