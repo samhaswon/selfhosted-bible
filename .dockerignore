@@ -1,4 +1,5 @@
 __pycache__/
+bibles/__pycache__
 *.pyc
 dist/
 build/
