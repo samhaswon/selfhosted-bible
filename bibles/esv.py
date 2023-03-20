@@ -139,15 +139,14 @@ class ESV(Bible):
                     is_not_end = True
                     break
             # Add lines
-            # if search(r'^\s{4}[A-Z].*', line) and search(r'.*[a-zA-Z]\n$', line):
-            if search(r"^\s{4}[A-Z][a-zA-Z’\s]+$", line):
+            if search(r"^\s{4}[A-Z][a-zA-Z’\s]+\n\n$", line):
                 heading = sub(r"^\s+", "", sub(r"\s+$", "", line))
             elif line[0:1].isspace() and is_not_end:
                 if heading in parsed.keys():
                     parsed[heading] = parsed[heading] + line + '\n'
                 else:
                     parsed.update({heading: line + '\n'})
-            elif len(line):
+            elif len(line) and is_not_end:
                 heading = sub(r"^\s+", "", sub(r"\s+$", "", line))
 
         return parsed
