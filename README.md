@@ -4,7 +4,6 @@ A self-hosted webapp of various Bible versions including the KJV, ESV, and ASV.
 # Instructions
 
 ## Generating an API key for authorized ESV access:
-The ESV API may be used unauthorized, but it is recommended to use it authorized to avoid issues. <br><br>
 To start, make an account at [esv.org](https://www.esv.org/). After creating an account at [esv.org](https://www.esv.org/), create an API key at [https://api.esv.org/account/create-application/](https://api.esv.org/account/create-application/). Then place the key in [esv-api-key.txt](esv-api-key.txt) in place of "<key-goes-here>" for local installation or save the key for later if running in Docker.
 
 ## Running the application
@@ -44,10 +43,6 @@ docker build -t self-hosted-bible .
 #### Run the container (detached)
 ```sh
 docker run -dp 5000:5000 --restart=always --name self-hosted-bible -e API_KEY=<key-goes-here> self-hosted-bible
-```
-#### Run the container (detached) without ESV authorization
-```sh
-docker run -dp 5000:5000 --restart=always --name self-hosted-bible self-hosted-bible
 ```
 </details>
 
