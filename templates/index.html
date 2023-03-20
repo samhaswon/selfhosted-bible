@@ -17,10 +17,10 @@
         {{ wtf.form_field(form.submit_book) }}
         <br>
         {{ wtf.form_field(form.select_chapter) }}
+        {{ wtf.form_field(form.submit_chapter) }}
         {% if error_mess %}
             {{ error_mess }}
         {% endif %}
-        {{ wtf.form_field(form.submit_chapter) }}
     </form>
     </div>
 {% endblock %}
