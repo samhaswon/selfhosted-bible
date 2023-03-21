@@ -17,7 +17,7 @@ def create_app():
     app.config['SECRET_KEY'] = 'b^lC08A7d@z3'
     bootstrap = Bootstrap(app)
 
-    # Read the ESV API key or fallback to default of "unauthed"
+    # Read the ESV API key
     try:
         with open("esv-api-key.txt", "r") as key_in:
             key = key_in.read()
@@ -29,7 +29,6 @@ def create_app():
         try:
             api_key = sys.argv[1]
         except IndexError:
-            # Default key for unauthorized requests
             api_key = "unauthed"
 
     esv_obj = ESV() if not len(api_key) else ESV((True, api_key))
@@ -96,9 +95,6 @@ def create_app():
         """
         book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
         chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
-        # Invalid passage protection
-        # if not esv_obj.has_passage(book_sel, int(chapter_sel)):
-            # return redirect(url_for("404.html"))
 
         form = NavigateRel()
 
@@ -121,8 +117,8 @@ def create_app():
             content = {"book": "Invalid version", "chapter": "",
                        "verses": {"": ["Please clear your cookies and try again"]}}
 
-        html = render_template('chapter.html', title='Reading', formtitle='ESV Web', debug=debug,
-                               form=form, content=content, version=version_sel)
+        html = render_template('chapter.html', title='Reading', formtitle='ESV Web', debug=debug, form=form,
+                               content=content, version=version_sel)
         return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', html)
 
     @app.route('/chapter_split', methods=['GET', 'POST'])
@@ -134,9 +130,6 @@ def create_app():
         """
         book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
         chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
-        # Invalid passage protection
-        # if not esv_obj.has_passage(book_sel, int(chapter_sel)):
-            # return redirect(url_for("404.html"))
 
         form = NavigateRel()
 
@@ -162,8 +155,7 @@ def create_app():
                 content.append(["Invalid version", "Please clear your cookies and try again"])
         content = list(zip(*content))
         html = render_template('chapter_split.html', title=book_sel + " " + chapter_sel, formtitle='ESV Web',
-                               debug=debug, form=form, content=content,
-                               version=''.join(v + ' ' for v in version_sel))
+                               debug=debug, form=form, content=content, version=''.join(v + ' ' for v in version_sel))
         return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', html)
 
     @app.route('/copyright', methods=['GET'])
@@ -173,7 +165,7 @@ def create_app():
         Copyright notice page
         :return: Copyright notice
         """
-        return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', render_template("copyright.html", debug=debug, ))
+        return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', render_template("copyright.html", debug=debug))
 
     @app.errorhandler(500)
     def server_error(e):
