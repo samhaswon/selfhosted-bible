@@ -1,5 +1,4 @@
 from bibles.passage import PassageInvalid, PassageNotFound
-from bibles.book import Book
 from typing import List
 from bibles.bible import Bible
 from datetime import timedelta
