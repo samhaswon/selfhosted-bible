@@ -30,7 +30,7 @@ class ESV(Bible):
         :return: dictionary of the chapter
         :raises: PassageInvalid for invalid passages
         """
-        if Book(book, chapter) in super().books:
+        if super().has_passage(book, chapter):
             return self.__get_chapter_esv_json(book + " " + str(chapter))
         else:
             raise PassageInvalid(book + " " + str(chapter))
@@ -162,5 +162,5 @@ class ESV(Bible):
 
     @staticmethod
     def __split_verses(verses_in: str) -> List[str]:
-        pre = resplit('\[', sub(']', "", verses_in))
+        pre = resplit(r'\[', sub(']', "", verses_in))
         return list(filter(None, [sub(r"\s+$", "", verse) for verse in pre]))

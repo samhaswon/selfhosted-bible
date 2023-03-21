@@ -3,6 +3,7 @@
 from bibles.asv import ASV
 from bibles.esv import ESV
 from bibles.kjv import KJV
+from bibles.passage import PassageInvalid, PassageNotFound
 from navigate import Navigate, NavigateRel, NavigateVersion
 from flask import Flask, render_template, session, url_for, redirect
 from flask_bootstrap import Bootstrap
@@ -96,8 +97,8 @@ def create_app():
         book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
         chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
         # Invalid passage protection
-        if not esv_obj.has_passage(book_sel, int(chapter_sel)):
-            return redirect(url_for("404.html"))
+        # if not esv_obj.has_passage(book_sel, int(chapter_sel)):
+            # return redirect(url_for("404.html"))
 
         form = NavigateRel()
 
@@ -112,7 +113,10 @@ def create_app():
         version_sel = session.get('select_version')['select_version'][0] if session.get('select_version') else 'ESV'
 
         if version_sel in bibles.keys():
-            content = bibles[version_sel].get_passage(book_sel, int(chapter_sel))
+            try:
+                content = bibles[version_sel].get_passage(book_sel, int(chapter_sel))
+            except PassageInvalid:
+                return redirect(url_for("404.html"))
         else:
             content = {"book": "Invalid version", "chapter": "",
                        "verses": {"": ["Please clear your cookies and try again"]}}
@@ -131,8 +135,8 @@ def create_app():
         book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
         chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
         # Invalid passage protection
-        if not esv_obj.has_passage(book_sel, int(chapter_sel)):
-            return redirect(url_for("404.html"))
+        # if not esv_obj.has_passage(book_sel, int(chapter_sel)):
+            # return redirect(url_for("404.html"))
 
         form = NavigateRel()
 
@@ -149,8 +153,11 @@ def create_app():
         content = []
         for version in version_sel:
             if version in bibles.keys():
-                tmp_content = bibles[version].get_passage(book_sel, int(chapter_sel))
-                content.append([verse for heading, verses in tmp_content.get('verses').items() for verse in verses])
+                try:
+                    tmp_content = bibles[version].get_passage(book_sel, int(chapter_sel))
+                    content.append([verse for heading, verses in tmp_content.get('verses').items() for verse in verses])
+                except PassageInvalid:
+                    return redirect(url_for("404.html"))
             else:
                 content.append(["Invalid version", "Please clear your cookies and try again"])
         content = list(zip(*content))
