@@ -17,18 +17,12 @@ Then, verify Python was installed by running `python3 --version` on Linux or `py
 For more detailed installation instructions, see [realpython.com](https://realpython.com/installing-python/).
 
 #### *Install requirements*
-```sh
+```shell
 pip3 install -r requirements.txt
 ```
-#### *Execute:*<br>
-*(Linux / Mac)*
-```sh
-python3 main.py
-```
-or<br>
-*Windows*
-```ps
-py main.py
+#### *Execute:*
+```shell
+waitress-serve --port=5000 --call "main:create_app"
 ```
 </details>
 
@@ -36,12 +30,12 @@ py main.py
     <summary>In Docker</summary>
 
 #### Building the container
-```sh
+```shell
 docker build -t self-hosted-bible .
 ``` 
 
 #### Run the container (detached)
-```sh
+```shell
 docker run -dp 5000:5000 --restart=always --name self-hosted-bible -e API_KEY=<key-goes-here> self-hosted-bible
 ```
 </details>
