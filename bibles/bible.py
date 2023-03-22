@@ -124,7 +124,7 @@ class Bible(ABC):
                 previous_key = key
 
     def has_passage(self, book_name: str, chapter: int) -> bool:
-        for book, chapters in self.__books_of_the_bible.items():
-            if book == book_name and 0 < chapter <= chapters:
-                return True
-        return False
+        try:
+            return 0 < chapter <= self.__books_of_the_bible[book_name]
+        except KeyError:
+            return False
