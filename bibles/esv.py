@@ -6,6 +6,7 @@ from requests import get
 import requests_cache
 from re import split as resplit
 from re import sub, search
+import json
 
 
 class ESV(Bible):
@@ -20,6 +21,13 @@ class ESV(Bible):
         self.__API_URL: str = 'https://api.esv.org/v3/passage/text/'
         # Caching
         requests_cache.install_cache('verses', expire_after=timedelta(days=777), stale_if_error=True)
+        try:
+            with open('bibles/json_bibles/esv.json', 'r') as cache_in:
+                self.__cache = json.load(cache_in)
+        except FileNotFoundError:
+            # Initialize empty cache
+            self.__cache = {book.title: {str(chapter): [] for chapter in range(1, book.chapter_count + 1)} for book in
+                            super().books}
 
     def get_passage(self, book: str, chapter: int):
         """
@@ -30,7 +38,8 @@ class ESV(Bible):
         :raises: PassageInvalid for invalid passages
         """
         if super().has_passage(book, chapter):
-            return self.__get_chapter_esv_json(book + " " + str(chapter))
+            # return self.__get_chapter_esv_json(book + " " + str(chapter))
+            return self.__try_cache(book, chapter)
         else:
             raise PassageInvalid(book + " " + str(chapter))
 
@@ -163,3 +172,44 @@ class ESV(Bible):
     def __split_verses(verses_in: str) -> List[str]:
         pre = resplit(r'\[', sub(']', "", verses_in))
         return list(filter(None, [sub(r"\s+$", "", verse) for verse in pre]))
+
+    def __try_cache(self, book: str, chapter: int):
+        try:
+            if len(passage := self.__cache[book][str(chapter)]):
+                return {'book': book, 'chapter': chapter, 'verses': passage[0]['verses'],
+                        'footnotes': passage[0]['footnotes']}
+        finally:
+            return self.__api_return(book, chapter)
+
+    def __api_return(self, book: str, chapter: int):
+        passage = self.__get_chapter_esv_json(book + " " + str(chapter))
+
+        # Make sure the cache is within guidelines
+        verse_count = 0
+        for book_iter in self.__cache.keys():
+            for chapter_iter in self.__cache[book_iter].keys():
+                try:
+                    for heading in self.__cache[book_iter][chapter_iter][0]:
+                        verse_count += len(heading)
+                except IndexError:
+                    # Empty entry
+                    pass
+        if verse_count + len(passage['verses']) >= 500:
+            verse_count_to_remove = verse_count + len(passage['verses']) - 500
+            for book_iter in self.__cache.keys():
+                for chapter_iter in self.__cache[book_iter].keys():
+                    if size := len(self.__cache[book_iter][chapter_iter]):
+                        self.__cache[book_iter][chapter_iter] = [{}]
+                        verse_count_to_remove -= size
+                    if verse_count_to_remove <= 0:
+                        break
+
+            # Cache the passage and save
+            self.__cache[book][str(chapter)].append({'verses': passage['verses'],
+                                                     'footnotes': passage['footnotes']})
+            with open("bibles/json_bibles/esv.json", "w") as bible_save:
+                json.dump(self.__cache, bible_save)
+        else:
+            self.__cache[book][str(chapter)].append(
+                {'verses': passage['verses'], 'footnotes': passage['footnotes']})
+        return passage
