@@ -1,9 +1,7 @@
 from bibles.passage import PassageInvalid, PassageNotFound
 from typing import List
 from bibles.bible import Bible
-from datetime import timedelta
 from requests import get
-import requests_cache
 from re import split as resplit
 from re import sub, search
 import json
@@ -20,7 +18,6 @@ class ESV(Bible):
         self.__API_KEY = open("esv-api-key.txt", "r").read() if not key_in[0] else key_in[1]
         self.__API_URL: str = 'https://api.esv.org/v3/passage/text/'
         # Caching
-        requests_cache.install_cache('verses', expire_after=timedelta(days=777), stale_if_error=True)
         try:
             with open('bibles/json_bibles/esv.json', 'r') as cache_in:
                 self.__cache = json.load(cache_in)
@@ -38,7 +35,6 @@ class ESV(Bible):
         :raises: PassageInvalid for invalid passages
         """
         if super().has_passage(book, chapter):
-            # return self.__get_chapter_esv_json(book + " " + str(chapter))
             return self.__try_cache(book, chapter)
         else:
             raise PassageInvalid(book + " " + str(chapter))
