@@ -19,4 +19,3 @@ icon/
 bibles/json_bibles/esv.json
 .idea/
 static/styles_readable.css
-tests/speedtest.py
