@@ -85,6 +85,7 @@ class ESV(Bible):
         """
         # Check for 1 chapter books which the API returns (by name with 1) as only the first verse.
         single_chapter_check = chapter_in[0:chapter_in.rfind(' ')]
+
         if single_chapter_check in ["Obadiah", "Philemon", "2 John", "3 John", "Jude"]:
             if single_chapter_check == "Obadiah":
                 chapter_pre = self.__get_chapter_esv("Obadiah 1-21")
@@ -121,6 +122,7 @@ class ESV(Bible):
                         "verses": {heading: self.__split_verses(chapter_pre[1][heading]) for heading in
                                    chapter_pre[1].keys()},
                         "footnotes": chapter_pre[2]}
+
         chapter_pre = self.__get_chapter_esv(chapter_in)
         return {"book": chapter_pre[0][0:chapter_pre[0].rfind(' ')],
                 "chapter": chapter_pre[0][chapter_pre[0].rfind(' ') + 1:],
@@ -166,10 +168,21 @@ class ESV(Bible):
 
     @staticmethod
     def __split_verses(verses_in: str) -> List[str]:
+        """
+        Splits a given string of verses by the "[" and "]" parts of the verse marker
+        :param verses_in: string of combined verses
+        :return: list of verses as one entry per verse
+        """
         pre = resplit(r'\[', sub(']', "", verses_in))
         return list(filter(None, [sub(r"\s+$", "", verse) for verse in pre]))
 
     def __try_cache(self, book: str, chapter: int):
+        """
+        Tries to retrieve the verse from the cache before going to the API
+        :param book: Book to retrieve from
+        :param chapter: chapter of that book
+        :return: dictionary formatted by book, chapter, verses, and footnotes
+        """
         try:
             if len(self.__cache[book][str(chapter)]['verses']):
                 return {'book': book, 'chapter': chapter, 'verses': self.__cache[book][str(chapter)]['verses'],
@@ -178,6 +191,12 @@ class ESV(Bible):
             return self.__api_return(book, chapter)
 
     def __api_return(self, book: str, chapter: int):
+        """
+        Gets the given verse from the API, and clears the cache in accordance with the ESV API caching limits
+        :param book: Book to retrieve from
+        :param chapter: chapter of that book
+        :return: dictionary formatted by book, chapter, verses, and footnotes
+        """
         passage = self.__get_chapter_esv_json(book + " " + str(chapter))
 
         # Make sure the cache is within guidelines
@@ -190,16 +209,21 @@ class ESV(Bible):
                 except KeyError:
                     # Empty entry
                     pass
+
+        """ If the cache is outside the guidelines, then remove passages until it is. This also has the side benefit of
+            keeping the cache small. """
         if verse_count + len(passage['verses']) >= 500:
             verse_count_to_remove = verse_count + len(passage['verses']) - 500
             for book_iter in self.__cache.keys():
                 for chapter_iter in self.__cache[book_iter].keys():
+                    # Clear the entry iff it has data
                     try:
                         if size := len(self.__cache[book_iter][chapter_iter]['verses']):
                             self.__cache[book_iter][chapter_iter] = {}
                             verse_count_to_remove -= size
                     except KeyError:
                         pass
+                    # Break whenever enough has been cleared
                     if verse_count_to_remove <= 0:
                         break
 
