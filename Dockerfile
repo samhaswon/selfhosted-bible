@@ -31,15 +31,6 @@ RUN echo "***** Installing dependencies *****" && \
 # Setup app
 COPY --chmod=0755 . .
 
-# Installing app
-RUN echo "***** Installing app *****" && \
-    python3 setup.py bdist_wheel && \
-    pip install --no-cache-dir -e . && \
-    echo "***** Cleaning up *****" && \
-    pip uninstall setuptools -y && \
-    rm requirements.txt && \
-    rm -rf build/ dist/ self_hosted_bible.egg-info/
-
 EXPOSE 5000
 
 CMD [ "/usr/src/app/daemon.sh" ]
