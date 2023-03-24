@@ -1,8 +1,0 @@
-include flaskr/schema.sql
-graft self-hosted-bible/static
-graft self-hosted-bible/templates
-exclude api-key.txt
-recursive-exclude tests
-global-exclude *.pyc
-global-exclude *.png
-global-exclude *.svg
