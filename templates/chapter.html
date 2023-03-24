@@ -10,10 +10,11 @@
 
 {% block content %}
 <div class="container-fluid mw-100">
-    <h2>{{ content.get('book') }} {{ content.get('chapter') }}</h2><h6>©{{ version }}</h6>
+    <h2>{{ content.get('book') }} {{ content.get('chapter') }}</h2>
     <form method="post" role="form">
         {{ form.hidden_tag() }}{{ wtf.form_field(form.previous_button) }}{{ wtf.form_field(form.next_button) }}
 
+        <h6>© {{ version }}</h6>
         {% for heading, verses in content.get('verses').items() %}
             {% if heading != 'none'%}
                 <h4><em>{{heading}}</em></h4>

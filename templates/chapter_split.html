@@ -10,18 +10,25 @@
 
 {% block content %}
 <div class="container-fluid mw-100">
-    <h2>{{ title }}</h2><h6>©{{ version }}</h6>
+    <h2> {{ title }}</h2>
     <form method="post" role="form">
         {{ form.hidden_tag() }}{{ wtf.form_field(form.previous_button) }}{{ wtf.form_field(form.next_button) }}
-
+        <br><br>
         <table>
-            {% for verses in content %}
+            <tbody>
                 <tr>
-                    {% for verse in verses %}
-                        <td>{{verse}}</td>
-                    {% endfor %}
+                {% for v in version %}
+                    <th>© {{ v }} </th>
+                {% endfor %}
                 </tr>
-            {% endfor %}
+                {% for verses in content %}
+                <tr>
+                {% for verse in verses %}
+                    <td>{{verse}}</td>
+                {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
         <br><br>
 

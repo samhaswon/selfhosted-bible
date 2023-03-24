@@ -3,7 +3,7 @@
 from bibles.asv import ASV
 from bibles.esv import ESV
 from bibles.kjv import KJV
-from bibles.passage import PassageInvalid, PassageNotFound
+from bibles.passage import PassageInvalid
 from navigate import Navigate, NavigateRel, NavigateVersion
 from flask import Flask, render_template, session, url_for, redirect
 from flask_bootstrap import Bootstrap
@@ -155,7 +155,7 @@ def create_app():
                 content.append(["Invalid version", "Please clear your cookies and try again"])
         content = list(zip(*content))
         html = render_template('chapter_split.html', title=book_sel + " " + chapter_sel, formtitle='ESV Web',
-                               debug=debug, form=form, content=content, version=''.join(v + ' ' for v in version_sel))
+                               debug=debug, form=form, content=content, version=version_sel)
         return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', html)
 
     @app.route('/copyright', methods=['GET'])
