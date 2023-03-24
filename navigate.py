@@ -2,7 +2,7 @@ from wtforms import SubmitField, SelectField, SelectMultipleField
 from wtforms.validators import DataRequired, Optional
 from flask_wtf import FlaskForm
 from typing import List
-from bibles.esv import ESV
+from bibles.kjv import KJV
 
 
 class NonValidatingSelectField(SelectField):
@@ -20,7 +20,7 @@ class NonValidatingSelectField(SelectField):
 
 
 class Navigate(FlaskForm):
-    books = ESV().books
+    books = KJV().books
     choices: List[str] = [book.title for book in books]
 
     select_chapter = NonValidatingSelectField('Select chapter', choices=[], validators=[Optional()])
