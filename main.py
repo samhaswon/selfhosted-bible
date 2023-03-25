@@ -73,8 +73,8 @@ def create_app() -> Flask:
                     return redirect(url_for("404.html"))
             elif form.submit_chapter.data:
                 error_mess = "Please submit the book first"
-        html: str = render_template('index.html', title='Home', formtitle='ESV Web', debug=debug, form=form,
-                                    error_mess=error_mess, version_select=version_select)
+        html: str = render_template('index.html', title='Home', debug=debug, form=form, error_mess=error_mess,
+                                    version_select=version_select)
         return minify.sub('', html)
 
     @app.route('/chapter', methods=['GET', 'POST'])
@@ -109,8 +109,8 @@ def create_app() -> Flask:
             content = {"book": "Invalid version", "chapter": "",
                        "verses": {"": ["Please clear your cookies and try again"]}}
 
-        html = render_template('chapter.html', title='Reading', formtitle='ESV Web', debug=debug, form=form,
-                               content=content, version=version_sel)
+        html = render_template('chapter.html', title='Reading', debug=debug, form=form, content=content,
+                               version=version_sel)
         return minify.sub('', html)
 
     @app.route('/chapter_split', methods=['GET', 'POST'])
@@ -147,8 +147,8 @@ def create_app() -> Flask:
             else:
                 content.append(["Invalid version", "Please clear your cookies and try again"])
         content = list(zip(*content))
-        html = render_template('chapter_split.html', title=book_sel + " " + chapter_sel, formtitle='ESV Web',
-                               debug=debug, form=form, content=content, version=version_sel)
+        html = render_template('chapter_split.html', title=book_sel + " " + chapter_sel, debug=debug, form=form,
+                               content=content, version=version_sel)
         return minify.sub('', html)
 
     @app.route('/copyright', methods=['GET'])
