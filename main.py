@@ -17,6 +17,8 @@ def create_app():
     app.config['SECRET_KEY'] = 'b^lC08A7d@z3'
     bootstrap = Bootstrap(app)
 
+    minify = re.compile(r'<!--(.*?)-->|(\s{2,}\B)|\n')
+
     # Read the ESV API key
     try:
         with open("esv-api-key.txt", "r") as key_in:
@@ -84,7 +86,7 @@ def create_app():
                 error_mess = "Please submit the book first"
         html = render_template('index.html', title='Home', formtitle='ESV Web', select_book=type_sel, books=choices,
                                debug=debug, form=form, error_mess=error_mess, version_select=version_select)
-        return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', html)
+        return minify.sub('', html)
 
     @app.route('/chapter', methods=['GET', 'POST'])
     @app.route('/chapter.html', methods=['GET', 'POST'])
@@ -119,7 +121,7 @@ def create_app():
 
         html = render_template('chapter.html', title='Reading', formtitle='ESV Web', debug=debug, form=form,
                                content=content, version=version_sel)
-        return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', html)
+        return minify.sub('', html)
 
     @app.route('/chapter_split', methods=['GET', 'POST'])
     @app.route('/chapter_split.html', methods=['GET', 'POST'])
@@ -156,7 +158,7 @@ def create_app():
         content = list(zip(*content))
         html = render_template('chapter_split.html', title=book_sel + " " + chapter_sel, formtitle='ESV Web',
                                debug=debug, form=form, content=content, version=version_sel)
-        return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', html)
+        return minify.sub('', html)
 
     @app.route('/copyright', methods=['GET'])
     @app.route('/copyright.html', methods=['GET'])
@@ -165,7 +167,7 @@ def create_app():
         Copyright notice page
         :return: Copyright notice
         """
-        return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', render_template("copyright.html", debug=debug))
+        return minify.sub('', render_template("copyright.html", debug=debug))
 
     @app.errorhandler(500)
     def server_error(e):
@@ -175,7 +177,7 @@ def create_app():
         :return: error 500 page
         """
         str(e)
-        return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', render_template("500.html")), 500
+        return minify.sub('', render_template("500.html")), 500
 
     @app.errorhandler(404)
     def not_found(e):
@@ -185,7 +187,7 @@ def create_app():
         :return: error 404 page
         """
         print(str(e))
-        return re.sub(r'<!--(.*?)-->|(\s{2,}\B)|\n', '', render_template("404.html")), 404
+        return minify.sub('', render_template("404.html")), 404
 
     @app.route('/health', methods=['GET'])
     def health():
