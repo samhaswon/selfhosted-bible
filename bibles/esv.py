@@ -35,7 +35,13 @@ class ESV(Bible):
         :raises: PassageInvalid for invalid passages
         """
         if super().has_passage(book, chapter):
-            return self.__try_cache(book, chapter)
+            try:
+                # Try to use the cache to retrieve the verse
+                if len(self.__cache[book][str(chapter)]['verses']):
+                    return {'book': book, 'chapter': chapter, 'verses': self.__cache[book][str(chapter)]['verses'],
+                            'footnotes': self.__cache[book][str(chapter)]['footnotes']}
+            except KeyError:
+                return self.__api_return(book, chapter)
         else:
             raise PassageInvalid(book + " " + str(chapter))
 
@@ -175,21 +181,6 @@ class ESV(Bible):
         """
         pre = resplit(r'\[', sub(']', "", verses_in))
         return list(filter(None, [sub(r"\s+$", "", verse) for verse in pre]))
-
-    def __try_cache(self, book: str, chapter: int) -> dict:
-        """
-        Tries to retrieve the verse from the cache before going to the API
-        :param book: Book to retrieve from
-        :param chapter: chapter of that book
-        :return: dictionary formatted by book, chapter, verses, and footnotes
-        """
-        try:
-            # Try to use the cache to retrieve the verse
-            if len(self.__cache[book][str(chapter)]['verses']):
-                return {'book': book, 'chapter': chapter, 'verses': self.__cache[book][str(chapter)]['verses'],
-                        'footnotes': self.__cache[book][str(chapter)]['footnotes']}
-        except KeyError:
-            return self.__api_return(book, chapter)
 
     def __api_return(self, book: str, chapter: int) -> dict:
         """
