@@ -2,7 +2,6 @@ from wtforms import SubmitField, SelectField, SelectMultipleField
 from wtforms.validators import DataRequired, Optional
 from flask_wtf import FlaskForm
 from typing import List
-from bibles.kjv import KJV
 
 
 class NonValidatingSelectField(SelectField):
@@ -20,8 +19,15 @@ class NonValidatingSelectField(SelectField):
 
 
 class Navigate(FlaskForm):
-    books = KJV().books
-    choices: List[str] = [book.name for book in books]
+    choices: List[str] = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy', 'Joshua', 'Judges', 'Ruth',
+                          '1 Samuel', '2 Samuel', '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles', 'Ezra',
+                          'Nehemiah', 'Esther', 'Job', 'Psalms', 'Proverbs', 'Ecclesiastes', 'Song of Solomon',
+                          'Isaiah', 'Jeremiah', 'Lamentations', 'Ezekiel', 'Daniel', 'Hosea', 'Joel', 'Amos', 'Obadiah',
+                          'Jonah', 'Micah', 'Nahum', 'Habakkuk', 'Zephaniah', 'Haggai', 'Zechariah', 'Malachi',
+                          'Matthew', 'Mark', 'Luke', 'John', 'Acts', 'Romans', '1 Corinthians', '2 Corinthians',
+                          'Galatians', 'Ephesians', 'Philippians', 'Colossians', '1 Thessalonians', '2 Thessalonians',
+                          '1 Timothy', '2 Timothy', 'Titus', 'Philemon', 'Hebrews', 'James', '1 Peter', '2 Peter',
+                          '1 John', '2 John', '3 John', 'Jude', 'Revelation']
 
     select_chapter: SelectField = NonValidatingSelectField('Select chapter', choices=[], validators=[Optional()])
     select_book: SelectField = SelectField('Select book', choices=choices, coerce=str, validators=[DataRequired()])
