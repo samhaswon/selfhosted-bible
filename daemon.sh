@@ -4,7 +4,7 @@ if [ -n "$API_KEY" ]
 then
   echo -n "$API_KEY" > '/usr/src/app/esv-api-key.txt'
 else
-  echo -n "unauthed" > '/usr/src/app/esv-api-key.txt'
+  echo -n "" > '/usr/src/app/esv-api-key.txt'
 fi
 
 set -e
