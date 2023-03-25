@@ -2,7 +2,7 @@ class Book(object):
     """
     Defines a book of the Bible. Used for safety constraints
     """
-    def __init__(self, title: str, chapter_count: int):
+    def __init__(self, title: str, chapter_count: int) -> None:
         self.__name: str = title
         self.__chapter_count: int = chapter_count
 
