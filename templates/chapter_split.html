@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% import "form_make.html" as wtf %}
 
-{% block title %} Reading {% endblock %}
+{% block title %}{{ title }}{% endblock %}
 {% block content %}
 <div class="container-fluid mw-100">
     <h2> {{ title }}</h2>
@@ -18,7 +18,7 @@
                 {% for verses in content %}
                 <tr>
                 {% for verse in verses %}
-                    <td>{{verse}}</td>
+                    <td>{{ verse }}</td>
                 {% endfor %}
                 </tr>
                 {% endfor %}

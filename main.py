@@ -109,7 +109,7 @@ def create_app() -> Flask:
             content = {"book": "Invalid version", "chapter": "",
                        "verses": {"": ["Please clear your cookies and try again"]}}
 
-        html = render_template('chapter.html', title='Reading', debug=debug, form=form, content=content,
+        html = render_template('chapter.html', title=book_sel + " " + chapter_sel, debug=debug, form=form, content=content,
                                version=version_sel)
         return minify.sub('', html)
 
