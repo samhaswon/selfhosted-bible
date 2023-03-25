@@ -6,7 +6,6 @@ from bibles.kjv import KJV
 from bibles.passage import PassageInvalid
 from navigate import Navigate, NavigateRel, NavigateVersion
 from flask import Flask, render_template, session, url_for, redirect, Response
-from flask_bootstrap import Bootstrap
 from typing import List, Tuple, Union
 import sys
 import re
@@ -15,7 +14,6 @@ import re
 def create_app() -> Flask:
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'b^lC08A7d@z3'
-    Bootstrap(app)
 
     minify = re.compile(r'<!--(.*?)-->|(\s{2,}\B)|\n')
 

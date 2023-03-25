@@ -1,0 +1,17 @@
+{% macro _hz_form_wrap(horizontal_columns, form_type, add_group=False, required=False) %}
+  {{caller()}}
+{% endmacro %}
+
+{% macro form_field(field, form_type="basic", horizontal_columns=('lg', 2, 10), button_map={}) %}
+    {%- if field.type == 'SubmitField' -%}
+      {% call _hz_form_wrap(horizontal_columns, form_type, True, required=required) %}
+        {{field(class='btn btn-default')}}
+      {% endcall %}
+    {% else -%}
+      <div class="form-group {%- if field.flags.required %} required{% endif -%}">
+            {{field.label(class="control-label")}}
+            {{field(class="form-control", **kwargs)}}
+      </div>
+    {% endif %}
+{% endmacro %}
+

@@ -1,8 +1,7 @@
 {% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
+{% import "form_make.html" as wtf %}
 
 {% block title %}{{ Reading }}{% endblock %}
-
 {% block content %}
 <div class="container-fluid mw-100">
     <h2> {{ title }}</h2>
@@ -27,6 +26,7 @@
         </table>
         <br><br>
         {{ form.hidden_tag() }}{{ wtf.form_field(form.previous_button) }}{{ wtf.form_field(form.next_button) }}
+        <br><br>
     </form>
 </div>
 {% endblock %}
