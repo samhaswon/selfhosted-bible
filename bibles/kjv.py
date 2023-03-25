@@ -4,7 +4,7 @@ import json
 
 
 class KJV(JSONBible):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.__kjv = self.read_file()
 
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     """
     Only used for conversion of source text from @bibleapi on github: https://github.com/bibleapi/bibleapi-bibles-json
     """
-    bible = {book.title: {chapter: [] for chapter in range(1, book.chapter_count + 1)} for book in KJV().books}
+    bible = {book.name: {chapter: [] for chapter in range(1, book.chapter_count + 1)} for book in KJV().books}
     with open("json_bibles/kjv.json", "r") as data_file_c:
         verses = data_file_c.readlines()
         temp_json = [json.loads(verse) for verse in verses]

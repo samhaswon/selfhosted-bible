@@ -10,7 +10,7 @@ class Bible(ABC):
     Abstract class for future implementation of other versions
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         books_of_the_bible: List[Tuple[str, int]] = [("Genesis", 50),
                                                      ("Exodus", 40),
                                                      ("Leviticus", 27),
@@ -89,7 +89,7 @@ class Bible(ABC):
         return self.__books_of_the_bible
 
     @abstractmethod
-    def get_passage(self, book, chapter):
+    def get_passage(self, book, chapter) -> dict:
         raise NotImplementedError
 
     @dispatch(str, str)

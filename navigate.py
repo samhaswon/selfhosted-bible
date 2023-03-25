@@ -21,12 +21,12 @@ class NonValidatingSelectField(SelectField):
 
 class Navigate(FlaskForm):
     books = KJV().books
-    choices: List[str] = [book.title for book in books]
+    choices: List[str] = [book.name for book in books]
 
-    select_chapter = NonValidatingSelectField('Select chapter', choices=[], validators=[Optional()])
-    select_book = SelectField('Select book', choices=choices, coerce=str, validators=[DataRequired()])
-    submit_book = SubmitField('Submit book')
-    submit_chapter = SubmitField('Submit chapter')
+    select_chapter: SelectField = NonValidatingSelectField('Select chapter', choices=[], validators=[Optional()])
+    select_book: SelectField = SelectField('Select book', choices=choices, coerce=str, validators=[DataRequired()])
+    submit_book: SelectField = SubmitField('Submit book')
+    submit_chapter: SelectField = SubmitField('Submit chapter')
 
     def __init__(self, choices: list, *args, **kwargs):
         super(Navigate, self).__init__(*args, **kwargs)
@@ -37,13 +37,13 @@ class NavigateRel(FlaskForm):
     """
     Two basic submit fields for chapter navigation
     """
-    next_button = SubmitField("Next")
-    previous_button = SubmitField("Previous")
+    next_button: SubmitField = SubmitField("Next")
+    previous_button: SubmitField = SubmitField("Previous")
 
 
 class NavigateVersion(FlaskForm):
     """
     Field for selecting Bible version
     """
-    select_version = SelectMultipleField('Select version', choices=['ASV', 'ESV', 'KJV'],
-                                         coerce=str, validators=[DataRequired()], default=['ESV'])
+    select_version: SelectField = SelectMultipleField('Select version', choices=['ASV', 'ESV', 'KJV'],
+                                                      coerce=str, validators=[DataRequired()], default=['ESV'])

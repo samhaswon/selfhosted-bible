@@ -3,10 +3,10 @@ from bibles.bible import Bible
 
 
 class BibleTest(Bible):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
-    def get_passage(self, book, chapter):
+    def get_passage(self, book, chapter) -> None:
         pass
 
 

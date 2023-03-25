@@ -23,7 +23,7 @@ class ESV(Bible):
                 self.__cache: dict = json.load(cache_in)
         except FileNotFoundError:
             # Initialize empty cache
-            self.__cache: dict = {book.title: {str(chapter): {} for chapter in range(1, book.chapter_count + 1)} for
+            self.__cache: dict = {book.name: {str(chapter): {} for chapter in range(1, book.chapter_count + 1)} for
                                   book in super().books}
 
     def get_passage(self, book: str, chapter: int) -> dict:
