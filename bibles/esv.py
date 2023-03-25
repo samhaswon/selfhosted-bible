@@ -8,7 +8,7 @@ import json
 
 
 class ESV(Bible):
-    def __init__(self, key_in=(False, "")):
+    def __init__(self, key_in=(False, "")) -> None:
         """
         Gets a JSON formatted dictionary of an ESV passage
         :param key_in: (True, "API key"), with the default (False, "") being reading from the file api-key.txt
@@ -20,13 +20,13 @@ class ESV(Bible):
         # Caching
         try:
             with open('bibles/json_bibles/esv.json', 'r') as cache_in:
-                self.__cache = json.load(cache_in)
+                self.__cache: dict = json.load(cache_in)
         except FileNotFoundError:
             # Initialize empty cache
-            self.__cache = {book.title: {str(chapter): {} for chapter in range(1, book.chapter_count + 1)} for book in
-                            super().books}
+            self.__cache: dict = {book.title: {str(chapter): {} for chapter in range(1, book.chapter_count + 1)} for
+                                  book in super().books}
 
-    def get_passage(self, book: str, chapter: int):
+    def get_passage(self, book: str, chapter: int) -> dict:
         """
         Gets a book of the ESV
         :param book: Name of the book to get from
@@ -55,16 +55,16 @@ class ESV(Bible):
             'include-passage-references': False
         }
 
-        headers = {'Authorization': 'Token %s' % self.__API_KEY}
+        headers: dict = {'Authorization': 'Token %s' % self.__API_KEY}
 
-        response = get(self.__API_URL, params=params, headers=headers).json()
+        response: dict = get(self.__API_URL, params=params, headers=headers).json()
 
         try:
-            loc_footnotes = str(response['passages']).find('Footnotes')
-            footnotes = self.__parse_footnotes(str(response['passages'])[loc_footnotes:-2]) if \
+            loc_footnotes: int = str(response['passages']).find('Footnotes')
+            footnotes: str = self.__parse_footnotes(str(response['passages'])[loc_footnotes:-2]) if \
                 loc_footnotes != -1 else ""
 
-            passage = response['canonical'], self.__parse_headings(
+            passage: tuple = response['canonical'], self.__parse_headings(
                 ''.join(str(x) for x in response['passages'])), footnotes
 
         except KeyError:
@@ -76,7 +76,7 @@ class ESV(Bible):
         else:
             raise PassageNotFound
 
-    def __get_chapter_esv_json(self, chapter_in: str):
+    def __get_chapter_esv_json(self, chapter_in: str) -> dict:
         """
         Returns a dictionary (Format: {book: "", chapter: 0, verses: {'heading': ["1 content..."]}, footnotes: ""})
         for JSON-ish usage for MongoDB or a similar database
@@ -84,7 +84,7 @@ class ESV(Bible):
         :return: Dictionary of the chapter
         """
         # Check for 1 chapter books which the API returns (by name with 1) as only the first verse.
-        single_chapter_check = chapter_in[0:chapter_in.rfind(' ')]
+        single_chapter_check: str = chapter_in[0:chapter_in.rfind(' ')]
 
         if single_chapter_check in ["Obadiah", "Philemon", "2 John", "3 John", "Jude"]:
             if single_chapter_check == "Obadiah":
@@ -137,7 +137,7 @@ class ESV(Bible):
         :return: parsed passage. Inserts "none" for sections without a heading
         """
         parsed: dict = {}
-        heading = "none"
+        heading: str = "none"
         for line in passage.splitlines():
             is_not_end: bool = False
             for char in line:
@@ -169,14 +169,14 @@ class ESV(Bible):
     @staticmethod
     def __split_verses(verses_in: str) -> List[str]:
         """
-        Splits a given string of verses by the "[" and "]" parts of the verse marker
+        Splits a given string of verses by the "[]" parts of the verse marker
         :param verses_in: string of combined verses
         :return: list of verses as one entry per verse
         """
         pre = resplit(r'\[', sub(']', "", verses_in))
         return list(filter(None, [sub(r"\s+$", "", verse) for verse in pre]))
 
-    def __try_cache(self, book: str, chapter: int):
+    def __try_cache(self, book: str, chapter: int) -> dict:
         """
         Tries to retrieve the verse from the cache before going to the API
         :param book: Book to retrieve from
@@ -184,13 +184,14 @@ class ESV(Bible):
         :return: dictionary formatted by book, chapter, verses, and footnotes
         """
         try:
+            # Try to use the cache to retrieve the verse
             if len(self.__cache[book][str(chapter)]['verses']):
                 return {'book': book, 'chapter': chapter, 'verses': self.__cache[book][str(chapter)]['verses'],
                         'footnotes': self.__cache[book][str(chapter)]['footnotes']}
         except KeyError:
             return self.__api_return(book, chapter)
 
-    def __api_return(self, book: str, chapter: int):
+    def __api_return(self, book: str, chapter: int) -> dict:
         """
         Gets the given verse from the API, and clears the cache in accordance with the ESV API caching limits
         :param book: Book to retrieve from
@@ -213,7 +214,7 @@ class ESV(Bible):
         """ If the cache is outside the guidelines, then remove passages until it is. This also has the side benefit of
             keeping the cache small. """
         if verse_count + len(passage['verses']) >= 500:
-            verse_count_to_remove = verse_count + len(passage['verses']) - 500
+            verse_count_to_remove: int = verse_count + len(passage['verses']) - 500
             for book_iter in self.__cache.keys():
                 for chapter_iter in self.__cache[book_iter].keys():
                     # Clear the entry iff it has data
