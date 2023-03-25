@@ -2,11 +2,6 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}{{ Reading }}{% endblock %}
-{% block styles %}
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-
-{% endblock %}
 
 {% block content %}
 <div class="container-fluid mw-100">
@@ -31,7 +26,6 @@
             </tbody>
         </table>
         <br><br>
-
         {{ form.hidden_tag() }}{{ wtf.form_field(form.previous_button) }}{{ wtf.form_field(form.next_button) }}
     </form>
 </div>
