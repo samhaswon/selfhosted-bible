@@ -4,7 +4,6 @@ from bibles.asv import ASV
 from bibles.esv import ESV
 from bibles.kjv import KJV
 from bibles.passage import PassageInvalid
-from bibles.book import Book
 from navigate import Navigate, NavigateRel, NavigateVersion
 from flask import Flask, render_template, session, url_for, redirect, Response
 from flask_bootstrap import Bootstrap
@@ -41,8 +40,6 @@ def create_app() -> Flask:
 
     bibles = {'ASV': asv_obj, 'ESV': esv_obj, 'KJV': kjv_obj}
 
-    books: List[Book] = esv_obj.books
-
     debug = False
 
     @app.route('/', methods=['GET', 'POST'])
@@ -52,41 +49,34 @@ def create_app() -> Flask:
         Main page for selecting version(s) and passage
         :return: Main menu page
         """
-        choices: List[str] = [book.name for book in kjv_obj.books]
-        type_sel: str = 'Select book'
-
         error_mess = None
-        form = Navigate(choices=choices)
+        form = Navigate(choices=[""])
         version_select = NavigateVersion()
 
         if form.validate_on_submit():
-            book: str = form.select_book.data
-            versions: dict = version_select.data
-            session['select_version'] = versions
-            session['select_book'] = book
-            session['select_chapter'] = form.select_chapter.data
+            # book: str = form.select_book.data
+            # versions: dict = version_select.data
+            session['select_version'] = versions = version_select.data
+            session['select_book'] = book = form.select_book.data
+            session['select_chapter'] = chapter_dat = form.select_chapter.data
 
-            chapter_count = 1
-            for index in books:
-                if index.name == book:
-                    chapter_count = index.chapter_count
-                    break
+            chapter_count: int = esv_obj.chapter_count(book)
 
             chapters: List[int] = [x for x in range(1, chapter_count + 1)]
             form = Navigate(choices=chapters)
-            if (session['select_chapter'] and form.submit_chapter.data and
-                esv_obj.has_passage(session['select_book'], int(session['select_chapter']))) and \
-                    len(versions['select_version']) == 1:
-                return redirect(url_for('chapter'))
-            elif (session['select_chapter'] and form.submit_chapter.data and
-                  esv_obj.has_passage(session['select_book'], int(session['select_chapter']))) and \
-                    len(versions['select_version']) > 1:
-                return redirect(url_for('chapter_split'))
+
+            if chapter_dat and form.submit_chapter.data and \
+                    esv_obj.has_passage(book, int(chapter_dat)):
+                if len(versions['select_version']) == 1:
+                    return redirect(url_for('chapter'))
+                elif len(versions['select_version']) > 1:
+                    return redirect(url_for('chapter_split'))
+                else:
+                    return redirect(url_for("404.html"))
             elif form.submit_chapter.data:
                 error_mess = "Please submit the book first"
-        html: str = render_template('index.html', title='Home', formtitle='ESV Web', select_book=type_sel,
-                                    books=choices, debug=debug, form=form, error_mess=error_mess,
-                                    version_select=version_select)
+        html: str = render_template('index.html', title='Home', formtitle='ESV Web', debug=debug, form=form,
+                                    error_mess=error_mess, version_select=version_select)
         return minify.sub('', html)
 
     @app.route('/chapter', methods=['GET', 'POST'])
