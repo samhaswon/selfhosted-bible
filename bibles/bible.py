@@ -124,7 +124,24 @@ class Bible(ABC):
                 previous_key = key
 
     def has_passage(self, book_name: str, chapter: int) -> bool:
+        """
+        Finds out if a passage is valid
+        :param book_name: Name of the book to try
+        :param chapter: Chapter of the book to try
+        :return: True if passage is valid, False if passage is invalid
+        """
         try:
             return 0 < chapter <= self.__books_of_the_bible[book_name]
         except KeyError:
             return False
+
+    def chapter_count(self, book_name: str) -> int:
+        """
+        Gets the chapter count of a given book
+        :param book_name: Name of the book to get the chapter of
+        :return: Number of chapters in the book or 0 if invalid
+        """
+        try:
+            return self.__books_of_the_bible[book_name]
+        except KeyError:
+            return 0
