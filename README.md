@@ -1,5 +1,12 @@
-# Self-hosted Bible
+# [Self-hosted Bible](https://github.com/samhaswon/selfhosted-bible)
 A self-hosted webapp of various Bible versions including the KJV, ESV, and ASV.
+
+## Supported Architectures
+| Architecture | Available | Tag    |
+|:------------:|:---------:|--------|
+|    x86-64    |     ✅     | latest |
+|   arm64v8    |     ✅     | latest |
+|   arm32v7    |     ✅     | latest |
 
 # Instructions
 
@@ -29,12 +36,17 @@ waitress-serve --port=5000 --call "main:create_app"
 <details>
     <summary>In Docker</summary>
 
-#### Building the container
+With docker, you have 2 options. You can either build the container yourself or pull it from [docker hub](https://hub.docker.com/r/samhaswon/self-hosted-bible)
+#### Build the container
 ```shell
 docker build -t self-hosted-bible .
 ``` 
+##### (or) Pull the container
+```shell
+docker pull samhaswon/self-hosted-bible:latest
+```
 
-#### Run the container (detached)
+##### Run the container (detached)
 ```shell
 docker run -dp 5000:5000 --restart=always --name self-hosted-bible -e ESV_API_KEY=<key-goes-here> self-hosted-bible
 ```
