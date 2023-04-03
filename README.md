@@ -36,7 +36,7 @@ docker build -t self-hosted-bible .
 
 #### Run the container (detached)
 ```shell
-docker run -dp 5000:5000 --restart=always --name self-hosted-bible -e API_KEY=<key-goes-here> self-hosted-bible
+docker run -dp 5000:5000 --restart=always --name self-hosted-bible -e ESV_API_KEY=<key-goes-here> self-hosted-bible
 ```
 </details>
 
