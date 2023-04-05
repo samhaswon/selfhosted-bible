@@ -8,6 +8,15 @@ A self-hosted webapp of various Bible versions including the KJV, ESV, and ASV.
 |   arm64v8    |     ✅     | latest |
 |   arm32v7    |     ✅     | latest |
 
+## Examples
+*Note: Screen shots taken in dark mode <br>
+### Home page
+![](pictures/home.jpg)
+### Single version reading
+![](pictures/single_version.jpg)
+### Split version reading
+![](pictures/split_version.jpg)
+
 # Instructions
 
 ## Generating an API key for authorized ESV access:
