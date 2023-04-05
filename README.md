@@ -56,8 +56,26 @@ docker pull samhaswon/self-hosted-bible:latest
 ```
 
 ##### Run the container (detached)
+Docker run
 ```shell
-docker run -dp 5000:5000 --restart=always --name self-hosted-bible -e ESV_API_KEY=<key-goes-here> self-hosted-bible
+docker run -dp 5000:5000 \
+       --restart=always \
+       --name self-hosted-bible \
+       -e ESV_API_KEY=<key-goes-here> \
+       self-hosted-bible
+```
+Docker compose
+```shell
+version: '3'
+services:
+  self-hosted-bible-server:
+    image: self-hosted-bible
+    container_name: self-hosted-bible
+    ports:
+      - "5000:5000"
+    restart: always
+    environment:
+      - ESV_API_KEY=<key-goes-here>
 ```
 </details>
 
