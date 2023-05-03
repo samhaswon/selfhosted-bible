@@ -1,7 +1,7 @@
 from bibles.passage import PassageInvalid, PassageNotFound
 from typing import List
 from bibles.bible import Bible
-from requests import get
+from requests import get, HTTPError
 from re import split as resplit
 from re import sub, search
 import json
@@ -63,9 +63,8 @@ class ESV(Bible):
 
         headers: dict = {'Authorization': 'Token %s' % self.__API_KEY}
 
-        response: dict = get(self.__API_URL, params=params, headers=headers).json()
-
         try:
+            response: dict = get(self.__API_URL, params=params, headers=headers).json()
             loc_footnotes: int = str(response['passages']).find('Footnotes')
             footnotes: str = self.__parse_footnotes(str(response['passages'])[loc_footnotes:-2]) if \
                 loc_footnotes != -1 else ""
@@ -76,6 +75,10 @@ class ESV(Bible):
         except KeyError:
             return "API Overloaded", \
                    {"try again later": "If this keeps happening, the app could be heavily throttled"}, ""
+        except HTTPError:
+            return "API down?", \
+                {"Issue connecting to the ESV API":
+                     "Try checking the status of the ESV API and the server's network connection"}, ""
 
         if passage:
             return passage
