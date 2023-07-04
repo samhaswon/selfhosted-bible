@@ -40,6 +40,11 @@ def create_app() -> Flask:
 
     debug = False
 
+    # Fix for session expiry
+    @app.before_request
+    def make_session_permanent():
+        session.permanent = True
+
     @app.route('/', methods=['GET', 'POST'])
     @app.route('/index.html', methods=['GET', 'POST'])
     def main_page() -> Union[str, Response]:
