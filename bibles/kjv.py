@@ -9,8 +9,13 @@ class KJV(JSONBible):
         self.__kjv = self.read_file()
 
     def read_file(self) -> dict:
-        with open("bibles/json_bibles/kjv.json", "r") as data_file:
-            return json.load(data_file)
+        try:
+            with open("bibles/json_bibles/kjv.json", "r") as data_file:
+                return json.load(data_file)
+            # For testing:
+        except FileNotFoundError:
+            with open("../bibles/json_bibles/kjv.json", "r") as data_file:
+                return json.load(data_file)
 
     def get_passage(self, book: str, chapter: int) -> dict:
         """
