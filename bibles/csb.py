@@ -1,6 +1,7 @@
 from bibles.passage import PassageInvalid, PassageNotFound
 from typing import Dict
 from bibles.bible import Bible
+import xml.etree.ElementTree as ElementTree
 from requests import get, HTTPError
 import requests_cache   # TODO: Remove
 import json
@@ -109,7 +110,7 @@ class CSB(Bible):
             except FileNotFoundError:
                 with open("../bibles/json_bibles/csb.json", "w") as bible_save:
                     json.dump(self.__cache, bible_save)
-        return {'book': book, 'chapter': chapter, 'verses': self.__cache[book][str(chapter)]['verses']}
+        return {'book': book, 'chapter': chapter, 'verses': self.__cache[book][str(chapter)]}
 
     def __get_book(self, book: str) -> None:
         """
@@ -146,226 +147,338 @@ class CSB(Bible):
 
     def __parse(self, xml_in: str) -> None:
         """
-        Splits then parses the given XML into the cache
+        Parses the given XML into the cache
         :param xml_in: Full XML document in string form
         :return: None
         """
-        book_name_position: int = xml_in.find("<bookname>") + 10
-        book_name_end: int = xml_in.find("</bookname>")
-        book_name: str = xml_in[book_name_position:book_name_end]
-        if book_name == "Song of Songs":
-            book_name = "Song of Solomon"
+        condense = re.compile(r'\s\s+|\n\s*')
+        root = ElementTree.fromstring(xml_in)
 
-        chapter_positions = []
-        i, j = book_name_end, 0
-        while i < len(xml_in):
-            i = xml_in.find("<chapter", i)
-            j = xml_in.find("</chapter>", i) + 10
-            if i != -1:
-                chapter_positions.append((i, j))
-                i = j
-            else:
-                break
+        result = {}
+        bookname = root.find('bookname').text if root.find('bookname').text != "Song of Songs" else "Song of Solomon"
+        result[bookname] = {}
 
-        for chapter_start, chapter_end in chapter_positions:
-            display_pos = xml_in.find("display=\"", chapter_start) + 9
-            chapter_num = xml_in[display_pos:xml_in.find("\"", display_pos)]
-            self.__cache[book_name][chapter_num]['verses'] = self.__parse_chapter(xml_in, chapter_start, chapter_end)
-
-    @staticmethod
-    def __parse_chapter(xml_in: str, chapter_start: int, chapter_end: int) -> dict:
-        """
-        Parses the chapter from the given range
-        :param xml_in: The full XML document
-        :param chapter_start: Start position of the chapter to parse
-        :param chapter_end: End position of the chapter to parse
-        :return: Parsed chapter in the form {heading: ["1...", "2...",...]}
-        """
-        # Regex's
-        condense = re.compile(r'\s\s+|\n')
-        head_tag_regex = re.compile(r'<head1>|</head1>')
-        ignore_sup_block_start_regex = re.compile(
-            r'^\s*<sup class=\"translate-note|^\s*<sup class=\"cross-ref\">|^\s*<sup class=\"alt-reading-note\"|'
-            r'^\s*<sup class=\"help-note\">|^\s*<sup class=\"clarifying-note\">|^\s*<sup class="ot-quote')
-        ignoring: bool = False
-        ignore_sup_block_end_regex = re.compile(r'\s+</sup>$|</a></sup>$|</sup></verse>$')
-        ignore_sup_block_end_content_regex = re.compile(r'\s+</sup>(\s|&)|</a></sup>')
-        ignore_tag_regex = re.compile(
-            r'<p type="noind">$|^\s*</p>$|<list|</list|\s+</item>$|<poetryblock|(?!</verse>)</poetryblock|\s+</poem>|'
-            r'<chapter|</chapter>|<dynprose>|</dynprose>|<blockindent>|</blockindent>|\s+<psalm>|<p>$|'
-            r'^\s*<redletter-end/>$|^\s*<otdynprose>$|^\s*</otdynprose>$|^\s*<redletter-start/>$|^\s+<item>$')
-        item_end_regex = re.compile(r'</item>')
-        fix_lord_regex = re.compile(r'<span.*class=\"smallcaps\">?.*Lord.*</span>')
-        lazy_tag_removal_regex = re.compile(
-            r'<item>|</p>|</sup>|<redletter-start/>|<redletter-end/>?|</sup|</sub>|</poemright>|</item>|'
-            r'<item type="noind">|</poem>|<poem|<.*>|</.*>')
-        ot_quote_regex = re.compile(r'<otquote>')
-        p_no_ind_regex = re.compile(r'<p type=\"noind\">')
-        poem_start_regex = re.compile(r'<poem.*>')
-        poem_end_regex = re.compile(r'</poem>')
-        poem_right_selah_regex = re.compile(r'<poemright>')
-        poem_verse_ref = re.compile(r'<sup class="verse-ref"')
-        rare_mixed_verse_ref_regex = re.compile(r'^[\w\s.]+<sup class=\"verse-ref\"')
-        rare_p_right_regex = re.compile(r'<p type="right">')
-        verse_start_tag_regex = re.compile(r'<verse')
-        verse_end_tag_regex = re.compile(r'^\s*</verse')
-        verse_content_end_tag_regex = re.compile(r'</verse>')
-        verse_inline_ref_regex = re.compile(r'<sup class=\"cross-ref\"|[;:.,a-zA-Z]<sup')
-        verse_verse_ref_regex = re.compile(r'</sup>')
-
-        heading: str = "none"
-        heading_end_search = False
-        verses: dict = {}
-        verse: str = ""
-        lines = xml_in[chapter_start:chapter_end].splitlines()
-        for line in lines:
-            if ignoring:
-                if ignore_sup_block_end_regex.search(line):
-                    ignoring = False
-                elif ignore_sup_block_end_content_regex.search(line):
-                    ignoring = False
-                    verse += line[line.find("</sup>") + 6:]
-                continue
-            elif ignore_tag_regex.search(line) or line == "":
-                continue
-            elif ignore_sup_block_start_regex.search(line):
-                ignoring = verse_verse_ref_regex.search(line) is None
-            elif head_tag_regex.search(line) or heading_end_search:
-                if re.search(r"\s+</head1>", line):
-                    heading_end_search = False
-                elif "</head1>" in line:
-                    heading = fix_lord_regex.sub('Lord', line[line.find("<head1>") + 7:line.find("</head1>")])
-                    verses[heading] = []
-                    heading_end_search = False
-                elif "<head1>" in line:
-                    heading = fix_lord_regex.sub('Lord', line[line.find("<head1>") + 7:])
-                    heading_end_search = True
-                else:
-                    heading += " " + fix_lord_regex.sub('Lord', condense.sub(' ', line))
-            elif rare_mixed_verse_ref_regex.search(line):
-                ref_start = line.find("<")
-                verse += " " + line[:ref_start]
-                verse = condense.sub(' ', lazy_tag_removal_regex.sub(' ', item_end_regex.sub(' ',
-                                                                                             fix_lord_regex.sub('Lord',
-                                                                                                                verse))))
-                if len(verse) <= 4:
-                    pass
-                elif heading in verses and len(verses[heading]):
-                    if verses[heading][-1][0:verses[heading][-1].find(" ")] == verse[0:verse.find(" ")]:
-                        verses[heading][-1] += " " + verse[verse.find(" ") + 1:]
-                    else:
-                        verses[heading].append(verse)
-                else:
-                    verses[heading] = [verse]
-                display_number_pos = line.find(".", line.find(".", ref_start) + 1) + 1
-                verse_number: str = line[display_number_pos:line.find("\"", display_number_pos)]
-                verse = f"{verse_number} "
-                ignoring = "</sup>" not in line and "<sup>" in line
-            elif poem_start_regex.search(line):
-                if poem_verse_ref.search(line):
-                    poem_start_position = line.find("</sup>") + 7
-                else:
-                    poem_start_position = line.find(">") + 1
-                if poem_end_regex.search(line):
-                    verse += " " + line[poem_start_position:line.find("</poem>", poem_start_position)]
-                elif verse_inline_ref_regex.search(line):
-                    verse += " " + line[poem_start_position:line.find("<sup", poem_start_position)]
-                    if not line.find("</sup>", poem_start_position) > -1:
-                        ignoring = True
-                else:
-                    verse += " " + line[poem_start_position:]
-            elif verse_start_tag_regex.search(line):
-                if len(verse):
-                    verse = condense.sub(' ', lazy_tag_removal_regex.sub(' ', item_end_regex.sub(' ',
-                                                                                                 fix_lord_regex.sub(
-                                                                                                     'Lord', verse))))
-                if len(verse) <= 1 or heading not in verses or len(verses[heading]) == 0:
-                    pass
-                elif int(verses[heading][-1][0:verses[heading][-1].find(" ")]) != int(verse[0:verse.find(" ")]) - 1 and \
-                        verses[heading][-1] != verse:
-                    verses[heading][-1] += " " + verse[verse.find(" ") + 1:]
-                if "display-number" in line:
-                    display_number_pos = line.find("display-number=\"") + 16
-                else:
-                    display_number_pos = line.find(".", line.find(".") + 1) + 1
-                verse_number: str = line[display_number_pos:line.find("\"", display_number_pos)]
-                verse = f"{verse_number} "
-                if verse_inline_ref_regex.search(line):
-                    verse += line[line.find("</sup>") + 7:line.rfind("<sup")]
-                    ignoring = line.rfind("</sup>") - line.find("</sup>") == 0
-                elif verse_content_end_tag_regex.search(line):
-                    verse += line[line.find("</sup>") + 7:line.find("</verse>")]
-                    verse = condense.sub(' ', lazy_tag_removal_regex.sub(' ', item_end_regex.sub(' ', fix_lord_regex.sub('Lord', verse))))
-                    if heading in verses and len(verses[heading]):
-                        if verses[heading][-1][0:verses[heading][-1].find(" ")] == verse[0:verse.find(" ")]:
-                            verses[heading][-1] += " " + verse[verse.find(" ") + 1:]
+        for chapter in root.findall('chapter'):
+            chapter_number = chapter.get('display')
+            result[bookname][chapter_number] = {}
+            chapter_dict = {}
+            current_heading = 'none'
+            for element in chapter:
+                if element.tag == 'head1' or element.tag == 'head2' or element.tag == 'supertitle':
+                    current_heading = condense.sub('', ''.join(element.itertext()))
+                    chapter_dict[current_heading] = []
+                elif element.tag == 'blockindent':
+                    if current_heading not in chapter_dict:
+                        chapter_dict[current_heading] = []
+                    for verse in element.findall('.//verse'):
+                        verse_number = verse.get('display-number')
+                        verse_text = ''.join(verse.itertext())
+                        verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
+                        if len(chapter_dict[current_heading]) > 0 and chapter_dict[current_heading][-1][
+                                                                      0:chapter_dict[current_heading][-1].find(
+                                                                              " ")] != verse_number:
+                            chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
+                        elif len(chapter_dict[current_heading]) > 0:
+                            chapter_dict[current_heading][-1] += verse_text
                         else:
-                            verses[heading].append(verse)
+                            chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
+                elif element.tag == 'listtenwords':
+                    if current_heading not in chapter_dict:
+                        chapter_dict[current_heading] = []
+                    for verse in element.findall('.//verse'):
+                        verse_number = verse.get('display-number')
+                        verse_text = ''.join(verse.itertext())
+                        verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
+                        if len(chapter_dict[current_heading]) > 0 and chapter_dict[current_heading][-1][
+                                                                      0:chapter_dict[current_heading][-1].find(
+                                                                              " ")] != verse_number:
+                            chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
+                        elif len(chapter_dict[current_heading]) > 0:
+                            chapter_dict[current_heading][-1] += verse_text
+                        else:
+                            chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
+                elif element.tag == 'p':
+                    if current_heading not in chapter_dict:
+                        chapter_dict[current_heading] = []
+                    for verse in element.findall('verse'):
+                        verse_number = verse.get('display-number')
+                        verse_text = ''.join(verse.itertext())
+                        verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
+                        if len(chapter_dict[current_heading]) > 0 and chapter_dict[current_heading][-1][
+                                                                      0:chapter_dict[current_heading][-1].find(
+                                                                              " ")] != verse_number:
+                            chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
+                        elif len(chapter_dict[current_heading]) > 0:
+                            chapter_dict[current_heading][-1] += verse_text
+                        else:
+                            chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
+                elif element.tag == 'poetryblock':
+                    if current_heading not in chapter_dict:
+                        chapter_dict[current_heading] = []
+                    for verse in element.findall('verse'):
+                        verse_number = verse.get('display-number')
+                        verse_text = ''.join(verse.itertext())
+                        verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
+                        if len(chapter_dict[current_heading]) > 0 and chapter_dict[current_heading][-1][
+                                                                      0:chapter_dict[current_heading][-1].find(
+                                                                              " ")] != verse_number:
+                            chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
+                        elif len(chapter_dict[current_heading]) > 0:
+                            chapter_dict[current_heading][-1] += verse_text
+                        else:
+                            chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
+                elif element.tag == 'dynprose' or element.tag == 'otdynprose':
+                    if current_heading not in chapter_dict:
+                        chapter_dict[current_heading] = []
+                    for verse in element.findall('.//verse'):
+                        verse_number = verse.get('display-number')
+                        verse_text = ''.join(verse.itertext())
+                        verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
+                        if len(chapter_dict[current_heading]) > 0 and chapter_dict[current_heading][-1][
+                                                                      0:chapter_dict[current_heading][-1].find(
+                                                                              " ")] != verse_number:
+                            chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
+                        elif len(chapter_dict[current_heading]) > 0:
+                            chapter_dict[current_heading][-1] += verse_text
+                        else:
+                            chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
+                elif element.tag == 'verse':
+                    if x := element.findall('head1'):
+                        current_heading = ''.join(head.text for head in x)
+                    if current_heading not in chapter_dict:
+                        chapter_dict[current_heading] = []
+                    verse_text = ""
+                    verse_number = ""
+                    for verse in element.findall('.//item'):
+                        verse_number = element.get('display-number')
+                        verse_text += ''.join(verse.itertext())
+                        verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
+                    for verse in element.findall('p'):
+                        verse_number = element.get('display-number')
+                        verse_text += ''.join(verse.itertext())
+                        verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
+                    for verse in element.findall('.//p'):
+                        verse_number = element.get('display-number')
+                        verse_text += ''.join(verse.itertext())
+                        verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
+                    for verse in element.findall('poetryblock'):
+                        verse_number = element.get('display-number')
+                        verse_text += ''.join(verse.itertext())
+                        verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
+                    if len(chapter_dict[current_heading]) > 0 and chapter_dict[current_heading][-1][
+                                                                  0:chapter_dict[current_heading][-1].find(
+                                                                          " ")] != verse_number:
+                        chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
+                    elif len(chapter_dict[current_heading]) > 0:
+                        chapter_dict[current_heading][-1] = \
+                            condense.sub(' ', chapter_dict[current_heading][-1] + " " + verse_text)
                     else:
-                        verses[heading] = [verse]
-                elif "</sup>" in line and len(line) - line.find("</sup>") - 6:
-                    verse += line[line.find("</sup>") + 7:]
-                elif "<sup" not in line and len(line) - display_number_pos > 5:
-                    verse += " " + line[line.find("\"", display_number_pos) + 2:]
-            elif len(verse) > 3 and verse_end_tag_regex.search(line):
-                verse = condense.sub(' ', lazy_tag_removal_regex.sub(' ', item_end_regex.sub(' ', fix_lord_regex.sub('Lord', verse))))
-                if heading not in verses or len(verses[heading]) == 0:
-                    verses[heading] = [verse]
-                elif verses[heading][-1][0:verses[heading][-1].find(" ")] == verse[0:verse.find(" ")]:
-                    verses[heading][-1] += " " + verse[verse.find(" ") + 1:]
-                else:
-                    verses[heading].append(verse)
-                verse = ""
-            elif ot_quote_regex.search(line):
-                ot_quote_start = line.find("<otquote>") + 9
-                verse += line[:ot_quote_start - 9]
-                verse += " " + line[ot_quote_start:line.find("</otquote", ot_quote_start)]
-            elif p_no_ind_regex.search(line):
-                verse_start = line.find("<p type=\"noind\">") + 16
-                if "<sup" in line:
-                    verse_end = line.find("<sup")
-                    ignoring = line.find("</sup") > -1
-                    verse += " " + line[verse_start:verse_end]
-                else:
-                    verse += " " + line[verse_start:]
-                    ignoring = line.find("</sup>") == line.rfind("</sup>")
-            elif rare_p_right_regex.search(line):
-                verse += line[line.find("<p type=\"right\">") + 16:]
-            elif "<p>" in line:
-                verse_start = line.find(">") + 1
-                if "<sup" in line:
-                    verse_end = line.find("<sup")
-                    if "</sup" not in line:
-                        ignoring = True
-                elif "</p>" in line:
-                    verse_end = line.find("</p>")
-                else:
-                    verse_end = len(line) - 1
-                verse += " " + line[verse_start:verse_end]
-            elif "<item><sup class=\"verse-ref\"" in line:
-                verse += line[line.find("</sup>") + 6:]
-            elif verse_inline_ref_regex.search(line):
-                verse += line[0:line.find("<sup")]
-                if not line.find("</sup>") > -1:
-                    ignoring = True
-                elif len(line) - line.find("</sup>") - 6 > 1:
-                    verse += line[line.find("</sup>") + 6:]
-            elif verse_verse_ref_regex.search(line):
-                sup_pos = line.find("</sup>") + 7
-                verse += line[sup_pos:]
-            elif poem_right_selah_regex.search(line):
-                verse += " Selah"
-            elif verse_content_end_tag_regex.search(line) and len(condense.sub(' ', verse)) > 10:
-                verse += line[:line.find("</verse")]
-                if heading in verses and len(verses[heading]):
-                    if verses[heading][-1][0:verses[heading][-1].find(" ")] == verse[0:verse.find(" ")]:
-                        verses[heading][-1] += " " + lazy_tag_removal_regex.sub(' ', condense.sub(' ', fix_lord_regex.sub('Lord', verse))[verse.find(" ") + 1:])
-                    else:
-                        verses[heading].append(lazy_tag_removal_regex.sub(' ', condense.sub(' ', fix_lord_regex.sub('Lord', verse))))
-                else:
-                    verses[heading] = [lazy_tag_removal_regex.sub(' ', condense.sub(' ', fix_lord_regex.sub('Lord', verse)))]
-                verse = ""
-            else:
-                verse += " " + line
+                        chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
+                # Lots of list variations for some reason
+                elif element.tag == 'list' or element.tag == 'listblockindent':
+                    if current_heading not in chapter_dict:
+                        chapter_dict[current_heading] = []
+                    for verse in element.findall('.//verse'):
+                        verse_number = verse.get('display-number') if verse.get('display-number') else \
+                            verse.get('reference')[verse.get('reference').rfind('.') + 1:] if verse.get('reference') \
+                                else verse.get('id')[verse.get('id').rfind('.') + 1:]
+                        verse_text = ''.join(verse.itertext())
+                        verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
+                        if len(chapter_dict[current_heading]) > 0 and \
+                                chapter_dict[current_heading][-1][0:chapter_dict[current_heading][-1].find(" ")] !=\
+                                verse_number:
+                            chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
+                        elif len(chapter_dict[current_heading]) > 0:
+                            chapter_dict[current_heading][-1] += verse_text
+                        else:
+                            chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
+                elif element.tag == 'listtable' and bookname == "Joshua":
+                    if current_heading not in chapter_dict:
+                        chapter_dict[current_heading] = []
+                    for row in element.findall('row'):
+                        cells = row.findall('cell')
+                        verse = cells[0].find('.//verse')
 
-        return verses
+                        if verse is not None:
+                            verse_number = verse.get('display')
+                            verse_text = ''.join(cells[0].itertext()) + " " + ''.join(cells[1].itertext())
+                            verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
+                            if len(chapter_dict[current_heading]) > 0 and chapter_dict[current_heading][-1][
+                                                                          0:chapter_dict[current_heading][-1].find(
+                                                                                  " ")] != verse_number:
+                                chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
+                            elif len(chapter_dict[current_heading]) > 0:
+                                chapter_dict[current_heading][-1] += verse_text
+                            else:
+                                chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
+                        else:
+                            chapter_dict[current_heading][-1] +=\
+                                ', ' + condense.sub(' ', ''.join(cells[0].itertext()) +
+                                                    " " + ''.join(cells[1].itertext()))
+                elif element.tag == 'listtable':
+                    if current_heading not in chapter_dict:
+                        chapter_dict[current_heading] = []
+                    for verse in element.findall('verse'):
+                        verse_number = verse.get('display-number')
+                        verse_text = ''.join(verse.itertext())
+                        verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
+                        if len(chapter_dict[current_heading]) > 0 and chapter_dict[current_heading][-1][
+                                                                      0:chapter_dict[current_heading][-1].find(
+                                                                          " ")] != verse_number:
+                            chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
+                        elif len(chapter_dict[current_heading]) > 0:
+                            chapter_dict[current_heading][-1] += verse_text
+                        else:
+                            chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
+            result[bookname][chapter_number] = chapter_dict
+
+        # Split verses that are not separated by a unique verse tag
+        if bookname == 'Genesis':
+            result[bookname]['3']['Sin’s Consequences'][9] = result[bookname]['3']['Sin’s Consequences'][9][135:]
+            result[bookname]['4']['Cain Murders Abel'][8] = result[bookname]['4']['Cain Murders Abel'][8][:120]
+            result[bookname]['22']['The Sacrifice of Isaac'][6] = \
+                result[bookname]['22']['The Sacrifice of Isaac'][6][:193]
+            result[bookname]['27']['The Stolen Blessing'][38] += "Look, your dwelling place will be away from the " \
+                                                                 "richness of the land, away from the dew of the sky " \
+                                                                 "above."
+            result[bookname]['30']['none'][14] = result[bookname]['30']['none'][14][:221]
+            result[bookname]['37']['Joseph’s Dreams'][1] = result[bookname]['37']['Joseph’s Dreams'][1][:245]
+
+            split_location = result[bookname]['9']['God’s Covenant with Noah'][14].find('16')
+            tmp_split = result[bookname]['9']['God’s Covenant with Noah'][14][0:split_location], \
+                result[bookname]['9']['God’s Covenant with Noah'][14][split_location:]
+            result[bookname]['9']['God’s Covenant with Noah'][14] = tmp_split[0]
+            result[bookname]['9']['God’s Covenant with Noah'].insert(15, tmp_split[1])
+
+            split_location = result[bookname]['39']['Joseph in Potiphar’s House'][12].find('14')
+            tmp_split = result[bookname]['39']['Joseph in Potiphar’s House'][12][0:split_location], \
+                result[bookname]['39']['Joseph in Potiphar’s House'][12][split_location:]
+            result[bookname]['39']['Joseph in Potiphar’s House'][12] = tmp_split[0]
+            result[bookname]['39']['Joseph in Potiphar’s House'].insert(13, tmp_split[1])
+
+        elif bookname == 'Exodus':
+            result[bookname]['32']['The Gold Calf'][17] += "It’s not the sound of a victory cry and not the sound of " \
+                                                           "a cry of defeat; I hear the sound of singing!"
+
+        elif bookname == 'Numbers':
+            split_location = result[bookname]['1']['The Census of Israel'][31].find('33')
+            tmp_split = result[bookname]['1']['The Census of Israel'][31][0:split_location], \
+                result[bookname]['1']['The Census of Israel'][31][split_location:]
+            result[bookname]['1']['The Census of Israel'][31] = tmp_split[0]
+            result[bookname]['1']['The Census of Israel'].insert(32, tmp_split[1])
+
+            # This one grabs data twice for some reason, so here's this
+            split_location = result[bookname]['12']['Miriam and Aaron Rebel'][6].find('8')
+            tmp_split = result[bookname]['12']['Miriam and Aaron Rebel'][6][0:split_location], \
+                result[bookname]['12']['Miriam and Aaron Rebel'][6][split_location:]
+            result[bookname]['12']['Miriam and Aaron Rebel'][6] = tmp_split[0]
+            result[bookname]['12']['Miriam and Aaron Rebel'][7] = \
+                tmp_split[1] + result[bookname]['12']['Miriam and Aaron Rebel'][8][1:]
+            result[bookname]['12']['Miriam and Aaron Rebel'].pop(8)
+
+        elif bookname == "Joshua":
+            result[bookname]['5']['Commander of the Lord’s Army'][1] = \
+                result[bookname]['5']['Commander of the Lord’s Army'][1][:196]
+
+        elif bookname == 'Judges':
+            # Once again, duplicated data
+            result[bookname]['15']['Samson’s Revenge'][5] = result[bookname]['15']['Samson’s Revenge'][5][:238]
+            result[bookname]['17']['Micah’s Priest'][8] = result[bookname]['17']['Micah’s Priest'][8][:155]
+
+        elif bookname == 'Ruth':
+            result[bookname]['2']['Ruth and Boaz Meet'][18] = result[bookname]['2']['Ruth and Boaz Meet'][18][:252]
+
+        elif bookname == '1 Samuel':
+            # Once again, duplicated data
+            result[bookname]['28']['Saul and the Medium'][14] = result[bookname]['28']['Saul and the Medium'][14][:308]
+            result[bookname]['29']['Philistines Reject David'][2] = \
+                result[bookname]['29']['Philistines Reject David'][2][:289]
+
+        elif bookname == '2 Samuel':
+            # Once again, duplicated data
+            result[bookname]['16']['Ziba Helps David'][1] = result[bookname]['16']['Ziba Helps David'][1][:250]
+            result[bookname]['18']['Absalom’s Death'][23] = result[bookname]['18']['Absalom’s Death'][23][:229]
+
+        elif bookname == "1 Kings":
+            split_location = result[bookname]['22']['Jehoshaphat’s Alliance with Ahab'][3].find('5')
+            tmp_split = result[bookname]['22']['Jehoshaphat’s Alliance with Ahab'][3][0:split_location], \
+                result[bookname]['22']['Jehoshaphat’s Alliance with Ahab'][3][split_location:393]
+            result[bookname]['22']['Jehoshaphat’s Alliance with Ahab'][3] = tmp_split[0]
+            result[bookname]['22']['Jehoshaphat’s Alliance with Ahab'].insert(4, tmp_split[1])
+
+        elif bookname == "2 Kings":
+            result[bookname]['8']['Aram’s King Hazael'][5] = result[bookname]['8']['Aram’s King Hazael'][5][:288]
+
+        elif bookname == "1 Chronicles":
+            result[bookname]['29']['David’s Prayer'][12] = "22 " + result[bookname]['29']['David’s Prayer'][12][3:]
+            result[bookname]['29']['The Enthronement of Solomon'][0] = \
+                "22 " + result[bookname]['29']['The Enthronement of Solomon'][0][4:]
+
+        elif bookname == "Jeremiah":
+            split_location = result[bookname]['49']['Prophecies against Kedar and Hazor'][0].find('29')
+            tmp_split = result[bookname]['49']['Prophecies against Kedar and Hazor'][0][0:split_location], \
+                result[bookname]['49']['Prophecies against Kedar and Hazor'][0][split_location:]
+            result[bookname]['49']['Prophecies against Kedar and Hazor'][0] = tmp_split[0]
+            result[bookname]['49']['Prophecies against Kedar and Hazor'].insert(1, tmp_split[1])
+
+        elif bookname == "Ezekiel":
+            split_location = result[bookname]['27']['The Sinking of Tyre'][2].find('4')
+            tmp_split = result[bookname]['27']['The Sinking of Tyre'][2][0:split_location], \
+                result[bookname]['27']['The Sinking of Tyre'][2][split_location:]
+            result[bookname]['27']['The Sinking of Tyre'][2] = tmp_split[0]
+            result[bookname]['27']['The Sinking of Tyre'].insert(3, tmp_split[1])
+
+        elif bookname == "Amos":
+            # Weird one. It uses the wrong verse number from somewhere.
+            result[bookname]["7"]['Third Vision: A Plumb Line'][1] += \
+                result[bookname]["7"]['Third Vision: A Plumb Line'][2][1:]
+            result[bookname]["7"]['Third Vision: A Plumb Line'].pop(2)
+
+        elif bookname == "Zechariah":
+            result[bookname]['1']['Second Vision: Four Horns and Craftsmen'][3] = \
+                result[bookname]['1']['Second Vision: Four Horns and Craftsmen'][3][:269]
+
+        elif bookname == "Malachi":
+            result[bookname]['2']['Judgment at the Lord’s Coming'][0] = \
+                result[bookname]['2']['Judgment at the Lord’s Coming'][0][:231]
+
+        elif bookname == "Matthew":
+            # Verses 3-9 of Matthew 5 get grabbed at the same time for whatever reason, so yeah.
+            result[bookname]['5']['The Beatitudes'][1] = result[bookname]['5']['The Beatitudes'][0][73:132]
+            result[bookname]['5']['The Beatitudes'][2] = result[bookname]['5']['The Beatitudes'][0][132:191]
+            result[bookname]['5']['The Beatitudes'][3] = result[bookname]['5']['The Beatitudes'][0][191:277]
+            result[bookname]['5']['The Beatitudes'][4] = result[bookname]['5']['The Beatitudes'][0][277:335]
+            result[bookname]['5']['The Beatitudes'][5] = result[bookname]['5']['The Beatitudes'][0][335:391]
+            result[bookname]['5']['The Beatitudes'][6] = result[bookname]['5']['The Beatitudes'][0][391:]
+            result[bookname]['5']['The Beatitudes'][0] = result[bookname]['5']['The Beatitudes'][0][:73]
+
+            # Same thing for 6:9-13
+            result[bookname]['6']['The Lord’s Prayer'][1] = result[bookname]['6']['The Lord’s Prayer'][0][94:163]
+            result[bookname]['6']['The Lord’s Prayer'][2] = result[bookname]['6']['The Lord’s Prayer'][0][163:197]
+            result[bookname]['6']['The Lord’s Prayer'][3] = result[bookname]['6']['The Lord’s Prayer'][0][197:264]
+            result[bookname]['6']['The Lord’s Prayer'][4] = result[bookname]['6']['The Lord’s Prayer'][0][264:]
+            result[bookname]['6']['The Lord’s Prayer'][0] = result[bookname]['6']['The Lord’s Prayer'][0][:94]
+
+            # Odd one
+            split_location = result[bookname]['11']['An Unresponsive Generation'][0].find(':') + 1
+            tmp_split = result[bookname]['11']['An Unresponsive Generation'][0][0:split_location], \
+                "17" + result[bookname]['11']['An Unresponsive Generation'][0][split_location:]
+            result[bookname]['11']['An Unresponsive Generation'][0] = tmp_split[0]
+            result[bookname]['11']['An Unresponsive Generation'].insert(1, tmp_split[1])
+
+        elif bookname == "Luke":
+            tmp_split = result[bookname]['20']['The Parable of the Vineyard Owner'][6][0:111], \
+                result[bookname]['20']['The Parable of the Vineyard Owner'][6][111:301]
+            result[bookname]['20']['The Parable of the Vineyard Owner'][6] = tmp_split[0]
+            result[bookname]['20']['The Parable of the Vineyard Owner'].insert(7, tmp_split[1])
+        elif bookname == "Acts":
+            tmp = "8 " + result[bookname]['24']['The Accusation against Paul'][5][68:]
+            result[bookname]['24']['The Accusation against Paul'][5] = \
+                result[bookname]['24']['The Accusation against Paul'][5][:68]
+            result[bookname]['24']['The Accusation against Paul'].insert(6, tmp)
+
+        elif bookname == "Romans":
+            result[bookname]['15']['Glorifying God Together'][4] += result[bookname]['15']['Glorifying God Together'][5][4:]
+            result[bookname]['15']['Glorifying God Together'].pop(5)
+
+        self.__cache[bookname] = result[bookname]
