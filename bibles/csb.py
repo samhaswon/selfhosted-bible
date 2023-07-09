@@ -101,8 +101,10 @@ class CSB(Bible):
         """
         if not super().has_passage(book, chapter):
             raise PassageInvalid(f"{book} {chapter}")
+        # Dump the cache every time a new book is gotten. This doesn't lead to much disk activity
         if not len(self.__cache[book][str(chapter)]):
             self.__get_book(book)
+            # Normal dump
             try:
                 with open("bibles/json_bibles/csb.json", "w") as bible_save:
                     json.dump(self.__cache, bible_save)
@@ -251,19 +253,23 @@ class CSB(Bible):
                     verse_number = ""
                     for verse in element.findall('.//item'):
                         verse_number = element.get('display-number')
-                        verse_text += ''.join(verse.itertext())
+                        new_text = ''.join(verse.itertext())
+                        verse_text += new_text if new_text not in verse_text else ""
                         verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
                     for verse in element.findall('p'):
                         verse_number = element.get('display-number')
-                        verse_text += ''.join(verse.itertext())
+                        new_text = ''.join(verse.itertext())
+                        verse_text += new_text if new_text not in verse_text else ""
                         verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
                     for verse in element.findall('.//p'):
                         verse_number = element.get('display-number')
-                        verse_text += ''.join(verse.itertext())
+                        new_text = ''.join(verse.itertext())
+                        verse_text += new_text if new_text not in verse_text else ""
                         verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
                     for verse in element.findall('poetryblock'):
                         verse_number = element.get('display-number')
-                        verse_text += ''.join(verse.itertext())
+                        new_text = ''.join(verse.itertext())
+                        verse_text += new_text if new_text not in verse_text else ""
                         verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
                     if len(chapter_dict[current_heading]) > 0 and chapter_dict[current_heading][-1][
                                                                   0:chapter_dict[current_heading][-1].find(
@@ -390,29 +396,152 @@ class CSB(Bible):
 
         elif bookname == '1 Samuel':
             # Once again, duplicated data
+            result[bookname]['3']['Samuel’s Call'][4] = result[bookname]['3']['Samuel’s Call'][4][:133]
+            result[bookname]['3']['Samuel’s Call'][5] = result[bookname]['3']['Samuel’s Call'][5][:167]
+            result[bookname]['3']['Samuel’s Call'][9] = result[bookname]['3']['Samuel’s Call'][9][:130]
+            result[bookname]['3']['Samuel’s Call'][15] = result[bookname]['3']['Samuel’s Call'][15][:80]
+
+            result[bookname]['27']['David Flees to Ziklag'][9] = \
+                result[bookname]['27']['David Flees to Ziklag'][9][:172]
+
+            result[bookname]['28']['Saul and the Medium'][1] = result[bookname]['28']['Saul and the Medium'][1][:163]
+            result[bookname]['28']['Saul and the Medium'][6] = result[bookname]['28']['Saul and the Medium'][6][:166]
+            result[bookname]['28']['Saul and the Medium'][10] = result[bookname]['28']['Saul and the Medium'][10][:110]
+            result[bookname]['28']['Saul and the Medium'][12] = result[bookname]['28']['Saul and the Medium'][12][:136]
+            result[bookname]['28']['Saul and the Medium'][13] = result[bookname]['28']['Saul and the Medium'][13][:211]
             result[bookname]['28']['Saul and the Medium'][14] = result[bookname]['28']['Saul and the Medium'][14][:308]
+
             result[bookname]['29']['Philistines Reject David'][2] = \
                 result[bookname]['29']['Philistines Reject David'][2][:289]
 
+            result[bookname]['30']['David’s Defeat of the Amalekites'][7] = \
+                result[bookname]['30']['David’s Defeat of the Amalekites'][7][:184]
+            result[bookname]['30']['David’s Defeat of the Amalekites'][14] = \
+                result[bookname]['30']['David’s Defeat of the Amalekites'][14][:175]
+
         elif bookname == '2 Samuel':
             # Once again, duplicated data
+            result[bookname]['1']['Responses to Saul’s Death'][2] = \
+                result[bookname]['1']['Responses to Saul’s Death'][2][:107]
+            result[bookname]['1']['Responses to Saul’s Death'][3] = \
+                result[bookname]['1']['Responses to Saul’s Death'][3][:189]
+            result[bookname]['1']['Responses to Saul’s Death'][12] = \
+                result[bookname]['1']['Responses to Saul’s Death'][12][:154]
+
             result[bookname]['16']['Ziba Helps David'][1] = result[bookname]['16']['Ziba Helps David'][1][:250]
+            result[bookname]['16']['Ziba Helps David'][2] = result[bookname]['16']['Ziba Helps David'][2][:204]
+            result[bookname]['16']['Ziba Helps David'][3] = result[bookname]['16']['Ziba Helps David'][3][:154]
+
+            result[bookname]['17']['David Informed of Absalom’s Plans'][5] = \
+                result[bookname]['17']['David Informed of Absalom’s Plans'][5][:232]
+            result[bookname]['17']['David Informed of Absalom’s Plans'][14] = \
+                result[bookname]['17']['David Informed of Absalom’s Plans'][14][:42] + \
+                result[bookname]['17']['David Informed of Absalom’s Plans'][14][51:]
+
+            result[bookname]['18']['Absalom’s Death'][13] = result[bookname]['18']['Absalom’s Death'][13][:201]
+            result[bookname]['18']['Absalom’s Death'][18] = result[bookname]['18']['Absalom’s Death'][18][:170]
+            result[bookname]['18']['Absalom’s Death'][20] = result[bookname]['18']['Absalom’s Death'][20][:184]
             result[bookname]['18']['Absalom’s Death'][23] = result[bookname]['18']['Absalom’s Death'][23][:229]
 
+            # This one is messed up in the XML to the extent it's messed up on their site too
+            result[bookname]['24']['David’s Punishment'][5] = result[bookname]['24']['David’s Punishment'][5][:270] + \
+                                                              " the Jebusite."
+
+            result[bookname]['24']['David’s Altar'][3] = result[bookname]['24']['David’s Altar'][3][:202]
+
         elif bookname == "1 Kings":
+            # The whole verse is in this one twice. Weird
+            result[bookname]['2']['Joab’s Execution'][1] = result[bookname]['2']['Joab’s Execution'][1][:187]
+            result[bookname]['3']['Solomon’s Wisdom'][6] = result[bookname]['3']['Solomon’s Wisdom'][6][:197]
+
+            result[bookname]['8']['Solomon’s Dedication of the Temple'][17] = \
+                result[bookname]['8']['Solomon’s Dedication of the Temple'][16][104:]
+            result[bookname]['8']['Solomon’s Dedication of the Temple'][16] = \
+                result[bookname]['8']['Solomon’s Dedication of the Temple'][16][:104]
+
+            result[bookname]['20']['Victory over Ben-hadad'][13] = \
+                result[bookname]['20']['Victory over Ben-hadad'][13][:188]
+            result[bookname]['20']['Victory over Ben-hadad'][33] = \
+                result[bookname]['20']['Victory over Ben-hadad'][33][:300]
+            result[bookname]['20']['Ahab Rebuked by theLord'][5] = \
+                result[bookname]['20']['Ahab Rebuked by theLord'][5][:160]
+
             split_location = result[bookname]['22']['Jehoshaphat’s Alliance with Ahab'][3].find('5')
             tmp_split = result[bookname]['22']['Jehoshaphat’s Alliance with Ahab'][3][0:split_location], \
-                result[bookname]['22']['Jehoshaphat’s Alliance with Ahab'][3][split_location:393]
+                result[bookname]['22']['Jehoshaphat’s Alliance with Ahab'][3][split_location:278]
             result[bookname]['22']['Jehoshaphat’s Alliance with Ahab'][3] = tmp_split[0]
             result[bookname]['22']['Jehoshaphat’s Alliance with Ahab'].insert(4, tmp_split[1])
+            result[bookname]['22']['Jehoshaphat’s Alliance with Ahab'][5] = \
+                result[bookname]['22']['Jehoshaphat’s Alliance with Ahab'][5][:223]
+            result[bookname]['22']['Micaiah’s Message of Defeat'][2] = \
+                result[bookname]['22']['Micaiah’s Message of Defeat'][2][:206]
+            result[bookname]['22']['Micaiah’s Message of Defeat'][9] = \
+                result[bookname]['22']['Micaiah’s Message of Defeat'][9][:190]
 
         elif bookname == "2 Kings":
+            result[bookname]['3']['Moab’s Rebellion against Israel'][3] = \
+                result[bookname]['3']['Moab’s Rebellion against Israel'][3][:243]
+            result[bookname]['3']['Moab’s Rebellion against Israel'][7] = \
+                result[bookname]['3']['Moab’s Rebellion against Israel'][7][:234]
+            result[bookname]['3']['Moab’s Rebellion against Israel'][9] = \
+                result[bookname]['3']['Moab’s Rebellion against Israel'][9][:253]
+
+            result[bookname]['7']['none'][1] = result[bookname]['7']['none'][1][:253]
+
             result[bookname]['8']['Aram’s King Hazael'][5] = result[bookname]['8']['Aram’s King Hazael'][5][:288]
 
+            result[bookname]['9']['Jehu Anointed as Israel’s King'][11] = \
+                result[bookname]['9']['Jehu Anointed as Israel’s King'][11][:172]
+            result[bookname]['9']['Jehu Kills Joram and Ahaziah'][1] = \
+                result[bookname]['9']['Jehu Kills Joram and Ahaziah'][1][:221]
+            result[bookname]['9']['Jehu Kills Joram and Ahaziah'][6] =\
+                "22 " + result[bookname]['9']['Jehu Kills Joram and Ahaziah'][1][3:183]
+
+            result[bookname]['20']['Hezekiah’s Folly'][3] = result[bookname]['20']['Hezekiah’s Folly'][3][:180]
+
+            result[bookname]['23']['Josiah’s Reforms'][13] = result[bookname]['23']['Josiah’s Reforms'][13][:205]
+
         elif bookname == "1 Chronicles":
+            result[bookname]['11']['Exploits of David’s Warriors'][1] = \
+                result[bookname]['11']['Exploits of David’s Warriors'][1][:90] + \
+                result[bookname]['11']['Exploits of David’s Warriors'][1][344:]
+
             result[bookname]['29']['David’s Prayer'][12] = "22 " + result[bookname]['29']['David’s Prayer'][12][3:]
             result[bookname]['29']['The Enthronement of Solomon'][0] = \
                 "22 " + result[bookname]['29']['The Enthronement of Solomon'][0][4:]
+
+        elif bookname == "2 Chronicles":
+            result[bookname]['11']['Rehoboam in Jerusalem'][3] = \
+                result[bookname]['11']['Rehoboam in Jerusalem'][3][:236]
+
+            result[bookname]['25']['Amaziah’s Campaign against Edom'][11] = \
+                result[bookname]['25']['Amaziah’s Campaign against Edom'][11][:276]
+
+        elif bookname == "Ezra":
+            result[bookname]['2']['The Exiles Who Returned'][35] += "Jedaiah’s descendants of the house of Jeshua 973"
+            result[bookname]['2']['The Exiles Who Returned'][39] += "Jeshua’s and Kadmiel’s descendants from Hodaviah’s" \
+                                                                    " descendants 74"
+            result[bookname]['2']['The Exiles Who Returned'][40] += "Asaph’s descendants 128"
+            result[bookname]['2']['The Exiles Who Returned'][41] += "Shallum’s descendants, Ater’s descendants, " \
+                                                                    "Talmon’s descendants, Akkub’s descendants, " \
+                                                                    "Hatita’s descendants, Shobai’s descendants, " \
+                                                                    "in all 139"
+            result[bookname]['2']['The Exiles Who Returned'][43] += " Siaha’s descendants, Padon’s descendants,"
+            result[bookname]['2']['The Exiles Who Returned'][44] += "Akkub’s descendants,"
+            result[bookname]['2']['The Exiles Who Returned'][44] = \
+                result[bookname]['2']['The Exiles Who Returned'][44][3:]
+
+        elif bookname == "Nehemiah":
+            result[bookname]['5']['Social Injustice'][12] = result[bookname]['5']['Social Injustice'][12][:283]
+            result[bookname]['13']['Nehemiah’s Further Reforms'][21] = \
+                result[bookname]['13']['Nehemiah’s Further Reforms'][21][:234]
+            result[bookname]['13']['Nehemiah’s Further Reforms'][30] = \
+                result[bookname]['13']['Nehemiah’s Further Reforms'][30][:125]
+
+        elif bookname == "Isaiah":
+            result[bookname]['31']['The Lord, the Only Help'][8] = \
+                result[bookname]['31']['The Lord, the Only Help'][8][:195]
+            result[bookname]['39']['Hezekiah’s Folly'][3] = result[bookname]['39']['Hezekiah’s Folly'][3][:239]
 
         elif bookname == "Jeremiah":
             split_location = result[bookname]['49']['Prophecies against Kedar and Hazor'][0].find('29')
@@ -435,6 +564,7 @@ class CSB(Bible):
             result[bookname]["7"]['Third Vision: A Plumb Line'].pop(2)
 
         elif bookname == "Zechariah":
+            result[bookname]['1']['A Plea for Repentance'][5] = result[bookname]['1']['A Plea for Repentance'][5][:243]
             result[bookname]['1']['Second Vision: Four Horns and Craftsmen'][3] = \
                 result[bookname]['1']['Second Vision: Four Horns and Craftsmen'][3][:269]
 
@@ -443,6 +573,12 @@ class CSB(Bible):
                 result[bookname]['2']['Judgment at the Lord’s Coming'][0][:231]
 
         elif bookname == "Matthew":
+            split_location = result[bookname]['4']['Ministry in Galilee'][3].find('16')
+            tmp_split = result[bookname]['4']['Ministry in Galilee'][3][0:split_location], \
+                result[bookname]['4']['Ministry in Galilee'][3][split_location:]
+            result[bookname]['4']['Ministry in Galilee'][3] = tmp_split[0]
+            result[bookname]['4']['Ministry in Galilee'][4] = tmp_split[1]
+
             # Verses 3-9 of Matthew 5 get grabbed at the same time for whatever reason, so yeah.
             result[bookname]['5']['The Beatitudes'][1] = result[bookname]['5']['The Beatitudes'][0][73:132]
             result[bookname]['5']['The Beatitudes'][2] = result[bookname]['5']['The Beatitudes'][0][132:191]
@@ -466,12 +602,63 @@ class CSB(Bible):
             result[bookname]['11']['An Unresponsive Generation'][0] = tmp_split[0]
             result[bookname]['11']['An Unresponsive Generation'].insert(1, tmp_split[1])
 
+            result[bookname]['20']['Suffering and Service'][1] = \
+                result[bookname]['20']['Suffering and Service'][1][:168]
+
+        elif bookname == "Mark":
+            result[bookname]['6']['Feeding of the Five Thousand'][7] = \
+                result[bookname]['6']['Feeding of the Five Thousand'][7][:160]
+
         elif bookname == "Luke":
+            result[bookname]['3']['The Messiah’s Herald'][13] = \
+                result[bookname]['3']['The Messiah’s Herald'][13][:172]
+
+            split_location = result[bookname]['6']['Woe to the Self-Satisfied'][0].find('25')
+            tmp_split = result[bookname]['6']['Woe to the Self-Satisfied'][0][0:split_location], \
+                result[bookname]['6']['Woe to the Self-Satisfied'][0][split_location:]
+            result[bookname]['6']['Woe to the Self-Satisfied'][0] = tmp_split[0]
+            result[bookname]['6']['Woe to the Self-Satisfied'][1] = tmp_split[1]
+
+            result[bookname]['8']['Wind and Waves Obey Jesus'][3] = \
+                result[bookname]['8']['Wind and Waves Obey Jesus'][3][:177]
+
             tmp_split = result[bookname]['20']['The Parable of the Vineyard Owner'][6][0:111], \
                 result[bookname]['20']['The Parable of the Vineyard Owner'][6][111:301]
             result[bookname]['20']['The Parable of the Vineyard Owner'][6] = tmp_split[0]
             result[bookname]['20']['The Parable of the Vineyard Owner'].insert(7, tmp_split[1])
+
+        elif bookname == "John":
+            result[bookname]['1']['John the Baptist’s Testimony'][2] = \
+                result[bookname]['1']['John the Baptist’s Testimony'][2][:115]
+            result[bookname]['1']['The Lamb of God'][9] = result[bookname]['1']['The Lamb of God'][9][:173]
+            result[bookname]['1']['The Lamb of God'][13] = result[bookname]['1']['The Lamb of God'][13][:151]
+            result[bookname]['1']['Philip and Nathanael'][5] = result[bookname]['1']['Philip and Nathanael'][5][:132]
+
+            result[bookname]['20']['Mary Magdalene Sees the Risen Lord'][2] = \
+                result[bookname]['20']['Mary Magdalene Sees the Risen Lord'][2][:146]
+            result[bookname]['20']['Mary Magdalene Sees the Risen Lord'][4] = \
+                result[bookname]['20']['Mary Magdalene Sees the Risen Lord'][4][:219]
+            result[bookname]['20']['Mary Magdalene Sees the Risen Lord'][5] = \
+                result[bookname]['20']['Mary Magdalene Sees the Risen Lord'][5][:115]
+            result[bookname]['20']['Thomas Sees and Believes'][1] = \
+                result[bookname]['20']['Thomas Sees and Believes'][1][:237]
+
+            result[bookname]['21']['Jesus’s Third Appearance to the Disciples'][2] = \
+                result[bookname]['21']['Jesus’s Third Appearance to the Disciples'][2][:162]
+            result[bookname]['21']['Jesus’s Threefold Restoration of Peter'][1] = \
+                result[bookname]['21']['Jesus’s Threefold Restoration of Peter'][1][:159]
+            result[bookname]['21']['Jesus’s Threefold Restoration of Peter'][1] = \
+                result[bookname]['21']['Jesus’s Threefold Restoration of Peter'][1][:205] + \
+                " “Feed my sheep,” Jesus said."
+
         elif bookname == "Acts":
+            result[bookname]['16']['Paul and Silas in Prison'][2] = \
+                result[bookname]['16']['Paul and Silas in Prison'][2][:182]
+
+            result[bookname]['17']['Paul in Athens'][2] = result[bookname]['17']['Paul in Athens'][2][:269]
+
+            result[bookname]['22']['Paul’s Testimony'][4] = result[bookname]['22']['Paul’s Testimony'][4][:161]
+
             tmp = "8 " + result[bookname]['24']['The Accusation against Paul'][5][68:]
             result[bookname]['24']['The Accusation against Paul'][5] = \
                 result[bookname]['24']['The Accusation against Paul'][5][:68]
@@ -480,5 +667,12 @@ class CSB(Bible):
         elif bookname == "Romans":
             result[bookname]['15']['Glorifying God Together'][4] += result[bookname]['15']['Glorifying God Together'][5][4:]
             result[bookname]['15']['Glorifying God Together'].pop(5)
+
+        elif bookname == "2 Peter":
+            result[bookname]['1']['Greeting'][0] = result[bookname]['1']['Greeting'][0][:169]
+
+        elif bookname == "Revelation":
+            result[bookname]['7']['A Multitude from the Great Tribulation'][5] = \
+                result[bookname]['7']['A Multitude from the Great Tribulation'][5][:178]
 
         self.__cache[bookname] = result[bookname]

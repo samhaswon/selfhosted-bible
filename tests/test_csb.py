@@ -71,6 +71,7 @@ class TestCSB(TestCase):
 
                 # Check for missing parts, with high delta due to (textual) rendering differences of the translations
                 for kjv_verse, csb_verse in zip(kjv_passage, csb_passage):
+                    # These verses are rendered significantly shorter in the CSB and are manually verified
                     if csb_verse in ["22 Those registered, counting every male one month old or more, numbered 7,500. ",
                                      "1 When all the Amorite kings across the Jordan to the west and all the Canaanite "
                                      "kings near the sea heard how the Lord had dried up the water of the Jordan before"
@@ -81,7 +82,37 @@ class TestCSB(TestCase):
                                      " male descendants of Manasseh son of Joseph, by their clans. ",
                                      "9 The Reubenites, Gadites, and half the tribe of Manasseh left the Israelites at "
                                      "Shiloh in the land of Canaan to return to their own land of Gilead, which they "
-                                     "took possession of according to the Lord’s command through Moses. "]:
+                                     "took possession of according to the Lord’s command through Moses. ",
+                                     "2 so he told him, “My father, Saul, intends to kill you. Be on your guard in the "
+                                     "morning and hide in a secret place and stay there. ",
+                                     "13 But one of his servants responded, “Please, let messengers take five of the "
+                                     "horses that are left in the city. Their fate is like the entire Israelite "
+                                     "community who will die, so let’s send them and see.” ",
+                                     "4 Then Joash said to the priests, “All the dedicated silver brought to the Lord’s"
+                                     " temple, census silver, silver from vows, and all silver voluntarily given for "
+                                     "the Lord’s temple ​— ​ ",
+                                     "9 On the twenty-third day of the third month ​— ​that is, the month "
+                                     "Sivan ​— ​ the royal scribes were summoned. Everything was written"
+                                     " exactly as Mordecai commanded for the Jews, to the satraps, the governors, and "
+                                     "the officials of the 127 provinces from India to Cush. The edict was written for"
+                                     " each province in its own script, for each ethnic group in its own language, and "
+                                     "to the Jews in their own script and language. ",
+                                     "2 people and priest alike, servant and master, female servant and mistress, buyer"
+                                     " and seller, lender and borrower, creditor and debtor. ",
+                                     "24 Then all the trees of the field will know that I am the Lord. I bring down the"
+                                     " tall tree, and make the low tree tall. I cause the green tree to wither and make"
+                                     " the withered tree thrive. I, the Lord, have spoken and I will do it.’ ” ",
+                                     "4 You have not strengthened the weak, healed the sick, bandaged the injured, "
+                                     "brought back the strays, or sought the lost. Instead, you have ruled them with "
+                                     "violence and cruelty. ",
+                                     "1 “When you divide the land by lot as an inheritance, set aside a donation to the"
+                                     " Lord, a holy portion of the land, 8 1/3 miles long and 6 2/3 miles wide. "
+                                     "This entire region will be holy. ",
+                                     "35 After crucifying him, they divided his clothes by casting lots. ",
+                                     "11 If any place does not welcome you or listen to you, when you leave there, "
+                                     "shake the dust off your feet as a testimony against them.” ",
+                                     "11 saying,“Write on a scroll what you see and send it to the seven churches: "
+                                     "Ephesus, Smyrna, Pergamum, Thyatira, Sardis, Philadelphia, and Laodicea.” "]:
                         continue
                     self.assertAlmostEqual(len(kjv_verse), len(csb_verse),
-                                           delta=100, msg=message + f"\nCSB: {csb_verse} \nKJV: {kjv_verse}")
+                                           delta=100, msg=message + f"\nCSB: {csb_verse}\nKJV: {kjv_verse}")
