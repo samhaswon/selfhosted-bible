@@ -92,6 +92,12 @@ The code included in this repository is subject to the included license, but the
 </details>
 
 <details>
+    <summary>CSB Notice</summary>
+
+> Scripture quotations marked CSB have been taken from the Christian Standard Bible®, Copyright © 2017 by Holman Bible Publishers. Used by permission. Christian Standard Bible® and CSB® are federally registered trademarks of Holman Bible Publishers.
+</details>
+
+<details>
     <summary>ESV Notice</summary>
 
 >Scripture quotations marked “ESV” are from the ESV® Bible (The Holy Bible, English Standard Version®), copyright © 2001 by Crossway, a publishing ministry of Good News Publishers. Used by permission. All rights reserved. The ESV text may not be quoted in any publication made available to the public by a Creative Commons license. The ESV may not be translated into any other language.
