@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from bibles.asv import ASV
+from bibles.csb import CSB
 from bibles.esv import ESV
 from bibles.kjv import KJV
 from bibles.passage import PassageInvalid
@@ -32,11 +33,14 @@ def create_app() -> Flask:
             pass
     esv_obj = ESV() if not len(api_key) else ESV((True, api_key))
 
+    # XML Bibles?
+    csb_obj = CSB()
+
     # JSON Bibles
     kjv_obj = KJV()
     asv_obj = ASV()
 
-    bibles = {'ASV': asv_obj, 'ESV': esv_obj, 'KJV': kjv_obj}
+    bibles = {'ASV': asv_obj, 'CSB': csb_obj, 'ESV': esv_obj, 'KJV': kjv_obj}
 
     debug = False
 
