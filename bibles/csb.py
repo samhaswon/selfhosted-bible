@@ -3,16 +3,15 @@ from typing import Dict
 from bibles.bible import Bible
 import xml.etree.ElementTree as ElementTree
 from requests import get, HTTPError
-import requests_cache   # TODO: Remove
+# (testing cache) import requests_cache
 import json
 import re
-import time # TODO: Remove
 
 
 class CSB(Bible):
     def __init__(self):
         super().__init__()
-        requests_cache.install_cache('verses', expire_after=999999999**99)  # TODO: Remove
+        # (testing cache) requests_cache.install_cache('verses', expire_after=999999999**99)
 
         # Used to work with the "API" while validating input
         self.__file_aliases: Dict[str, str] = {
@@ -117,7 +116,7 @@ class CSB(Bible):
     def __get_book(self, book: str) -> None:
         """
         So, I'm not a fan of doing this how I am. The API only has the full books afaik. Their search method gets all
-        66, so this was not made to be the most efficient. Though, this does cache it, which is efficient (~175ns access
+        66, so it was not made to be the most efficient. Though, this does cache it, which is efficient (~5µs access
         times on my dev machine).
         :param book: Book to get, pre validated
         :return: The full book as a dictionary
@@ -140,10 +139,7 @@ class CSB(Bible):
             response = get(f"{uri}{passage}", headers=headers, cookies={'credentials': 'include'})
             response.raise_for_status()
 
-            start = time.perf_counter() # TODO: Remove
             self.__parse(response.text)
-            end = time.perf_counter()   # TODO: Remove
-            print(f"Total time parsing {book}: {end - start}")
         except HTTPError as ex:
             raise PassageNotFound(f"Error getting {book}: {ex.__str__()}")
 
