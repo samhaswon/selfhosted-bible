@@ -1,17 +1,25 @@
 from unittest import TestCase
 from bibles.csb import CSB
 from bibles.kjv import KJV
+import time # Speed testing
 
 
 class TestCSB(TestCase):
     def test_get_passage(self):
         self.csb = CSB()
 
-        # start = time.perf_counter()
+        # Also test the time to make sure it's reasonably efficient
+        start = time.perf_counter()
         genesis_1 = self.csb.get_passage("Genesis", 1)
-        # print(f"Finished parsing Genesis in {time.perf_counter() - start} seconds")
+        end = time.perf_counter()
+        print(f"Finished parsing Genesis in {end - start} seconds")
         self.assertEqual(31, len(genesis_1['verses']['The Creation']))
+
+        # Cache hit time:
+        start = time.perf_counter()
         genesis_35 = self.csb.get_passage("Genesis", 35)
+        end = time.perf_counter()
+        print(f"Accessed Genesis 35 in {end - start} seconds ({(end - start) * 1000} milliseconds, {(end - start) * 10 ** 6} microseconds)")
         self.assertEqual(15, len(genesis_35['verses']['Return to Bethel']))
         self.assertEqual(5, len(genesis_35['verses']['Rachel’s Death']))
 
@@ -20,7 +28,7 @@ class TestCSB(TestCase):
         psalm_2 = self.csb.get_passage("Psalms", 2)
         self.assertEqual(12, len(psalm_2['verses']['Coronation of the Son']))
         psalm_3 = self.csb.get_passage("Psalms", 3)
-        self.assertEqual(8, len(psalm_3['verses']['Confidence in Troubled Times']))
+        self.assertEqual(8, len(psalm_3['verses']['A psalm of David when he fled from his son Absalom.']))
         psalm_119 = self.csb.get_passage("Psalms", 119)
         self.assertEqual(176, len(psalm_119['verses']['Delight in God’s Word']))
 
@@ -34,7 +42,10 @@ class TestCSB(TestCase):
 
         # This is slow-ish
         for book in self.csb.books_of_the_bible.keys():
+            start = time.perf_counter()
             self.csb.get_passage(book, 1)
+            end = time.perf_counter()
+            print(f"Total time parsing {book}: {end - start}")
         with open("../bibles/json_bibles/csb.json", "r") as cache_file:
             self.assertNotIn("<", cache_file.read())
 
