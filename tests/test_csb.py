@@ -19,7 +19,8 @@ class TestCSB(TestCase):
         start = time.perf_counter()
         genesis_35 = self.csb.get_passage("Genesis", 35)
         end = time.perf_counter()
-        print(f"Accessed Genesis 35 in {end - start} seconds ({(end - start) * 1000} milliseconds, {(end - start) * 10 ** 6} microseconds)")
+        print(f"Accessed Genesis 35 in {end - start} seconds ({(end - start) * 1000} milliseconds, "
+              f"{(end - start) * 10 ** 6} microseconds)")
         self.assertEqual(15, len(genesis_35['verses']['Return to Bethel']))
         self.assertEqual(5, len(genesis_35['verses']['Rachel’s Death']))
 
