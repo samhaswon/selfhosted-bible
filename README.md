@@ -114,5 +114,13 @@ The code included in this repository is subject to the included license, but the
 > Rights or permission requests (including but not limited to reproduction in commercial publications) that exceed the above guidelines must be directed to the Permissions Department, Cambridge University Press, University Printing House, Shaftesbury Road, Cambridge CB2 8BS, UK (https://www.cambridge.org/about-us/rights-permissions) and approved in writing.
 </details>
 
+<details>
+    <summary>NET Notice</summary>
+
+> The Scriptures quoted are from the NET Bible® https://netbible.com copyright ©1996, 2019 used with permission from Biblical Studies Press, L.L.C. All rights reserved
+>
+> To see the NET Bible® study tool go to https://netbible.org.
+</details>
+
 ## Credits
 Credit to [@bibleapi](https://github.com/bibleapi/bibleapi-bibles-json) for KJV and ASV original JSON

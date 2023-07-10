@@ -16,3 +16,4 @@ notes.txt
 bibles/json_bibles/esv.json
 tests/speedtest.py
 bibles/json_bibles/csb.json
+bibles/json_bibles/net.json

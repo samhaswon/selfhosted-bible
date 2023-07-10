@@ -21,3 +21,5 @@ bibles/json_bibles/esv.json
 static/styles_readable.css
 pictures/
 .github/
+bibles/json_bibles/csb.json
+bibles/json_bibles/net.json
