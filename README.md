@@ -92,6 +92,12 @@ The code included in this repository is subject to the included license, but the
 </details>
 
 <details>
+    <summary>CSB Notice</summary>
+
+> Scripture quotations marked CSB have been taken from the Christian Standard Bible®, Copyright © 2017 by Holman Bible Publishers. Used by permission. Christian Standard Bible® and CSB® are federally registered trademarks of Holman Bible Publishers.
+</details>
+
+<details>
     <summary>ESV Notice</summary>
 
 >Scripture quotations marked “ESV” are from the ESV® Bible (The Holy Bible, English Standard Version®), copyright © 2001 by Crossway, a publishing ministry of Good News Publishers. Used by permission. All rights reserved. The ESV text may not be quoted in any publication made available to the public by a Creative Commons license. The ESV may not be translated into any other language.
@@ -106,6 +112,14 @@ The code included in this repository is subject to the included license, but the
 > Scripture quotations from The Authorized (King James) Version. Rights in the Authorized Version in the United Kingdom are vested in the Crown. Reproduced by permission of the Crown’s patentee, Cambridge University Press
 > When quotations from the KJV text are used in materials not being made available for sale, such as church bulletins, orders of service, posters, presentation materials, or similar media, a complete copyright notice is not required but the initials KJV must appear at the end of the quotation.
 > Rights or permission requests (including but not limited to reproduction in commercial publications) that exceed the above guidelines must be directed to the Permissions Department, Cambridge University Press, University Printing House, Shaftesbury Road, Cambridge CB2 8BS, UK (https://www.cambridge.org/about-us/rights-permissions) and approved in writing.
+</details>
+
+<details>
+    <summary>NET Notice</summary>
+
+> The Scriptures quoted are from the NET Bible® https://netbible.com copyright ©1996, 2019 used with permission from Biblical Studies Press, L.L.C. All rights reserved
+>
+> To see the NET Bible® study tool go to https://netbible.org.
 </details>
 
 ## Credits

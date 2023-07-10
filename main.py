@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
 from bibles.asv import ASV
+from bibles.csb import CSB
 from bibles.esv import ESV
 from bibles.kjv import KJV
+from bibles.net import NET
 from bibles.passage import PassageInvalid
 from navigate import Navigate, NavigateRel, NavigateVersion
 from flask import Flask, render_template, session, url_for, redirect, Response
@@ -30,15 +32,26 @@ def create_app() -> Flask:
             api_key = sys.argv[1]
         except IndexError:
             pass
+
+    # JSON API Bibles
     esv_obj = ESV() if not len(api_key) else ESV((True, api_key))
+    net_obj = NET()
+
+    # XML Bibles?
+    csb_obj = CSB()
 
     # JSON Bibles
     kjv_obj = KJV()
     asv_obj = ASV()
 
-    bibles = {'ASV': asv_obj, 'ESV': esv_obj, 'KJV': kjv_obj}
+    bibles = {'ASV': asv_obj, 'CSB': csb_obj, 'ESV': esv_obj, 'KJV': kjv_obj, 'NET': net_obj}
 
     debug = False
+
+    # Fix for session expiry
+    @app.before_request
+    def make_session_permanent():
+        session.permanent = True
 
     @app.route('/', methods=['GET', 'POST'])
     @app.route('/index.html', methods=['GET', 'POST'])
