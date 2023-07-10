@@ -13,7 +13,7 @@ class NET(Bible):
         Gets a JSON formatted dictionary of an NET passage
         """
         super().__init__()
-        # (testing cache) requests_cache.install_cache('verses', expire_after=999999999)  # TODO: Remove
+        # (testing cache) requests_cache.install_cache('verses', expire_after=999999999)
 
         # Caching
         try:
