@@ -1,12 +1,24 @@
 #!/usr/bin/env python
 
+from bibles.amp import AMP
 from bibles.asv import ASV
 from bibles.bsb import BSB
 from bibles.csb import CSB
 from bibles.esv import ESV
+from bibles.gnv import GNV
 from bibles.kjv import KJV
+from bibles.lsv import LSV
+from bibles.msg import MSG
+from bibles.nasb1995 import NASB1995
 from bibles.net import NET
+from bibles.niv1984 import NIV1984
+from bibles.niv2011 import NIV2011
 from bibles.nkjv import NKJV
+from bibles.nlt import NLT
+from bibles.rsv import RSV
+from bibles.web import WEB
+from bibles.ylt import YLT
+
 from bibles.passage import PassageInvalid
 from navigate import Navigate, NavigateRel, NavigateVersion
 from flask import Flask, render_template, session, url_for, redirect, Response
@@ -37,8 +49,15 @@ def create_app() -> Flask:
 
     # JSON API Bibles
     esv_obj = ESV() if not len(api_key) else ESV((True, api_key))
+    amp_obj = AMP()
+    msg_obj = MSG()
+    nasb_1995_obj = NASB1995()
     net_obj = NET()
     nkjv_obj = NKJV()
+    niv_1984_obj = NIV1984()
+    niv_2011_obj = NIV2011()
+    nlt_obj = NLT()
+    rsv_obj = RSV()
 
     # XML Bibles?
     csb_obj = CSB()
@@ -47,9 +66,15 @@ def create_app() -> Flask:
     kjv_obj = KJV()
     asv_obj = ASV()
     bsb_obj = BSB()
+    gnv_obj = GNV()
+    lsv_obj = LSV()
+    web_obj = WEB()
+    ylt_obj = YLT()
 
-    bibles = {'ASV': asv_obj, 'BSB': bsb_obj, 'CSB': csb_obj, 'ESV': esv_obj, 'KJV': kjv_obj, 'NET': net_obj,
-              'NKJV': nkjv_obj}
+    bibles = {'AMP': amp_obj, 'ASV': asv_obj, 'BSB': bsb_obj, 'CSB': csb_obj, 'ESV': esv_obj, 'GNV': gnv_obj,
+              'KJV': kjv_obj, 'LSV': lsv_obj, 'MSG': msg_obj, 'NASB 1995': nasb_1995_obj, 'NET': net_obj,
+              'NIV 1984': niv_1984_obj, 'NIV 2011': niv_2011_obj, 'NKJV': nkjv_obj, 'NLT': nlt_obj, 'RSV': rsv_obj,
+              'WEB': web_obj, 'YLT': ylt_obj}
 
     debug = False
 

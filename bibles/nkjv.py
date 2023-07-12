@@ -3,17 +3,15 @@ from typing import List
 from bibles.bible import Bible
 from bibles.bolls_translate import translate
 import requests
-# (testing cache) import requests_cache
 import json
 import re
 
 class NKJV(Bible):
     def __init__(self) -> None:
         """
-        Gets a JSON formatted dictionary of an NET passage
+        Gets a JSON formatted dictionary of an NKJV passage
         """
         super().__init__()
-        # (testing cache) requests_cache.install_cache('verses', expire_after=999999999)
 
         # Caching
         try:
@@ -48,11 +46,11 @@ class NKJV(Bible):
 
     def __api_return(self, book: str, chapter: int) -> None:
         """
-                Gets a passage from the API
-                :param book: Name of the book to get (pre-validated)
-                :param chapter: chapter number to get (pre-validated)
-                :return: None
-                """
+        Gets a passage from the API
+        :param book: Name of the book to get (pre-validated)
+        :param chapter: chapter number to get (pre-validated)
+        :return: None
+        """
         tag_remover: re.Pattern = re.compile(r'<.*?>')
         try:
             response = requests.get(f"{self.__API_URL}{translate(book)}/{chapter}/")

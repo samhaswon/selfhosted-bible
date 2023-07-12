@@ -86,6 +86,12 @@ To access a locally hosted version of the application, go to [localhost:5000](ht
 The code included in this repository is subject to the included license, but the content from external sources is not.
 
 <details>
+    <summary>AMP Notice</summary>
+
+> Scriptures marked AMP are taken from the AMPLIFIED BIBLE (AMP): Scripture taken from the AMPLIFIED® BIBLE, Copyright © 1954, 1958, 1962, 1964, 1965, 1987 by the Lockman Foundation Used by Permission. (<a href="https://www.lockman.org/">www.Lockman.org</a>)
+</details>
+
+<details>
     <summary>ASV Notice</summary>
 
 > Scripture quotations marked “ASV” are taken from the American Standard Version Bible (Public Domain).
@@ -112,12 +118,37 @@ The code included in this repository is subject to the included license, but the
 </details>
 
 <details>
+    <summary>GNV Notice</summary>
+
+Geneva Bible (1599)
+> This digital copy is freely available world-wide, with no copyright restrictions, courtesy of eBible.org and many others.
+</details>
+
+<details>
     <summary>KJV Notice</summary>
 
 > Rights in The Authorized Version of the Bible (King James Bible) in the United Kingdom are vested in the Crown and administered by the Crown’s patentee, Cambridge University Press. The reproduction by any means of the text of the King James Version is permitted to a maximum of five hundred (500) verses for liturgical and non-commercial educational use, provided that the verses quoted neither amount to a complete book of the Bible nor represent 25 per cent or more of the total text of the work in which they are quoted, subject to the following acknowledgement being included:
 > Scripture quotations from The Authorized (King James) Version. Rights in the Authorized Version in the United Kingdom are vested in the Crown. Reproduced by permission of the Crown’s patentee, Cambridge University Press
 > When quotations from the KJV text are used in materials not being made available for sale, such as church bulletins, orders of service, posters, presentation materials, or similar media, a complete copyright notice is not required but the initials KJV must appear at the end of the quotation.
 > Rights or permission requests (including but not limited to reproduction in commercial publications) that exceed the above guidelines must be directed to the Permissions Department, Cambridge University Press, University Printing House, Shaftesbury Road, Cambridge CB2 8BS, UK (https://www.cambridge.org/about-us/rights-permissions) and approved in writing.
+</details>
+
+<details>
+    <summary>LSV Notice</summary>
+
+> Scripture quotations marked “LSV” are taken from the Literal Standard Version (Creative Commons Attribution-ShareAlike license). See more <a href="https://www.lsvbible.com/">here</a> 
+</details>
+
+<details>
+    <summary>MSG Notice</summary>
+
+> Scripture quotations marked "MSG" are from THE MESSAGE. Copyright © by Eugene H. Peterson 1993, 2002, 2005, 2018. Used by permission of NavPress. All rights reserved. Represented by Tyndale House Publishers, Inc. 
+</details>
+
+<details>
+    <summary>NASB (1995) Notice</summary>
+
+> Scripture quotations taken from the (NASB®) New American Standard Bible®, Copyright © 1960, 1971, 1977, 1995 by The Lockman Foundation. Used by permission. All rights reserved. <a href="lockman.org">lockman.org</a>
 </details>
 
 <details>
@@ -129,11 +160,42 @@ The code included in this repository is subject to the included license, but the
 </details>
 
 <details>
+    <summary>NIV Notice</summary>
+
+> The Holy Bible, New International Version®, NIV® Copyright © 1973, 1978, 1984, 2011 by Biblica, Inc.® Used with permission. All rights reserved worldwide.
+</details>
+
+<details>
     <summary>NKJV Notice</summary>
 
 > Scriptures marked NKJV are taken from the NEW KING JAMES VERSION (NKJV): Scripture taken from the NEW KING JAMES VERSION®. Copyright© 1982 by Thomas Nelson, Inc. Used by permission. All rights reserved. 
 
 <a href="https://www.thomasnelson.com/about-us/permissions/#permissionBiblesmartphone">See more info about usage of the NKJV here</a>
+</details>
+
+<details>
+    <summary>NLT Notice</summary>
+
+> Scriptures marked NLT are taken from the HOLY BIBLE, NEW LIVING TRANSLATION (NLT): Scriptures taken from the HOLY BIBLE, NEW LIVING TRANSLATION, Copyright© 1996, 2004, 2007 by Tyndale House Foundation. Used by permission of Tyndale House Publishers, Inc., Carol Stream, Illinois 60188. All rights reserved. Used by permission.
+</details>
+
+<details>
+    <summary>RSV Notice</summary>
+
+> Scriptures marked RSV are taken from the REVISED STANDARD VERSION (RSV): Scripture taken from the REVISED STANDARD VERSION, Grand Rapids: Zondervan, 1971.
+</details>
+
+<details>
+    <summary>WEB Notice</summary>
+
+- Note: Only canonical books available
+> Scriptures marked WEB are taken from THE WORLD ENGLISH BIBLE (WEB): WORLD ENGLISH BIBLE, public domain.
+</details>
+
+<details>
+    <summary>YLT Notice</summary>
+
+> Scripture quotations marked “YLT” are taken from The Young’s Literal Translation Bible (Public Domain).
 </details>
 
 ## Credits
