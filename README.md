@@ -128,5 +128,13 @@ The code included in this repository is subject to the included license, but the
 > To see the NET Bible® study tool go to https://netbible.org.
 </details>
 
+<details>
+    <summary>NKJV Notice</summary>
+
+> Scriptures marked NKJV are taken from the NEW KING JAMES VERSION (NKJV): Scripture taken from the NEW KING JAMES VERSION®. Copyright© 1982 by Thomas Nelson, Inc. Used by permission. All rights reserved. 
+
+<a href="https://www.thomasnelson.com/about-us/permissions/#permissionBiblesmartphone">See more info about usage of the NKJV here</a>
+</details>
+
 ## Credits
 Credit to [@bibleapi](https://github.com/bibleapi/bibleapi-bibles-json) for KJV and ASV original JSON

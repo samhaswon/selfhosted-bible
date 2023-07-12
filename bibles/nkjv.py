@@ -1,13 +1,13 @@
 from bibles.passage import PassageInvalid, PassageNotFound
 from typing import List
 from bibles.bible import Bible
-from requests import get, HTTPError
+from bibles.bolls_translate import translate
+import requests
 # (testing cache) import requests_cache
 import json
 import re
 
-
-class NET(Bible):
+class NKJV(Bible):
     def __init__(self) -> None:
         """
         Gets a JSON formatted dictionary of an NET passage
@@ -17,18 +17,18 @@ class NET(Bible):
 
         # Caching
         try:
-            with open('bibles/json_bibles/net.json', 'r') as cache_in:
+            with open('bibles/json_bibles/nkjv.json', 'r') as cache_in:
                 self.__cache: dict = json.load(cache_in)
         except FileNotFoundError:
             # Initialize empty cache
             self.__cache: dict = {book.name: {str(chapter): [] for chapter in range(1, book.chapter_count + 1)} for
                                   book in super().books}
 
-        self.__API_URL: str = "http://labs.bible.org/api/?passage="
+        self.__API_URL: str = "https://bolls.life/get-chapter/NKJV/"
 
     def get_passage(self, book: str, chapter: int) -> dict:
         """
-        Gets a chapter of the NET
+        Gets a chapter of the NKJV
         :param book: Name of the book to get from
         :param chapter: the chapter to get
         :return: dict of the chapter in the format {"book": bookname, "chapter": chapter_number, "verses":
@@ -46,35 +46,34 @@ class NET(Bible):
         else:
             raise PassageInvalid(book + " " + str(chapter))
 
-    def __api_return(self, book: str, chapter: int) -> dict:
+    def __api_return(self, book: str, chapter: int) -> None:
         """
-        Gets a passage from the API
-        :param book: Name of the book to get (pre-validated)
-        :param chapter: chapter number to get (pre-validated)
-        :return: None
-        """
+                Gets a passage from the API
+                :param book: Name of the book to get (pre-validated)
+                :param chapter: chapter number to get (pre-validated)
+                :return: None
+                """
         tag_remover: re.Pattern = re.compile(r'<.*?>')
         try:
-            response = get(f"{self.__API_URL}{book} {chapter}&type=json")
+            response = requests.get(f"{self.__API_URL}{translate(book)}/{chapter}/")
             response.raise_for_status()
             response = response.json()
             tmp_verses: List[str] = []
             for verse in response:
-                tmp_verses.append(verse['verse'] + " " + tag_remover.sub('', verse['text']))
+                tmp_verses.append(str(verse['verse']) + " " + tag_remover.sub('', verse['text']))
             self.__cache[book][str(chapter)] = tmp_verses
         except KeyError:
-            return {"API Overloaded?": "If this keeps happening, the app could be heavily throttled"}
-        except HTTPError:
-            return {"Issue connecting to the NET API":
-                     "Try checking the status of the NET API and the server's network connection"}
+            raise PassageInvalid(book + " " + str(chapter))
+        except requests.HTTPError:
+            raise PassageNotFound(book + " " + str(chapter))
 
         # Save for every even chapter query
         if chapter % 2 == 0:
             try:
                 # Normal save
-                with open("bibles/json_bibles/net.json", "w") as bible_save:
+                with open("bibles/json_bibles/nkjv.json", "w") as bible_save:
                     json.dump(self.__cache, bible_save)
             except FileNotFoundError:
                 # Testing save
-                with open("../bibles/json_bibles/net.json", "w") as bible_save:
+                with open("../bibles/json_bibles/nkjv.json", "w") as bible_save:
                     json.dump(self.__cache, bible_save)

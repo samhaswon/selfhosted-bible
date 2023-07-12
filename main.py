@@ -6,6 +6,7 @@ from bibles.csb import CSB
 from bibles.esv import ESV
 from bibles.kjv import KJV
 from bibles.net import NET
+from bibles.nkjv import NKJV
 from bibles.passage import PassageInvalid
 from navigate import Navigate, NavigateRel, NavigateVersion
 from flask import Flask, render_template, session, url_for, redirect, Response
@@ -37,6 +38,7 @@ def create_app() -> Flask:
     # JSON API Bibles
     esv_obj = ESV() if not len(api_key) else ESV((True, api_key))
     net_obj = NET()
+    nkjv_obj = NKJV()
 
     # XML Bibles?
     csb_obj = CSB()
@@ -46,7 +48,8 @@ def create_app() -> Flask:
     asv_obj = ASV()
     bsb_obj = BSB()
 
-    bibles = {'ASV': asv_obj, 'BSB': bsb_obj, 'CSB': csb_obj, 'ESV': esv_obj, 'KJV': kjv_obj, 'NET': net_obj}
+    bibles = {'ASV': asv_obj, 'BSB': bsb_obj, 'CSB': csb_obj, 'ESV': esv_obj, 'KJV': kjv_obj, 'NET': net_obj,
+              'NKJV': nkjv_obj}
 
     debug = False
 
