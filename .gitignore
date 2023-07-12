@@ -18,3 +18,4 @@ tests/speedtest.py
 bibles/json_bibles/csb.json
 bibles/json_bibles/net.json
 bibles/json_bibles/nkjv.json
+bibles/convert.py
