@@ -42,7 +42,7 @@ class NET(Bible):
                     self.__api_return(book, chapter)
                 return {'book': book, 'chapter': chapter, 'verses': {'none': self.__cache[book][str(chapter)]}}
             except KeyError:
-                raise PassageInvalid(book + " " + str(chapter))
+                raise PassageNotFound(book + " " + str(chapter))
         else:
             raise PassageInvalid(book + " " + str(chapter))
 
