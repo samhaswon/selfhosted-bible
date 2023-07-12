@@ -38,12 +38,11 @@ class NET(Bible):
         if super().has_passage(book, chapter):
             try:
                 # Try to use the cache to retrieve the verse
-                if len(self.__cache[book][str(chapter)]):
-                    return {'book': book, 'chapter': chapter, 'verses': {'none': self.__cache[book][str(chapter)]}}
-                else:
-                    return self.__api_return(book, chapter)
+                if not len(self.__cache[book][str(chapter)]):
+                    self.__api_return(book, chapter)
+                return {'book': book, 'chapter': chapter, 'verses': {'none': self.__cache[book][str(chapter)]}}
             except KeyError:
-                return self.__api_return(book, chapter)
+                raise PassageNotFound(book + " " + str(chapter))
         else:
             raise PassageInvalid(book + " " + str(chapter))
 
@@ -52,11 +51,9 @@ class NET(Bible):
         Gets a passage from the API
         :param book: Name of the book to get (pre-validated)
         :param chapter: chapter number to get (pre-validated)
-        :return: dict of the chapter in the format {"book": bookname, "chapter": chapter_number, "verses":
-            {'none': ["1 ...", "2 ..."]}}
+        :return: None
         """
-        tag_remover = re.compile(r'<.*?>')
-        passage: dict = {"book": book, "chapter": chapter, "verses": {'none': []}}
+        tag_remover: re.Pattern = re.compile(r'<.*?>')
         try:
             response = get(f"{self.__API_URL}{book} {chapter}&type=json")
             response.raise_for_status()
@@ -64,10 +61,9 @@ class NET(Bible):
             tmp_verses: List[str] = []
             for verse in response:
                 tmp_verses.append(verse['verse'] + " " + tag_remover.sub('', verse['text']))
-            passage['verses']['none'] = tmp_verses
             self.__cache[book][str(chapter)] = tmp_verses
         except KeyError:
-            return {"API Overloaded": "If this keeps happening, the app could be heavily throttled"}
+            return {"API Overloaded?": "If this keeps happening, the app could be heavily throttled"}
         except HTTPError:
             return {"Issue connecting to the NET API":
                      "Try checking the status of the NET API and the server's network connection"}
@@ -82,8 +78,3 @@ class NET(Bible):
                 # Testing save
                 with open("../bibles/json_bibles/net.json", "w") as bible_save:
                     json.dump(self.__cache, bible_save)
-
-        if passage:
-            return passage
-        else:
-            raise PassageNotFound(f"{book} {chapter}")
