@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from bibles.asv import ASV
+from bibles.bsb import BSB
 from bibles.csb import CSB
 from bibles.esv import ESV
 from bibles.kjv import KJV
@@ -43,8 +44,9 @@ def create_app() -> Flask:
     # JSON Bibles
     kjv_obj = KJV()
     asv_obj = ASV()
+    bsb_obj = BSB()
 
-    bibles = {'ASV': asv_obj, 'CSB': csb_obj, 'ESV': esv_obj, 'KJV': kjv_obj, 'NET': net_obj}
+    bibles = {'ASV': asv_obj, 'BSB': bsb_obj, 'CSB': csb_obj, 'ESV': esv_obj, 'KJV': kjv_obj, 'NET': net_obj}
 
     debug = False
 

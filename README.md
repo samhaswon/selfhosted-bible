@@ -92,6 +92,12 @@ The code included in this repository is subject to the included license, but the
 </details>
 
 <details>
+    <summary>BSB Notice</summary>
+
+> The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with <a href="//biblehub.com">Bible Hub</a>, <a href="//discoverybible.com">Discovery Bible</a>, <a href="//openbible.com">OpenBible.com</a>, and the Berean Bible Translation Committee. This text of God's Word has been <a href="https://creativecommons.org/publicdomain/zero/1.0/"> dedicated to the public domain</a>.
+</details>
+
+<details>
     <summary>CSB Notice</summary>
 
 > Scripture quotations marked CSB have been taken from the Christian Standard Bible®, Copyright © 2017 by Holman Bible Publishers. Used by permission. Christian Standard Bible® and CSB® are federally registered trademarks of Holman Bible Publishers.
