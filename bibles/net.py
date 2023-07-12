@@ -38,10 +38,9 @@ class NET(Bible):
         if super().has_passage(book, chapter):
             try:
                 # Try to use the cache to retrieve the verse
-                if len(self.__cache[book][str(chapter)]):
-                    return {'book': book, 'chapter': chapter, 'verses': {'none': self.__cache[book][str(chapter)]}}
-                else:
-                    return self.__api_return(book, chapter)
+                if not len(self.__cache[book][str(chapter)]):
+                    self.__api_return(book, chapter)
+                return {'book': book, 'chapter': chapter, 'verses': {'none': self.__cache[book][str(chapter)]}}
             except KeyError:
                 return self.__api_return(book, chapter)
         else:
@@ -83,7 +82,5 @@ class NET(Bible):
                 with open("../bibles/json_bibles/net.json", "w") as bible_save:
                     json.dump(self.__cache, bible_save)
 
-        if passage:
-            return passage
-        else:
+        if not passage:
             raise PassageNotFound(f"{book} {chapter}")
