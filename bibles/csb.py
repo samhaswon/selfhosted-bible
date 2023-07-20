@@ -4,13 +4,14 @@ from bibles.bible import Bible
 import xml.etree.ElementTree as ElementTree
 from requests import get, HTTPError
 # (testing cache) import requests_cache
-import json
 import re
+from bibles.compresscache import CompressCache
 
 
 class CSB(Bible):
     def __init__(self):
         super().__init__()
+        self.__compress_cache = CompressCache("csb")
         # (testing cache) requests_cache.install_cache('verses', expire_after=999999999**99)
 
         # Used to work with the "API" while validating input
@@ -84,8 +85,7 @@ class CSB(Bible):
         }
         # Caching
         try:
-            with open('bibles/json_bibles/csb.json', 'r') as cache_in:
-                self.__cache: dict = json.load(cache_in)
+            self.__cache: dict = self.__compress_cache.load()
         except FileNotFoundError:
             # Initialize empty cache
             self.__cache: dict = {book.name: {str(chapter): {} for chapter in range(1, book.chapter_count + 1)} for
@@ -103,14 +103,7 @@ class CSB(Bible):
         # Dump the cache every time a new book is gotten. This doesn't lead to much disk activity
         if not len(self.__cache[book][str(chapter)]):
             self.__get_book(book)
-            # Normal dump
-            try:
-                with open("bibles/json_bibles/csb.json", "w") as bible_save:
-                    json.dump(self.__cache, bible_save)
-            # For testing:
-            except FileNotFoundError:
-                with open("../bibles/json_bibles/csb.json", "w") as bible_save:
-                    json.dump(self.__cache, bible_save)
+            self.__compress_cache.save(self.__cache)
         return {'book': book, 'chapter': chapter, 'verses': self.__cache[book][str(chapter)]}
 
     def __get_book(self, book: str) -> None:

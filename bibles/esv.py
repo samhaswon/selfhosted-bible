@@ -4,7 +4,7 @@ from bibles.bible import Bible
 from requests import get, HTTPError
 from re import split as resplit
 from re import sub, search
-import json
+from bibles.compresscache import CompressCache
 
 
 class ESV(Bible):
@@ -14,13 +14,13 @@ class ESV(Bible):
         :param key_in: (True, "API key"), with the default (False, "") being reading from the file api-key.txt
         """
         super().__init__()
+        self.__compress_cache = CompressCache("esv")
         # API Setup
         self.__API_KEY = open("esv-api-key.txt", "r").read() if not key_in[0] else key_in[1]
         self.__API_URL: str = 'https://api.esv.org/v3/passage/text/'
         # Caching
         try:
-            with open('bibles/json_bibles/esv.json', 'r') as cache_in:
-                self.__cache: dict = json.load(cache_in)
+            self.__cache: dict = self.__compress_cache.load()
         except FileNotFoundError:
             # Initialize empty cache
             self.__cache: dict = {book.name: {str(chapter): {} for chapter in range(1, book.chapter_count + 1)} for
@@ -224,8 +224,7 @@ class ESV(Bible):
 
             # Cache the passage and save
             self.__cache[book][str(chapter)] = {'verses': passage['verses'], 'footnotes': passage['footnotes']}
-            with open("bibles/json_bibles/esv.json", "w") as bible_save:
-                json.dump(self.__cache, bible_save)
+            self.__compress_cache.save(self.__cache)
         else:
             self.__cache[book][str(chapter)] = {'verses': passage['verses'], 'footnotes': passage['footnotes']}
         return passage

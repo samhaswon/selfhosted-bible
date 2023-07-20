@@ -16,10 +16,10 @@ esv-api-key.txt
 icon/icon.png
 icon/icon.svg
 icon/
-bibles/json_bibles/esv.json
+bibles/json-bibles/esv.json
 .idea/
 static/styles_readable.css
 pictures/
 .github/
-bibles/json_bibles/csb.json
-bibles/json_bibles/net.json
+bibles/json-bibles/csb.json
+bibles/json-bibles/net.json

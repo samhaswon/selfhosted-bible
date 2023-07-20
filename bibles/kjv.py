@@ -1,21 +1,13 @@
-from bibles.json_bible import JSONBible
+from bibles.bible import Bible
 from bibles.passage import PassageInvalid
-import json
+from bibles.compresscache import CompressCache
 
 
-class KJV(JSONBible):
+class KJV(Bible):
     def __init__(self) -> None:
         super().__init__()
-        self.__kjv = self.read_file()
-
-    def read_file(self) -> dict:
-        try:
-            with open("bibles/json_bibles/kjv.json", "r") as data_file:
-                return json.load(data_file)
-            # For testing:
-        except FileNotFoundError:
-            with open("../bibles/json_bibles/kjv.json", "r") as data_file:
-                return json.load(data_file)
+        self.__compress_cache = CompressCache('kjv')
+        self.__kjv = self.__compress_cache.load()
 
     def get_passage(self, book: str, chapter: int) -> dict:
         """
@@ -28,20 +20,3 @@ class KJV(JSONBible):
             return {"book": book, "chapter": chapter, "verses": {'none': self.__kjv[book][str(chapter)]}}
         else:
             raise PassageInvalid
-
-
-if __name__ == '__main__':
-    """
-    Only used for conversion of source text from @bibleapi on github: https://github.com/bibleapi/bibleapi-bibles-json
-    """
-    bible = {book.name: {chapter: [] for chapter in range(1, book.chapter_count + 1)} for book in KJV().books}
-    with open("json_bibles/kjv.json", "r") as data_file_c:
-        verses = data_file_c.readlines()
-        temp_json = [json.loads(verse) for verse in verses]
-        for verse in temp_json:
-            if verse['book_name'] != 'Acts of the Apostles':
-                bible[verse['book_name']][verse['chapter']].append(str(verse['verse']) + ' ' + verse['text'])
-            else:
-                bible['Acts'][verse['chapter']].append(str(verse['verse']) + ' ' + verse['text'])
-    with open("kjv.json", "w") as bible_save:
-        json.dump(bible, bible_save)
