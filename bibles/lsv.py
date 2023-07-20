@@ -1,21 +1,13 @@
-from bibles.json_bible import JSONBible
+from bibles.bible import Bible
 from bibles.passage import PassageInvalid
-import json
+from bibles.compresscache import CompressCache
 
 
-class LSV(JSONBible):
+class LSV(Bible):
     def __init__(self) -> None:
         super().__init__()
-        self.__lsv = self.read_file()
-
-    def read_file(self) -> dict:
-        try:
-            with open("bibles/json_bibles/lsv.json", "r") as data_file:
-                return json.load(data_file)
-            # For testing:
-        except FileNotFoundError:
-            with open("../bibles/json_bibles/lsv.json", "r") as data_file:
-                return json.load(data_file)
+        self.__compress_cache = CompressCache('lsv')
+        self.__lsv = self.__compress_cache.load()
 
     def get_passage(self, book: str, chapter: int) -> dict:
         """

@@ -3,8 +3,8 @@ from typing import List
 from bibles.bible import Bible
 from bibles.bolls_translate import translate
 import requests
-import json
 import re
+from bibles.compresscache import CompressCache
 
 class RSV(Bible):
     def __init__(self) -> None:
@@ -12,11 +12,11 @@ class RSV(Bible):
         Gets a JSON formatted dictionary of a RSV passage
         """
         super().__init__()
+        self.__compress_cache = CompressCache('rsv')
 
         # Caching
         try:
-            with open('bibles/json_bibles/rsv.json', 'r') as cache_in:
-                self.__cache: dict = json.load(cache_in)
+            self.__cache: dict = self.__compress_cache.load()
         except FileNotFoundError:
             # Initialize empty cache
             self.__cache: dict = {book.name: {str(chapter): [] for chapter in range(1, book.chapter_count + 1)} for
@@ -67,11 +67,4 @@ class RSV(Bible):
 
         # Save for every even chapter query
         if chapter % 2 == 0:
-            try:
-                # Normal save
-                with open("bibles/json_bibles/rsv.json", "w") as bible_save:
-                    json.dump(self.__cache, bible_save)
-            except FileNotFoundError:
-                # Testing save
-                with open("../bibles/json_bibles/rsv.json", "w") as bible_save:
-                    json.dump(self.__cache, bible_save)
+            self.__compress_cache.save(self.__cache)

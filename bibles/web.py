@@ -1,21 +1,13 @@
-from bibles.json_bible import JSONBible
+from bibles.bible import Bible
 from bibles.passage import PassageInvalid
-import json
+from bibles.compresscache import CompressCache
 
 
-class WEB(JSONBible):
+class WEB(Bible):
     def __init__(self) -> None:
         super().__init__()
-        self.__web = self.read_file()
-
-    def read_file(self) -> dict:
-        try:
-            with open("bibles/json_bibles/web.json", "r") as data_file:
-                return json.load(data_file)
-            # For testing:
-        except FileNotFoundError:
-            with open("../bibles/json_bibles/web.json", "r") as data_file:
-                return json.load(data_file)
+        self.__compress_cache = CompressCache('web')
+        self.__web = self.__compress_cache.load()
 
     def get_passage(self, book: str, chapter: int) -> dict:
         """
