@@ -20,14 +20,21 @@ A self-hosted webapp of various Bible versions including the KJV, ESV, and ASV.
 # Instructions
 
 ## Generating an API key for authorized ESV access:
-To start, make an account at [esv.org](https://www.esv.org/). After creating an account at [esv.org](https://www.esv.org/), create an API key at [https://api.esv.org/account/create-application/](https://api.esv.org/account/create-application/). Then place the key in [esv-api-key.txt](esv-api-key.txt) in place of "\<key-goes-here\>" for local installation or save the key for later if running in Docker.
+To start, make an account at [esv.org](https://www.esv.org/). After creating an account at 
+[esv.org](https://www.esv.org/), create an API key at 
+[https://api.esv.org/account/create-application/](https://api.esv.org/account/create-application/). Then place the key 
+in [esv-api-key.txt](esv-api-key.txt) in place of "\<key-goes-here\>" for local installation or save the key for later 
+if running in Docker.
 
 ## Running the application
 <details>
     <summary>Locally</summary>
 
 #### *Install Python 3*
-This application requires Python 3 to run. To install it on Windows, download and run the installer at [python.org](https://www.python.org/downloads/). For Linux installation, you likely already have Python installed but maybe not pip. In this case, install python3 (if not already installed) and py3-pip (or whatever the package name is for Python 3 pip in your package manager) through your package manager. <br><br>
+This application requires Python 3 to run. To install it on Windows, download and run the installer at 
+[python.org](https://www.python.org/downloads/). For Linux installation, you likely already have Python installed but 
+maybe not pip. In this case, install python3 (if not already installed) and py3-pip (or whatever the package name is for 
+Python 3 pip in your package manager) through your package manager. <br><br>
 Then, verify Python was installed by running `python3 --version` on Linux or `py -version` on Windows.
 
 For more detailed installation instructions, see [realpython.com](https://realpython.com/installing-python/).
@@ -45,7 +52,8 @@ waitress-serve --port=5000 --call "main:create_app"
 <details>
     <summary>In Docker</summary>
 
-With docker, you have 2 options. You can either build the container yourself or pull it from [docker hub](https://hub.docker.com/r/samhaswon/self-hosted-bible)
+With docker, you have 2 options. You can either build the container yourself or pull it from 
+[docker hub](https://hub.docker.com/r/samhaswon/self-hosted-bible)
 #### Build the container
 ```shell
 docker build -t self-hosted-bible .
@@ -56,6 +64,7 @@ docker pull samhaswon/self-hosted-bible:latest
 ```
 
 ##### Run the container (detached)
+**Note** The volume, `/usr/src/app/bibles/json-bibles` is to give the container a persistent cache between versions <br><br>
 Docker run
 ```shell
 docker run -dp 5000:5000 \
@@ -83,7 +92,9 @@ services:
 </details>
 
 ## *Navigate to the webpage*
-To access a locally hosted version of the application, go to [localhost:5000](http://localhost:5000) or [127.0.0.1:5000](http://127.0.0.1:5000). To access the application running in Docker on another machine, go to <machine_ip>:5000 .
+To access a locally hosted version of the application, go to [localhost:5000](http://localhost:5000) or 
+[127.0.0.1:5000](http://127.0.0.1:5000). To access the application running in Docker on another machine, go to 
+<machine_ip>:5000 .
 
 ## Copyright Notice:
 The code included in this repository is subject to the included license, but the content from external sources is not.
@@ -91,7 +102,9 @@ The code included in this repository is subject to the included license, but the
 <details>
     <summary>AMP Notice</summary>
 
-> Scriptures marked AMP are taken from the AMPLIFIED BIBLE (AMP): Scripture taken from the AMPLIFIED® BIBLE, Copyright © 1954, 1958, 1962, 1964, 1965, 1987 by the Lockman Foundation Used by Permission. (<a href="https://www.lockman.org/">www.Lockman.org</a>)
+> Scriptures marked AMP are taken from the AMPLIFIED BIBLE (AMP): Scripture taken from the AMPLIFIED® BIBLE, Copyright 
+> © 1954, 1958, 1962, 1964, 1965, 1987 by the Lockman Foundation Used by Permission. 
+> (<a href="https://www.lockman.org/">www.Lockman.org</a>)
 </details>
 
 <details>
@@ -103,19 +116,27 @@ The code included in this repository is subject to the included license, but the
 <details>
     <summary>BSB Notice</summary>
 
-> The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with <a href="//biblehub.com">Bible Hub</a>, <a href="//discoverybible.com">Discovery Bible</a>, <a href="//openbible.com">OpenBible.com</a>, and the Berean Bible Translation Committee. This text of God's Word has been <a href="https://creativecommons.org/publicdomain/zero/1.0/"> dedicated to the public domain</a>.
+> The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with <a href="//biblehub.com">Bible Hub</a>, 
+> <a href="//discoverybible.com">Discovery Bible</a>, <a href="//openbible.com">OpenBible.com</a>, and the Berean Bible 
+> Translation Committee. This text of God's Word has been <a href="https://creativecommons.org/publicdomain/zero/1.0/"> 
+> dedicated to the public domain</a>.
 </details>
 
 <details>
     <summary>CSB Notice</summary>
 
-> Scripture quotations marked CSB have been taken from the Christian Standard Bible®, Copyright © 2017 by Holman Bible Publishers. Used by permission. Christian Standard Bible® and CSB® are federally registered trademarks of Holman Bible Publishers.
+> Scripture quotations marked CSB have been taken from the Christian Standard Bible®, Copyright © 2017 by Holman Bible 
+> Publishers. Used by permission. Christian Standard Bible® and CSB® are federally registered trademarks of Holman Bible 
+> Publishers.
 </details>
 
 <details>
     <summary>ESV Notice</summary>
 
->Scripture quotations marked “ESV” are from the ESV® Bible (The Holy Bible, English Standard Version®), copyright © 2001 by Crossway, a publishing ministry of Good News Publishers. Used by permission. All rights reserved. The ESV text may not be quoted in any publication made available to the public by a Creative Commons license. The ESV may not be translated into any other language.
+>Scripture quotations marked “ESV” are from the ESV® Bible (The Holy Bible, English Standard Version®), copyright © 2001 
+> by Crossway, a publishing ministry of Good News Publishers. Used by permission. All rights reserved. The ESV text may 
+> not be quoted in any publication made available to the public by a Creative Commons license. The ESV may not be 
+> translated into any other language.
 >
 >Users may not copy or download more than 500 verses of the ESV Bible or more than one half of any book of the ESV Bible.
 </details>
@@ -130,34 +151,50 @@ Geneva Bible (1599)
 <details>
     <summary>KJV Notice</summary>
 
-> Rights in The Authorized Version of the Bible (King James Bible) in the United Kingdom are vested in the Crown and administered by the Crown’s patentee, Cambridge University Press. The reproduction by any means of the text of the King James Version is permitted to a maximum of five hundred (500) verses for liturgical and non-commercial educational use, provided that the verses quoted neither amount to a complete book of the Bible nor represent 25 per cent or more of the total text of the work in which they are quoted, subject to the following acknowledgement being included:
-> Scripture quotations from The Authorized (King James) Version. Rights in the Authorized Version in the United Kingdom are vested in the Crown. Reproduced by permission of the Crown’s patentee, Cambridge University Press
-> When quotations from the KJV text are used in materials not being made available for sale, such as church bulletins, orders of service, posters, presentation materials, or similar media, a complete copyright notice is not required but the initials KJV must appear at the end of the quotation.
-> Rights or permission requests (including but not limited to reproduction in commercial publications) that exceed the above guidelines must be directed to the Permissions Department, Cambridge University Press, University Printing House, Shaftesbury Road, Cambridge CB2 8BS, UK (https://www.cambridge.org/about-us/rights-permissions) and approved in writing.
+> Rights in The Authorized Version of the Bible (King James Bible) in the United Kingdom are vested in the Crown and 
+> administered by the Crown’s patentee, Cambridge University Press. The reproduction by any means of the text of the 
+> King James Version is permitted to a maximum of five hundred (500) verses for liturgical and non-commercial 
+> educational use, provided that the verses quoted neither amount to a complete book of the Bible nor represent 25 per 
+> cent or more of the total text of the work in which they are quoted, subject to the following acknowledgement being 
+> included:
+> 
+> Scripture quotations from The Authorized (King James) Version. Rights in the Authorized Version in the United Kingdom 
+> are vested in the Crown. Reproduced by permission of the Crown’s patentee, Cambridge University Press
+> When quotations from the KJV text are used in materials not being made available for sale, such as church bulletins, 
+> orders of service, posters, presentation materials, or similar media, a complete copyright notice is not required but 
+> the initials KJV must appear at the end of the quotation.
+> Rights or permission requests (including but not limited to reproduction in commercial publications) that exceed the 
+> above guidelines must be directed to the Permissions Department, Cambridge University Press, University Printing 
+> House, Shaftesbury Road, Cambridge CB2 8BS, UK (https://www.cambridge.org/about-us/rights-permissions) and approved 
+> in writing.
 </details>
 
 <details>
     <summary>LSV Notice</summary>
 
-> Scripture quotations marked “LSV” are taken from the Literal Standard Version (Creative Commons Attribution-ShareAlike license). See more <a href="https://www.lsvbible.com/">here</a> 
+> Scripture quotations marked “LSV” are taken from the Literal Standard Version (Creative Commons Attribution-ShareAlike 
+> license). See more <a href="https://www.lsvbible.com/">here</a> 
 </details>
 
 <details>
     <summary>MSG Notice</summary>
 
-> Scripture quotations marked "MSG" are from THE MESSAGE. Copyright © by Eugene H. Peterson 1993, 2002, 2005, 2018. Used by permission of NavPress. All rights reserved. Represented by Tyndale House Publishers, Inc. 
+> Scripture quotations marked "MSG" are from THE MESSAGE. Copyright © by Eugene H. Peterson 1993, 2002, 2005, 2018. Used 
+> by permission of NavPress. All rights reserved. Represented by Tyndale House Publishers, Inc. 
 </details>
 
 <details>
     <summary>NASB (1995) Notice</summary>
 
-> Scripture quotations taken from the (NASB®) New American Standard Bible®, Copyright © 1960, 1971, 1977, 1995 by The Lockman Foundation. Used by permission. All rights reserved. <a href="lockman.org">lockman.org</a>
+> Scripture quotations taken from the (NASB®) New American Standard Bible®, Copyright © 1960, 1971, 1977, 1995 by The 
+> Lockman Foundation. Used by permission. All rights reserved. <a href="lockman.org">lockman.org</a>
 </details>
 
 <details>
     <summary>NET Notice</summary>
 
-> The Scriptures quoted are from the NET Bible® https://netbible.com copyright ©1996, 2019 used with permission from Biblical Studies Press, L.L.C. All rights reserved
+> The Scriptures quoted are from the NET Bible® https://netbible.com copyright ©1996, 2019 used with permission from 
+> Biblical Studies Press, L.L.C. All rights reserved
 >
 > To see the NET Bible® study tool go to https://netbible.org.
 </details>
@@ -165,13 +202,15 @@ Geneva Bible (1599)
 <details>
     <summary>NIV Notice</summary>
 
-> The Holy Bible, New International Version®, NIV® Copyright © 1973, 1978, 1984, 2011 by Biblica, Inc.® Used with permission. All rights reserved worldwide.
+> The Holy Bible, New International Version®, NIV® Copyright © 1973, 1978, 1984, 2011 by Biblica, Inc.® Used with 
+> permission. All rights reserved worldwide.
 </details>
 
 <details>
     <summary>NKJV Notice</summary>
 
-> Scriptures marked NKJV are taken from the NEW KING JAMES VERSION (NKJV): Scripture taken from the NEW KING JAMES VERSION®. Copyright© 1982 by Thomas Nelson, Inc. Used by permission. All rights reserved. 
+> Scriptures marked NKJV are taken from the NEW KING JAMES VERSION (NKJV): Scripture taken from the NEW KING JAMES 
+> VERSION®. Copyright© 1982 by Thomas Nelson, Inc. Used by permission. All rights reserved. 
 
 <a href="https://www.thomasnelson.com/about-us/permissions/#permissionBiblesmartphone">See more info about usage of the NKJV here</a>
 </details>
@@ -179,13 +218,16 @@ Geneva Bible (1599)
 <details>
     <summary>NLT Notice</summary>
 
-> Scriptures marked NLT are taken from the HOLY BIBLE, NEW LIVING TRANSLATION (NLT): Scriptures taken from the HOLY BIBLE, NEW LIVING TRANSLATION, Copyright© 1996, 2004, 2007 by Tyndale House Foundation. Used by permission of Tyndale House Publishers, Inc., Carol Stream, Illinois 60188. All rights reserved. Used by permission.
+> Scriptures marked NLT are taken from the HOLY BIBLE, NEW LIVING TRANSLATION (NLT): Scriptures taken from the HOLY 
+> BIBLE, NEW LIVING TRANSLATION, Copyright© 1996, 2004, 2007 by Tyndale House Foundation. Used by permission of Tyndale 
+> House Publishers, Inc., Carol Stream, Illinois 60188. All rights reserved. Used by permission.
 </details>
 
 <details>
     <summary>RSV Notice</summary>
 
-> Scriptures marked RSV are taken from the REVISED STANDARD VERSION (RSV): Scripture taken from the REVISED STANDARD VERSION, Grand Rapids: Zondervan, 1971.
+> Scriptures marked RSV are taken from the REVISED STANDARD VERSION (RSV): Scripture taken from the REVISED STANDARD 
+> VERSION, Grand Rapids: Zondervan, 1971.
 </details>
 
 <details>
