@@ -47,7 +47,7 @@ class TestCSB(TestCase):
             self.csb.get_passage(book, 1)
             end = time.perf_counter()
             print(f"Total time parsing {book}: {end - start}")
-        with open("../bibles/json_bibles/csb.json", "r") as cache_file:
+        with open("../bibles/json-bibles/csb.json", "r") as cache_file:
             self.assertNotIn("<", cache_file.read())
 
     def test_close_to_kjv(self):

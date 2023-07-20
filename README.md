@@ -62,10 +62,11 @@ docker run -dp 5000:5000 \
        --restart=always \
        --name self-hosted-bible \
        -e ESV_API_KEY=<key-goes-here> \
+       -v <host_path>:/usr/src/app/bibles/json-bibles
        self-hosted-bible
 ```
 Docker compose
-```shell
+```yaml
 version: '3'
 services:
   self-hosted-bible-server:
@@ -74,6 +75,8 @@ services:
     ports:
       - "5000:5000"
     restart: always
+    volumes:
+      - /path/to/json/bibles:/usr/src/app/bibles/json-bibles
     environment:
       - ESV_API_KEY=<key-goes-here>
 ```
