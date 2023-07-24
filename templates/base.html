@@ -1,5 +1,6 @@
-{% block doc -%}
 <!DOCTYPE html>
+{% block doc -%}
+<html lang="en">
 <head>
     {%- block head %}
         <title>{% block title %}{{ title | default }}{% endblock title %}</title>
@@ -31,4 +32,5 @@
     {% block content %}
     {% endblock content %}
 {% endblock body %}
+</html>
 {% endblock doc -%}
