@@ -22,17 +22,21 @@ from bibles.ylt import YLT
 from bibles.passage import PassageInvalid
 from navigate import Navigate, NavigateRel, NavigateVersion
 from flask import Flask, render_template, session, url_for, redirect, Response
+from compress import Compress
 from typing import List, Tuple, Union
 import sys
 import re
+import time
 
 
 def create_app() -> Flask:
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'b^lC08A7d@z3'
+    Compress(app)
 
     minify = re.compile(r'<!--(.*?)-->|(\s{2,}\B)|\n')
 
+    start = time.perf_counter()
     # Read the ESV API key
     api_key: str = ""
     try:
@@ -70,6 +74,9 @@ def create_app() -> Flask:
     lsv_obj = LSV()
     web_obj = WEB()
     ylt_obj = YLT()
+
+    end = time.perf_counter()
+    print(f"Loaded Bibles in {end - start} seconds")
 
     bibles = {'AMP': amp_obj, 'ASV': asv_obj, 'BSB': bsb_obj, 'CSB': csb_obj, 'ESV': esv_obj, 'GNV': gnv_obj,
               'KJV': kjv_obj, 'LSV': lsv_obj, 'MSG': msg_obj, 'NASB 1995': nasb_1995_obj, 'NET': net_obj,
