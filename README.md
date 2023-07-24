@@ -55,6 +55,8 @@ waitress-serve --port=5000 --call "main:create_app"
 With docker, you have 2 options. You can either build the container yourself or pull it from 
 [docker hub](https://hub.docker.com/r/samhaswon/self-hosted-bible)
 #### Build the container
+If you choose this option, replace `samhaswon/self-hosted-bible:latest` with `self-hosted-bible` in the Docker run 
+command or Docker compose file.
 ```shell
 docker build -t self-hosted-bible .
 ``` 
@@ -72,14 +74,14 @@ docker run -dp 5000:5000 \
        --name self-hosted-bible \
        -e ESV_API_KEY=<key-goes-here> \
        -v <host_path>:/usr/src/app/bibles/json-bibles
-       self-hosted-bible
+       samhaswon/self-hosted-bible:latest
 ```
 Docker compose
 ```yaml
 version: '3'
 services:
   self-hosted-bible-server:
-    image: self-hosted-bible
+    image: samhaswon/self-hosted-bible:latest
     container_name: self-hosted-bible
     ports:
       - "5000:5000"
