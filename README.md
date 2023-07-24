@@ -1,4 +1,5 @@
 # [Self-hosted Bible](https://github.com/samhaswon/selfhosted-bible)
+![An icon with the letters S, H, and B on a black background.](static/favicon.svg "Logo")
 A self-hosted webapp of various Bible versions including the KJV, ESV, and ASV.
 
 ## Supported Architectures
@@ -11,11 +12,11 @@ A self-hosted webapp of various Bible versions including the KJV, ESV, and ASV.
 ## Examples
 *Note: Screen shots taken in dark mode <br>
 ### Home page
-![](pictures/home.jpg)
+![Home page image](pictures/home.jpg)
 ### Single version reading
-![](pictures/single_version.jpg)
+![Example view of using a single version. The passage is Genesis chapter 1](pictures/single_version.jpg)
 ### Split version reading
-![](pictures/split_version.jpg)
+![Example image of two versions side by side. The example is using the ESV and KJV for the passage Genesis chapter 1](pictures/split_version.jpg)
 
 # Instructions
 

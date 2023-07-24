@@ -37,7 +37,7 @@ class Compress(object):
     def init_app(self, app) -> None:
         defaults: List[tuple] = [
             ('COMPRESS_MIMETYPES', ['text/html', 'text/css', 'text/xml', 'application/json',
-                                    'application/javascript', 'image/x-icon']),
+                                    'application/javascript', 'image/x-icon', 'image/svg+xml']),
             ('COMPRESS_LEVEL', 6),
             ('COMPRESS_BR_LEVEL', 4),
             ('COMPRESS_BR_MODE', 0),
