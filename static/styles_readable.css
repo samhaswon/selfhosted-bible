@@ -452,6 +452,11 @@ label {
         background-color: #000331
     }
 
+    button,input,optgroup,select,textarea {
+        color: #ededed;
+        background: #000331;
+    }
+
     a {
         color: #8080f1
     }
