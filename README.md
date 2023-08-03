@@ -7,7 +7,6 @@ A self-hosted webapp of various Bible versions including the KJV, ESV, and ASV.
 |:------------:|:---------:|--------|
 |    x86-64    |     ✅     | latest |
 |   arm64v8    |     ✅     | latest |
-|   arm32v7    |     ✅     | latest |
 
 ## Examples
 *Note: Screen shots taken in dark mode <br>
