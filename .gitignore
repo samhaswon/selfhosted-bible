@@ -15,6 +15,7 @@ self_hosted_bible.egg-info/
 notes.txt
 bibles/convert.py
 tests/speedtest.py
+.gitignore
 
 bibles/json-bibles/amp.json
 bibles/json-bibles/amp.json.pbz2
