@@ -15,6 +15,7 @@ self_hosted_bible.egg-info/
 notes.txt
 bibles/convert.py
 tests/speedtest.py
+.gitignore
 
 bibles/json-bibles/amp.json
 bibles/json-bibles/amp.json.pbz2
@@ -38,3 +39,4 @@ bibles/json-bibles/nlt.json
 bibles/json-bibles/nlt.json.pbz2
 bibles/json-bibles/rsv.json
 bibles/json-bibles/rsv.json.pbz2
+/docker-compose.yml

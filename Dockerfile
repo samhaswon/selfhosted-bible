@@ -33,6 +33,7 @@ COPY --chmod=0755 . .
 
 EXPOSE 5000
 
+STOPSIGNAL SIGKILL
 CMD [ "/usr/src/app/daemon.sh" ]
 VOLUME /usr/src/app/bibles/json-bibles
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD wget http://localhost:5000/health -q -O - > /dev/null 2>&1
