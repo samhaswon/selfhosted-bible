@@ -11,7 +11,10 @@ RUN echo "***** Getting required packages *****" && \
     apk add --no-cache --update  \
     gcc \
     musl-dev \
-    linux-headers && \
+    linux-headers \
+    python3-dev \
+    g++ \
+    git && \
     pip install --upgrade pip
 
 # Build dependencies
