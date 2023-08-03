@@ -39,3 +39,4 @@ bibles/json-bibles/nlt.json
 bibles/json-bibles/nlt.json.pbz2
 bibles/json-bibles/rsv.json
 bibles/json-bibles/rsv.json.pbz2
+/docker-compose.yml
