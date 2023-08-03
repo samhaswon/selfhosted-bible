@@ -1,7 +1,6 @@
 from wtforms import SubmitField, SelectField, SelectMultipleField
 from wtforms.validators import DataRequired, Optional
 from flask_wtf import FlaskForm
-from typing import List
 
 
 class NonValidatingSelectField(SelectField):
@@ -17,26 +16,76 @@ class NonValidatingSelectField(SelectField):
         """
         pass
 
-
-class Navigate(FlaskForm):
-    choices: List[str] = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy', 'Joshua', 'Judges', 'Ruth',
-                          '1 Samuel', '2 Samuel', '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles', 'Ezra',
-                          'Nehemiah', 'Esther', 'Job', 'Psalms', 'Proverbs', 'Ecclesiastes', 'Song of Solomon',
-                          'Isaiah', 'Jeremiah', 'Lamentations', 'Ezekiel', 'Daniel', 'Hosea', 'Joel', 'Amos', 'Obadiah',
-                          'Jonah', 'Micah', 'Nahum', 'Habakkuk', 'Zephaniah', 'Haggai', 'Zechariah', 'Malachi',
-                          'Matthew', 'Mark', 'Luke', 'John', 'Acts', 'Romans', '1 Corinthians', '2 Corinthians',
-                          'Galatians', 'Ephesians', 'Philippians', 'Colossians', '1 Thessalonians', '2 Thessalonians',
-                          '1 Timothy', '2 Timothy', 'Titus', 'Philemon', 'Hebrews', 'James', '1 Peter', '2 Peter',
-                          '1 John', '2 John', '3 John', 'Jude', 'Revelation']
-
-    select_chapter: SelectField = NonValidatingSelectField('Select chapter', choices=[], validators=[Optional()])
-    select_book: SelectField = SelectField('Select book', choices=choices, coerce=str, validators=[DataRequired()])
-    submit_book: SelectField = SubmitField('Submit book')
-    submit_chapter: SelectField = SubmitField('Submit chapter')
-
-    def __init__(self, choices: list, *args, **kwargs):
-        super(Navigate, self).__init__(*args, **kwargs)
-        self.select_chapter.choices = choices if type(choices[0]) is int else []
+class NavigatePassage(FlaskForm):
+    books = [('Genesis', 'Genesis'),
+             ('Exodus', 'Exodus'),
+             ('Leviticus', 'Leviticus'),
+             ('Numbers', 'Numbers'),
+             ('Deuteronomy', 'Deuteronomy'),
+             ('Joshua', 'Joshua'),
+             ('Judges', 'Judges'),
+             ('Ruth', 'Ruth'),
+             ('1 Samuel', '1 Samuel'),
+             ('2 Samuel', '2 Samuel'),
+             ('1 Kings', '1 Kings'),
+             ('2 Kings', '2 Kings'),
+             ('1 Chronicles', '1 Chronicles'),
+             ('2 Chronicles', '2 Chronicles'),
+             ('Ezra', 'Ezra'),
+             ('Nehemiah', 'Nehemiah'),
+             ('Esther', 'Esther'),
+             ('Job', 'Job'),
+             ('Psalms', 'Psalms'),
+             ('Proverbs', 'Proverbs'),
+             ('Ecclesiastes', 'Ecclesiastes'),
+             ('Song of Solomon', 'Song of Solomon'),
+             ('Isaiah', 'Isaiah'),
+             ('Jeremiah', 'Jeremiah'),
+             ('Lamentations', 'Lamentations'),
+             ('Ezekiel', 'Ezekiel'),
+             ('Daniel', 'Daniel'),
+             ('Hosea', 'Hosea'),
+             ('Joel', 'Joel'),
+             ('Amos', 'Amos'),
+             ('Obadiah', 'Obadiah'),
+             ('Jonah', 'Jonah'),
+             ('Micah', 'Micah'),
+             ('Nahum', 'Nahum'),
+             ('Habakkuk', 'Habakkuk'),
+             ('Zephaniah', 'Zephaniah'),
+             ('Haggai', 'Haggai'),
+             ('Zechariah', 'Zechariah'),
+             ('Malachi', 'Malachi'),
+             ('Matthew', 'Matthew'),
+             ('Mark', 'Mark'),
+             ('Luke', 'Luke'),
+             ('John', 'John'),
+             ('Acts', 'Acts'),
+             ('Romans', 'Romans'),
+             ('1 Corinthians', '1 Corinthians'),
+             ('2 Corinthians', '2 Corinthians'),
+             ('Galatians', 'Galatians'),
+             ('Ephesians', 'Ephesians'),
+             ('Philippians', 'Philippians'),
+             ('Colossians', 'Colossians'),
+             ('1 Thessalonians', '1 Thessalonians'),
+             ('2 Thessalonians', '2 Thessalonians'),
+             ('1 Timothy', '1 Timothy'),
+             ('2 Timothy', '2 Timothy'),
+             ('Titus', 'Titus'),
+             ('Philemon', 'Philemon'),
+             ('Hebrews', 'Hebrews'),
+             ('James', 'James'),
+             ('1 Peter', '1 Peter'),
+             ('2 Peter', '2 Peter'),
+             ('1 John', '1 John'),
+             ('2 John', '2 John'),
+             ('3 John', '3 John'),
+             ('Jude', 'Jude'),
+             ('Revelation', 'Revelation')]
+    book = SelectField('Book', choices=books, validators=[DataRequired()])
+    chapter = NonValidatingSelectField('Chapter', choices=[], validators=[Optional()])
+    submit = SubmitField("Go to passage")
 
 
 class NavigateRel(FlaskForm):

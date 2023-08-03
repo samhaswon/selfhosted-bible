@@ -4,18 +4,17 @@
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
     <div class="container-fluid mw-100">
-    <form method="post" role="form">
-        {{ form.hidden_tag() }}
-        {{ wtf.form_field(version_select.select_version, size=3) }}
-        <br>
-        {{ wtf.form_field(form.select_book) }}
-        {{ wtf.form_field(form.submit_book) }}
-        <br>
-        {{ wtf.form_field(form.select_chapter) }}
-        {{ wtf.form_field(form.submit_chapter) }}
-        {% if error_mess %}
-            {{ error_mess }}
-        {% endif %}
-    </form>
+        <form method="POST" role="form">
+            {{ form.hidden_tag() }}
+            {{ wtf.form_field(version_select.select_version, size=4) }}
+            <br>
+            {{ wtf.form_field(form.book) }}
+            {{ wtf.form_field(form.chapter) }}
+            {{ wtf.form_field(form.submit) }}
+            {% if error_mess %}
+                {{ error_mess }}
+            {% endif %}
+        </form>
+        <script type="text/javascript" async="" src="{{ url_for('static', filename='navigate.js') }}"></script>
     </div>
 {% endblock %}

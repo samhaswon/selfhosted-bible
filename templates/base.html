@@ -1,5 +1,6 @@
-{% block doc -%}
 <!DOCTYPE html>
+{% block doc -%}
+<html lang="en">
 <head>
     {%- block head %}
         <title>{% block title %}{{ title | default }}{% endblock title %}</title>
@@ -10,7 +11,7 @@
         {%- endblock metas %}
         {%- block styles %}
             <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-            <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+            <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg">
         {%- endblock styles %}
     {%- endblock head %}
 </head>
@@ -31,4 +32,5 @@
     {% block content %}
     {% endblock content %}
 {% endblock body %}
+</html>
 {% endblock doc -%}

@@ -20,19 +20,23 @@ from bibles.web import WEB
 from bibles.ylt import YLT
 
 from bibles.passage import PassageInvalid
-from navigate import Navigate, NavigateRel, NavigateVersion
-from flask import Flask, render_template, session, url_for, redirect, Response
-from typing import List, Tuple, Union
+from navigate import NavigateRel, NavigateVersion, NavigatePassage
+from flask import Flask, render_template, session, url_for, redirect, Response, jsonify
+from compress import Compress
+from typing import Tuple, Union
 import sys
 import re
+import time
 
 
 def create_app() -> Flask:
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'b^lC08A7d@z3'
+    Compress(app)
 
     minify = re.compile(r'<!--(.*?)-->|(\s{2,}\B)|\n')
 
+    start = time.perf_counter()
     # Read the ESV API key
     api_key: str = ""
     try:
@@ -71,6 +75,9 @@ def create_app() -> Flask:
     web_obj = WEB()
     ylt_obj = YLT()
 
+    end = time.perf_counter()
+    print(f"Loaded Bibles in {end - start} seconds")
+
     bibles = {'AMP': amp_obj, 'ASV': asv_obj, 'BSB': bsb_obj, 'CSB': csb_obj, 'ESV': esv_obj, 'GNV': gnv_obj,
               'KJV': kjv_obj, 'LSV': lsv_obj, 'MSG': msg_obj, 'NASB 1995': nasb_1995_obj, 'NET': net_obj,
               'NIV 1984': niv_1984_obj, 'NIV 2011': niv_2011_obj, 'NKJV': nkjv_obj, 'NLT': nlt_obj, 'RSV': rsv_obj,
@@ -91,22 +98,15 @@ def create_app() -> Flask:
         :return: Main menu page
         """
         error_mess = None
-        form = Navigate(choices=[""])
+        form = NavigatePassage()
         version_select = NavigateVersion()
 
         if form.validate_on_submit():
-            # book: str = form.select_book.data
-            # versions: dict = version_select.data
             session['select_version'] = versions = version_select.data
-            session['select_book'] = book = form.select_book.data
-            session['select_chapter'] = chapter_dat = form.select_chapter.data
+            session['select_book'] = book = form.book.data
+            session['select_chapter'] = chapter_dat = form.chapter.data
 
-            chapter_count: int = esv_obj.chapter_count(book)
-
-            chapters: List[int] = [x for x in range(1, chapter_count + 1)]
-            form = Navigate(choices=chapters)
-
-            if chapter_dat and form.submit_chapter.data and \
+            if chapter_dat and form.chapter.data and \
                     esv_obj.has_passage(book, int(chapter_dat)):
                 if len(versions['select_version']) == 1:
                     return redirect(url_for('chapter'))
@@ -114,7 +114,7 @@ def create_app() -> Flask:
                     return redirect(url_for('chapter_split'))
                 else:
                     return redirect(url_for("404.html"))
-            elif form.submit_chapter.data:
+            elif form.chapter.data:
                 error_mess = "Please submit the book first"
         html: str = render_template('index.html', title='Home', debug=debug, form=form, error_mess=error_mess,
                                     version_select=version_select)
@@ -202,6 +202,16 @@ def create_app() -> Flask:
         :return: Copyright notice
         """
         return minify.sub('', render_template("copyright.html", debug=debug))
+
+    @app.route('/chapters/<book>')
+    def chapters(book) -> Response:
+        # get the number of chapters for the given book
+        try:
+            num_chapters = kjv_obj.books_of_the_bible[book]
+        except KeyError:
+            num_chapters = 1
+        # return the number of chapters as a JSON response
+        return jsonify({'num_chapters': num_chapters})
 
     @app.errorhandler(500)
     def server_error(e) -> Tuple[str, int]:

@@ -1,4 +1,5 @@
 # [Self-hosted Bible](https://github.com/samhaswon/selfhosted-bible)
+![An icon with the letters S, H, and B on a black background.](static/favicon.svg "Logo")
 A self-hosted webapp of various Bible versions including the KJV, ESV, and ASV.
 
 ## Supported Architectures
@@ -11,11 +12,11 @@ A self-hosted webapp of various Bible versions including the KJV, ESV, and ASV.
 ## Examples
 *Note: Screen shots taken in dark mode <br>
 ### Home page
-![](pictures/home.jpg)
+![Home page image](pictures/home.jpg)
 ### Single version reading
-![](pictures/single_version.jpg)
+![Example view of using a single version. The passage is Genesis chapter 1](pictures/single_version.jpg)
 ### Split version reading
-![](pictures/split_version.jpg)
+![Example image of two versions side by side. The example is using the ESV and KJV for the passage Genesis chapter 1](pictures/split_version.jpg)
 
 # Instructions
 
@@ -55,6 +56,8 @@ waitress-serve --port=5000 --call "main:create_app"
 With docker, you have 2 options. You can either build the container yourself or pull it from 
 [docker hub](https://hub.docker.com/r/samhaswon/self-hosted-bible)
 #### Build the container
+If you choose this option, replace `samhaswon/self-hosted-bible:latest` with `self-hosted-bible` in the Docker run 
+command or Docker compose file.
 ```shell
 docker build -t self-hosted-bible .
 ``` 
@@ -72,14 +75,14 @@ docker run -dp 5000:5000 \
        --name self-hosted-bible \
        -e ESV_API_KEY=<key-goes-here> \
        -v <host_path>:/usr/src/app/bibles/json-bibles
-       self-hosted-bible
+       samhaswon/self-hosted-bible:latest
 ```
 Docker compose
 ```yaml
 version: '3'
 services:
   self-hosted-bible-server:
-    image: self-hosted-bible
+    image: samhaswon/self-hosted-bible:latest
     container_name: self-hosted-bible
     ports:
       - "5000:5000"

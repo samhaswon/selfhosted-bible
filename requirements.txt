@@ -4,3 +4,4 @@ Flask==2.3.2
 Flask-WTF==1.1.1
 waitress==2.1.2
 WTForms==3.0.1
+Brotli==1.0.9
