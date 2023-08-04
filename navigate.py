@@ -8,7 +8,7 @@ class NonValidatingSelectField(SelectField):
     Class to ignore the SelectField validation
     """
 
-    def pre_validate(self, form):
+    def pre_validate(self, form) -> None:
         """
         Does nothing
         :param form: form to validate
@@ -17,6 +17,11 @@ class NonValidatingSelectField(SelectField):
         pass
 
 class NavigatePassage(FlaskForm):
+    """
+    FlaskForm for Bible passage navigation. Should be used with navigate.js on the frontend to make a dynamic dropdown
+    for passage selection.
+    """
+    # Books of the Bible, as 2-tuples, for form creation.
     books = [('Genesis', 'Genesis'),
              ('Exodus', 'Exodus'),
              ('Leviticus', 'Leviticus'),
