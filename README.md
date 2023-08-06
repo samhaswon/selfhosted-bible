@@ -133,6 +133,14 @@ The code included in this repository is subject to the included license, but the
 </details>
 
 <details>
+    <summary>BBE Notice</summary>
+
+> The Bible in Basic English is in the public domain. It was printed in 1965 by Cambridge Press in England without a copyright notice. When distributed in the United States, it fell into the public domain according to the UCC convention of that time.
+> 
+> The Bible in Basic English uses “Basic English”, a simple form of the English language with a vocabulary of fewer than 1000 words.
+</details>
+
+<details>
     <summary>BSB Notice</summary>
 
 > The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with <a href="//biblehub.com">Bible Hub</a>, 
