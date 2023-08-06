@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
+from bibles.akjv import AKJV
 from bibles.amp import AMP
 from bibles.asv import ASV
+from bibles.bbe import BBE
 from bibles.bsb import BSB
 from bibles.csb import CSB
 from bibles.esv import ESV
@@ -67,6 +69,8 @@ def create_app() -> Flask:
     csb_obj = CSB()
 
     # JSON Bibles
+    akjv_obj = AKJV()
+    bbe_obj = BBE()
     kjv_obj = KJV()
     asv_obj = ASV()
     bsb_obj = BSB()
@@ -78,10 +82,10 @@ def create_app() -> Flask:
     end = time.perf_counter()
     print(f"Loaded Bibles in {end - start} seconds")
 
-    bibles = {'AMP': amp_obj, 'ASV': asv_obj, 'BSB': bsb_obj, 'CSB': csb_obj, 'ESV': esv_obj, 'GNV': gnv_obj,
-              'KJV': kjv_obj, 'LSV': lsv_obj, 'MSG': msg_obj, 'NASB 1995': nasb_1995_obj, 'NET': net_obj,
-              'NIV 1984': niv_1984_obj, 'NIV 2011': niv_2011_obj, 'NKJV': nkjv_obj, 'NLT': nlt_obj, 'RSV': rsv_obj,
-              'WEB': web_obj, 'YLT': ylt_obj}
+    bibles = {'AKJV': akjv_obj, 'AMP': amp_obj, 'ASV': asv_obj, 'BBE': bbe_obj, 'BSB': bsb_obj, 'CSB': csb_obj,
+              'ESV': esv_obj, 'GNV': gnv_obj, 'KJV': kjv_obj, 'LSV': lsv_obj, 'MSG': msg_obj, 'NASB 1995': nasb_1995_obj,
+              'NET': net_obj, 'NIV 1984': niv_1984_obj, 'NIV 2011': niv_2011_obj, 'NKJV': nkjv_obj, 'NLT': nlt_obj,
+              'RSV': rsv_obj, 'WEB': web_obj, 'YLT': ylt_obj}
 
     debug = False
 

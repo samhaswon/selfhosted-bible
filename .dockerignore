@@ -1,26 +1,31 @@
+# Python files
 __pycache__/
 bibles/__pycache__
 *.pyc
-dist/
-build/
-self-hosted-bible.egg-info/
-notes.txt
-.dockerignore
+
+# Repo and testing files
 .git*
+.github/
 *.sqlite
+.dockerignore
 Dockerfile
+notes.txt
 LICENSE
+pictures/
+docker-compose.yml
+
+# Optimization of container size
+icon/
 tests/
 venv/
 esv-api-key.txt
-icon/icon.png
-icon/icon.svg
-icon/
+static/styles_readable.css
+
+# Scripts
+convert_getbible.py
+
+# Local build exclusions
 bibles/json-bibles/esv.json
 .idea/
-static/styles_readable.css
-pictures/
-.github/
 bibles/json-bibles/csb.json
 bibles/json-bibles/net.json
-docker-compose.yml

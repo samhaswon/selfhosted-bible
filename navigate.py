@@ -8,7 +8,7 @@ class NonValidatingSelectField(SelectField):
     Class to ignore the SelectField validation
     """
 
-    def pre_validate(self, form):
+    def pre_validate(self, form) -> None:
         """
         Does nothing
         :param form: form to validate
@@ -17,6 +17,11 @@ class NonValidatingSelectField(SelectField):
         pass
 
 class NavigatePassage(FlaskForm):
+    """
+    FlaskForm for Bible passage navigation. Should be used with navigate.js on the frontend to make a dynamic dropdown
+    for passage selection.
+    """
+    # Books of the Bible, as 2-tuples, for form creation.
     books = [('Genesis', 'Genesis'),
              ('Exodus', 'Exodus'),
              ('Leviticus', 'Leviticus'),
@@ -101,7 +106,24 @@ class NavigateVersion(FlaskForm):
     Field for selecting Bible version
     """
     select_version: SelectField = SelectMultipleField('Select version',
-                                                      choices=['AMP', 'ASV', 'BSB', 'CSB', 'ESV', 'GNV', 'KJV', 'LSV',
-                                                               'MSG', 'NASB 1995', 'NET', 'NIV 1984', 'NIV 2011',
-                                                               'NKJV', 'NLT', 'RSV', 'WEB', 'YLT'],
+                                                      choices=[('AKJV', 'American King James Version (AKJV)'),
+                                                               ('AMP', 'Amplified Bible (AMP)'),
+                                                               ('ASV', 'American Standard Version (ASV)'),
+                                                               ('BBE', 'Bible in Basic English (BBE)'),
+                                                               ('BSB', 'Berean Standard Bible (BSB)'),
+                                                               ('CSB', 'Christian Standard Bible (CSB)'),
+                                                               ('ESV', 'English Standard Version (ESV)'),
+                                                               ('GNV', 'Geneva Bible (GNV)'),
+                                                               ('KJV', 'King James Version (KJV)'),
+                                                               ('LSV', 'Literal Standard Version (LSV)'),
+                                                               ('MSG', 'The Message (MSG)'),
+                                                               ('NASB 1995', 'New American Standard Bible (NASB, 1995)'),
+                                                               ('NET', 'New English Translation (NET)'),
+                                                               ('NIV 1984', 'New International Version (NIV, 1984)'),
+                                                               ('NIV 2011', 'New International Version (NIV, 2011)'),
+                                                               ('NKJV', 'New King James Version (NKJV)'),
+                                                               ('NLT', 'New Living Translation (NLT)'),
+                                                               ('RSV', 'Revised Standard Version (RSV)'),
+                                                               ('WEB', 'World English Bible (WEB)'),
+                                                               ('YLT', 'Young’s Literal Translation (YLT)')],
                                                       coerce=str, validators=[DataRequired()], default=['ESV'])

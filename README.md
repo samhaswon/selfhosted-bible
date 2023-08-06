@@ -105,6 +105,20 @@ To access a locally hosted version of the application, go to [localhost:5000](ht
 The code included in this repository is subject to the included license, but the content from external sources is not.
 
 <details>
+    <summary>AKJV Notice</summary>
+
+> This is a translation of the Bible based on the original King James Version. It is a simple word for word update from the King James English. Care has been taken to change nothing doctrinally, but to simply update the spelling and vocabulary. The grammar has not changed the grammar because that could alter the doctrine.<br><br> 
+> The American King James version of the Bible was placed into the public domain on November 8, 1999.<br><br>
+> <b>Michael Peter (Stone) Engelbrite</b><br><br>
+> You may use it in any manner you wish: copy it, sell it, modify it, etc.<br>
+> You can't copyright it or prevent others from using it.
+> A special thanks to Tye Rausch and Eve Engelbrite who helped tremendously on this project.
+> You can't claim that you created it.</p>
+
+<a href="https://www.angelfire.com/al4/allenkc/akjv/" target="_blank" rel="noopener noreferrer">Homepage</a>
+</details>
+
+<details>
     <summary>AMP Notice</summary>
 
 > Scriptures marked AMP are taken from the AMPLIFIED BIBLE (AMP): Scripture taken from the AMPLIFIED® BIBLE, Copyright 
@@ -116,6 +130,14 @@ The code included in this repository is subject to the included license, but the
     <summary>ASV Notice</summary>
 
 > Scripture quotations marked “ASV” are taken from the American Standard Version Bible (Public Domain).
+</details>
+
+<details>
+    <summary>BBE Notice</summary>
+
+> The Bible in Basic English is in the public domain. It was printed in 1965 by Cambridge Press in England without a copyright notice. When distributed in the United States, it fell into the public domain according to the UCC convention of that time.
+> 
+> The Bible in Basic English uses “Basic English”, a simple form of the English language with a vocabulary of fewer than 1000 words.
 </details>
 
 <details>
