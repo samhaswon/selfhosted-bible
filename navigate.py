@@ -106,7 +106,7 @@ class NavigateVersion(FlaskForm):
     Field for selecting Bible version
     """
     select_version: SelectField = SelectMultipleField('Select version',
-                                                      choices=['AMP', 'ASV', 'BSB', 'CSB', 'ESV', 'GNV', 'KJV', 'LSV',
-                                                               'MSG', 'NASB 1995', 'NET', 'NIV 1984', 'NIV 2011',
+                                                      choices=['AKJV', 'AMP', 'ASV', 'BSB', 'CSB', 'ESV', 'GNV', 'KJV',
+                                                               'LSV', 'MSG', 'NASB 1995', 'NET', 'NIV 1984', 'NIV 2011',
                                                                'NKJV', 'NLT', 'RSV', 'WEB', 'YLT'],
                                                       coerce=str, validators=[DataRequired()], default=['ESV'])
