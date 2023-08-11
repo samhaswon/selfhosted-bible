@@ -7,7 +7,7 @@
     <script>var chapterNumber = {{ chapter_num }};</script>
     <form method="post" role="form">
         <div align="center">
-            {{ form.hidden_tag() }}{{ wtf.form_field(form.previous_button) }}&#9;&#9;&#9;&#9; {{ wtf.passage_field(passage_form.book) }}{{ wtf.passage_field(passage_form.chapter) }}&#9;&#9;&#9;&#9; {{ wtf.form_field(form.next_button) }}<br>
+            {{ form.hidden_tag() }}{{ wtf.form_field(form.previous_button) }}{{ wtf.passage_field(passage_form.book) }}{{ wtf.passage_field(passage_form.chapter) }}{{ wtf.form_field(form.next_button) }}<br>
             {{ wtf.passage_field(version_select.select_version) }}<br>
             {{ wtf.form_field(passage_form.submit) }}
         </div>
