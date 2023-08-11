@@ -9,6 +9,7 @@ from bibles.csb import CSB
 from bibles.esv import ESV
 from bibles.gnv import GNV
 from bibles.kjv import KJV
+from bibles.kjv1611 import KJV1611
 from bibles.lsv import LSV
 from bibles.msg import MSG
 from bibles.nasb1995 import NASB1995
@@ -72,6 +73,7 @@ def create_app() -> Flask:
     akjv_obj = AKJV()
     bbe_obj = BBE()
     kjv_obj = KJV()
+    kjv_1611_obj = KJV1611()
     asv_obj = ASV()
     bsb_obj = BSB()
     gnv_obj = GNV()
@@ -83,9 +85,9 @@ def create_app() -> Flask:
     print(f"Loaded Bibles in {end - start} seconds")
 
     bibles = {'AKJV': akjv_obj, 'AMP': amp_obj, 'ASV': asv_obj, 'BBE': bbe_obj, 'BSB': bsb_obj, 'CSB': csb_obj,
-              'ESV': esv_obj, 'GNV': gnv_obj, 'KJV': kjv_obj, 'LSV': lsv_obj, 'MSG': msg_obj, 'NASB 1995': nasb_1995_obj,
-              'NET': net_obj, 'NIV 1984': niv_1984_obj, 'NIV 2011': niv_2011_obj, 'NKJV': nkjv_obj, 'NLT': nlt_obj,
-              'RSV': rsv_obj, 'WEB': web_obj, 'YLT': ylt_obj}
+              'ESV': esv_obj, 'GNV': gnv_obj, 'KJV': kjv_obj, 'KJV 1611': kjv_1611_obj, 'LSV': lsv_obj, 'MSG': msg_obj,
+              'NASB 1995': nasb_1995_obj, 'NET': net_obj, 'NIV 1984': niv_1984_obj, 'NIV 2011': niv_2011_obj,
+              'NKJV': nkjv_obj, 'NLT': nlt_obj, 'RSV': rsv_obj, 'WEB': web_obj, 'YLT': ylt_obj}
 
     debug = False
 
