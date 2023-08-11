@@ -359,6 +359,12 @@ label {
     border-color: #101010
 }
 
+@media (max-width: 320px) {
+    .navbar {
+        margin-right: -1px;
+    }
+}
+
 @media (max-width: 767px) {
     .navbar-nav .open .dropdown-menu {
         position:static;
