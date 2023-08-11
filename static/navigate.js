@@ -17,6 +17,9 @@ function updateChapterSelect() {
         const option = document.createElement('option');
         option.value = i;
         option.textContent = i;
+        if (window.chapterNumber && window.chapterNumber === i) {
+            option.selected = true;
+        }
         chapterSelect.appendChild(option);
       }
     });

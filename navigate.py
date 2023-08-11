@@ -97,8 +97,8 @@ class NavigateRel(FlaskForm):
     """
     Two basic submit fields for chapter navigation
     """
-    next_button: SubmitField = SubmitField("Next")
-    previous_button: SubmitField = SubmitField("Previous")
+    next_button: SubmitField = SubmitField("Next >")
+    previous_button: SubmitField = SubmitField("< Previous")
 
 
 class NavigateVersion(FlaskForm):
@@ -127,4 +127,4 @@ class NavigateVersion(FlaskForm):
                                                                ('RSV', 'Revised Standard Version (RSV)'),
                                                                ('WEB', 'World English Bible (WEB)'),
                                                                ('YLT', 'Young’s Literal Translation (YLT)')],
-                                                      coerce=str, validators=[DataRequired()], default=['ESV'])
+                                                      validators=[DataRequired()], default=['ESV'])

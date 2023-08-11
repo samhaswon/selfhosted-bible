@@ -433,6 +433,29 @@ label {
     color: #444
 }
 
+.passage-form {
+    color: #333;
+    display: inline-block;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 0;
+    font-weight: 400;
+    padding: 7px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    text-align: center;
+    background-color: #fff;
+}
+
 @media (prefers-color-scheme: dark) {
     .control-label,body,h2 {
         color:#fff
@@ -442,7 +465,7 @@ label {
         background-color: #212435
     }
 
-    .btn-default,.form-control {
+    .btn-default,.form-control,.passage-form {
         background-color: #010420;
         border-color: #a5b5f5;
         color: #fff
