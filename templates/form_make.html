@@ -14,4 +14,6 @@
       </div>
     {% endif %}
 {% endmacro %}
-
+{% macro passage_field(field, form_type="basic", horizontal_columns=('lg', 2, 10), button_map={}) %}
+    {{ field(class="passage-form", **kwargs) }}
+{% endmacro %}

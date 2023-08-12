@@ -4,10 +4,15 @@
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
 <div class="container-fluid mw-100">
-    <h2> {{ title }}</h2>
+    <script>var chapterNumber = {{ chapter_num }};</script>
     <form method="post" role="form">
-        {{ form.hidden_tag() }}{{ wtf.form_field(form.previous_button) }}{{ wtf.form_field(form.next_button) }}
+        <div align="center">
+            {{ form.hidden_tag() }}{{ wtf.form_field(form.previous_button) }}{{ wtf.passage_field(passage_form.book) }}{{ wtf.passage_field(passage_form.chapter) }}{{ wtf.form_field(form.next_button) }}<br>
+            {{ wtf.passage_field(version_select.select_version) }}<br>
+            {{ wtf.form_field(passage_form.submit) }}
+        </div>
         <br><br>
+        <h2> {{ title }}</h2>
         <table>
             <tbody>
                 <tr>
@@ -25,8 +30,11 @@
             </tbody>
         </table>
         <br><br>
-        {{ form.hidden_tag() }}{{ wtf.form_field(form.previous_button) }}{{ wtf.form_field(form.next_button) }}
+        <div align="center">
+            {{ form.hidden_tag() }}{{ wtf.form_field(form.previous_button) }} &#9;&#9;&#9;&#9; {{ wtf.form_field(form.next_button) }}
+        </div>
         <br><br>
     </form>
+    <script type="text/javascript" async="" src="{{ url_for('static', filename='navigate.js') }}"></script>
 </div>
 {% endblock %}

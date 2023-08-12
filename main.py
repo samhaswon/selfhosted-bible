@@ -108,15 +108,15 @@ def create_app() -> Flask:
         version_select = NavigateVersion()
 
         if form.validate_on_submit():
-            session['select_version'] = versions = version_select.data
+            session['select_version'] = versions = version_select.select_version.data
             session['select_book'] = book = form.book.data
             session['select_chapter'] = chapter_dat = form.chapter.data
 
             if chapter_dat and form.chapter.data and \
                     esv_obj.has_passage(book, int(chapter_dat)):
-                if len(versions['select_version']) == 1:
+                if len(versions) == 1:
                     return redirect(url_for('chapter'))
-                elif len(versions['select_version']) > 1:
+                elif len(versions) > 1:
                     return redirect(url_for('chapter_split'))
                 else:
                     return redirect(url_for("404.html"))
@@ -138,16 +138,37 @@ def create_app() -> Flask:
 
         form = NavigateRel()
 
+        passage_form = NavigatePassage()
+        passage_form.book.default = book_sel
+
+        version_select = NavigateVersion()
+
         if form.validate_on_submit():
             if form.next_button.data:
+                form.next_button.data = False
                 session['select_book'], session['select_chapter'] = esv_obj.next_passage(book_sel, chapter_sel)
             elif form.previous_button.data:
+                form.previous_button.data = False
                 session['select_book'], session['select_chapter'] = esv_obj.previous_passage(book_sel, chapter_sel)
 
             book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
             chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
-        version_sel: list = session.get('select_version')['select_version'][0] if \
+
+        if passage_form.validate_on_submit() and passage_form.submit.data:
+            passage_form.submit.data = False
+            session['select_book'] = book_sel = passage_form.book.data
+            session['select_chapter'] = chapter_sel = passage_form.chapter.data
+
+            if len(version_select.data['select_version']) > 1 and isinstance(version_select.data['select_version'], list):
+                session['select_version'] = version_select.select_version.data
+                return redirect(url_for('chapter_split'))
+            else:
+                session['select_version'] = version_select.select_version.data
+
+        version_sel: list = session.get('select_version')[0] if \
             session.get('select_version') else 'ESV'
+
+        version_select.select_version.data = [version_sel]
 
         if version_sel in bibles.keys():
             try:
@@ -159,7 +180,8 @@ def create_app() -> Flask:
                        "verses": {"": ["Please clear your cookies and try again"]}}
 
         html = render_template('chapter.html', title=book_sel + " " + chapter_sel, debug=debug, form=form,
-                               content=content, version=version_sel)
+                               content=content, version=version_sel, passage_form=passage_form,
+                               version_select=version_select)
         return minify.sub('', html)
 
     @app.route('/chapter_split', methods=['GET', 'POST'])
@@ -174,16 +196,37 @@ def create_app() -> Flask:
 
         form = NavigateRel()
 
+        passage_form = NavigatePassage()
+        passage_form.book.default = book_sel
+
+        version_select = NavigateVersion()
+
         if form.validate_on_submit():
             if form.next_button.data:
+                form.next_button.data = False
                 session['select_book'], session['select_chapter'] = esv_obj.next_passage(book_sel, chapter_sel)
             elif form.previous_button.data:
+                form.previous_button.data = False
                 session['select_book'], session['select_chapter'] = esv_obj.previous_passage(book_sel, chapter_sel)
 
             book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
             chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
-        version_sel: list = session.get('select_version')['select_version'] if session.get('select_version') \
+
+        if passage_form.validate_on_submit() and passage_form.submit.data:
+            passage_form.submit.data = False
+            session['select_book'] = book_sel = passage_form.book.data
+            session['select_chapter'] = chapter_sel = passage_form.chapter.data
+
+            if len(version_select.data['select_version']) == 1 or isinstance(version_select.data['select_version'], str):
+                session['select_version'] = version_select.select_version.data
+                return redirect(url_for('chapter'))
+            else:
+                session['select_version'] = version_select.select_version.data
+
+        version_sel: list = session.get('select_version') if session.get('select_version') \
             else ['ESV', 'KJV']
+
+        version_select.select_version.data = version_sel
 
         content: list = []
         for version in version_sel:
@@ -197,7 +240,8 @@ def create_app() -> Flask:
                 content.append(["Invalid version", "Please clear your cookies and try again"])
         content = list(zip(*content))
         html = render_template('chapter_split.html', title=book_sel + " " + chapter_sel, debug=debug, form=form,
-                               content=content, version=version_sel)
+                               content=content, chapter_num=chapter_sel, version=version_sel, passage_form=passage_form,
+                               version_select=version_select)
         return minify.sub('', html)
 
     @app.route('/copyright', methods=['GET'])
