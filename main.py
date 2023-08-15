@@ -1,31 +1,13 @@
 #!/usr/bin/env python
 
-from bibles.akjv import AKJV
-from bibles.amp import AMP
-from bibles.asv import ASV
-from bibles.bbe import BBE
-from bibles.bsb import BSB
-from bibles.csb import CSB
-from bibles.esv import ESV
-from bibles.gnv import GNV
-from bibles.kjv import KJV
-from bibles.kjv1611 import KJV1611
-from bibles.lsv import LSV
-from bibles.msg import MSG
-from bibles.nasb1995 import NASB1995
-from bibles.net import NET
-from bibles.niv1984 import NIV1984
-from bibles.niv2011 import NIV2011
-from bibles.nkjv import NKJV
-from bibles.nlt import NLT
-from bibles.rsv import RSV
-from bibles.web import WEB
-from bibles.ylt import YLT
+# Bible + Exception Imports
+from bibles import *
 
-from bibles.passage import PassageInvalid
-from navigate import NavigateRel, NavigateVersion, NavigatePassage
-from flask import Flask, render_template, session, url_for, redirect, Response, jsonify
+# Internal imports
 from compress import Compress
+from navigate import NavigatePassage, NavigateRel, NavigateVersion
+
+from flask import Flask, jsonify, render_template, redirect, Response, session, url_for
 from typing import Tuple, Union
 import sys
 import re
@@ -54,40 +36,31 @@ def create_app() -> Flask:
         except IndexError:
             pass
 
-    # JSON API Bibles
-    esv_obj = ESV() if not len(api_key) else ESV((True, api_key))
-    amp_obj = AMP()
-    msg_obj = MSG()
-    nasb_1995_obj = NASB1995()
-    net_obj = NET()
-    nkjv_obj = NKJV()
-    niv_1984_obj = NIV1984()
-    niv_2011_obj = NIV2011()
-    nlt_obj = NLT()
-    rsv_obj = RSV()
-
-    # XML Bibles?
-    csb_obj = CSB()
-
-    # JSON Bibles
-    akjv_obj = AKJV()
-    bbe_obj = BBE()
-    kjv_obj = KJV()
-    kjv_1611_obj = KJV1611()
-    asv_obj = ASV()
-    bsb_obj = BSB()
-    gnv_obj = GNV()
-    lsv_obj = LSV()
-    web_obj = WEB()
-    ylt_obj = YLT()
+    bibles = {'AKJV': AKJV(),
+              'AMP': AMP(),
+              'ASV': ASV(),
+              'BBE': BBE(),
+              'BSB': BSB(),
+              'CSB': CSB(),
+              'ESV': ESV() if not len(api_key) else ESV((True, api_key)),
+              'GNV': GNV(),
+              'KJV': KJV(),
+              'KJV 1611': KJV(),
+              'LSV': LSV(),
+              'MSG': MSG(),
+              'NASB 1995': NASB1995(),
+              'NET': NET(),
+              'NIV 1984': NIV1984(),
+              'NIV 2011': NIV2011(),
+              'NKJV': NKJV(),
+              'NLT': NLT(),
+              'RSV': RSV(),
+              'WEB': WEB(),
+              'YLT': YLT()
+              }
 
     end = time.perf_counter()
     print(f"Loaded Bibles in {end - start} seconds")
-
-    bibles = {'AKJV': akjv_obj, 'AMP': amp_obj, 'ASV': asv_obj, 'BBE': bbe_obj, 'BSB': bsb_obj, 'CSB': csb_obj,
-              'ESV': esv_obj, 'GNV': gnv_obj, 'KJV': kjv_obj, 'KJV 1611': kjv_1611_obj, 'LSV': lsv_obj, 'MSG': msg_obj,
-              'NASB 1995': nasb_1995_obj, 'NET': net_obj, 'NIV 1984': niv_1984_obj, 'NIV 2011': niv_2011_obj,
-              'NKJV': nkjv_obj, 'NLT': nlt_obj, 'RSV': rsv_obj, 'WEB': web_obj, 'YLT': ylt_obj}
 
     debug = False
 
@@ -113,7 +86,7 @@ def create_app() -> Flask:
             session['select_chapter'] = chapter_dat = form.chapter.data
 
             if chapter_dat and form.chapter.data and \
-                    esv_obj.has_passage(book, int(chapter_dat)):
+                    bibles['KJV'].has_passage(book, int(chapter_dat)):
                 if len(versions) == 1:
                     return redirect(url_for('chapter'))
                 elif len(versions) > 1:
@@ -146,10 +119,10 @@ def create_app() -> Flask:
         if form.validate_on_submit():
             if form.next_button.data:
                 form.next_button.data = False
-                session['select_book'], session['select_chapter'] = esv_obj.next_passage(book_sel, chapter_sel)
+                session['select_book'], session['select_chapter'] = bibles['KJV'].next_passage(book_sel, chapter_sel)
             elif form.previous_button.data:
                 form.previous_button.data = False
-                session['select_book'], session['select_chapter'] = esv_obj.previous_passage(book_sel, chapter_sel)
+                session['select_book'], session['select_chapter'] = bibles['KJV'].previous_passage(book_sel, chapter_sel)
 
             book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
             chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
@@ -204,10 +177,10 @@ def create_app() -> Flask:
         if form.validate_on_submit():
             if form.next_button.data:
                 form.next_button.data = False
-                session['select_book'], session['select_chapter'] = esv_obj.next_passage(book_sel, chapter_sel)
+                session['select_book'], session['select_chapter'] = bibles['KJV'].next_passage(book_sel, chapter_sel)
             elif form.previous_button.data:
                 form.previous_button.data = False
-                session['select_book'], session['select_chapter'] = esv_obj.previous_passage(book_sel, chapter_sel)
+                session['select_book'], session['select_chapter'] = bibles['KJV'].previous_passage(book_sel, chapter_sel)
 
             book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
             chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
@@ -257,7 +230,7 @@ def create_app() -> Flask:
     def chapters(book) -> Response:
         # get the number of chapters for the given book
         try:
-            num_chapters = kjv_obj.books_of_the_bible[book]
+            num_chapters = bibles['KJV'].books_of_the_bible[book]
         except KeyError:
             num_chapters = 1
         # return the number of chapters as a JSON response
