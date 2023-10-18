@@ -3,5 +3,5 @@ multipledispatch==1.0.0
 Flask==3.0.0
 Flask-WTF==1.2.1
 waitress==2.1.2
-WTForms==3.0.1
+WTForms==3.1.0
 Brotli==1.1.0
