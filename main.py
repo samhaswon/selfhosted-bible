@@ -19,7 +19,7 @@ def create_app() -> Flask:
     app.config['SECRET_KEY'] = 'b^lC08A7d@z3'
     Compress(app)
 
-    minify = re.compile(r'<!--(.*?)-->|(\s{2,}\B)|\n')
+    minify = re.compile(r'<!--.*?-->|(\s{2,}\B)|\n')
 
     start = time.perf_counter()
     # Read the ESV API key
@@ -214,7 +214,7 @@ def create_app() -> Flask:
         content = list(zip(*content))
         html = render_template('chapter_split.html', title=book_sel + " " + chapter_sel, debug=debug, form=form,
                                content=content, chapter_num=chapter_sel, version=version_sel, passage_form=passage_form,
-                               version_select=version_select)
+                               version_select=version_select, book=book_sel)
         return minify.sub('', html)
 
     @app.route('/copyright', methods=['GET'])

@@ -26,7 +26,14 @@ function updateChapterSelect() {
     });
 }
 
-bookSelect.addEventListener('change', updateChapterSelect);
+if (bookSelect) {
+    for (let i = 0; i < bookSelect.length; i++) {
+        if (bookSelect.options[i].label === book) {
+            bookSelect.selectedIndex = i;
+        }
+    }
+    bookSelect.addEventListener('change', updateChapterSelect);
 
-// trigger the change event on the book select when the page loads
-updateChapterSelect();
+    // trigger the change event on the book select when the page loads
+    updateChapterSelect();
+}

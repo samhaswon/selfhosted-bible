@@ -1,4 +1,4 @@
-/* Minify using https://www.toptal.com/developers/cssminifier */
+/* Minify using https://www.minifier.org/ */
 .tab,label {
     display: inline-block
 }
@@ -463,7 +463,80 @@ label {
     background-color: #fff;
 }
 
-@media (prefers-color-scheme: dark) {
+.btn-nav {
+    padding: 12px 14px;
+    font-size: 14px;
+    font-weight: 400
+    line-height: 1.42857143;
+    background-image: none;
+    margin: 0;
+    display: inline-block;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background-color: #e6e6e6;
+    border-color: transparent;
+    height: auto;
+}
+
+[data-theme="light"] {
+    html {
+        background-color: #fff
+    }
+    .sr-only {
+        color: #00;
+    }
+    .control-label,body,h2 {
+        color:#333
+    }
+
+    .btn-default,.form-control,.passage-form {
+        background-color: #fff;
+        border-color: #ccc;
+        color: #333
+    }
+
+    .navbar-inverse {
+        background-color: #222
+    }
+
+    button,input,optgroup,select,textarea {
+        color: inherit;
+    }
+
+    a {
+        color: #9d9d9d
+    }
+
+    h4 {
+        color: #inherit
+    }
+
+    p {
+        color: #333
+    }
+
+    .navbar-inverse .navbar-brand {
+        color: #9d9d9d
+    }
+    .sr-only {
+        color: #fff
+    }
+    .btn-nav {
+        background-color: #222;
+    }
+}
+
+[data-theme="dark"] {
+
     .control-label,body,h2 {
         color:#fff
     }
@@ -501,6 +574,9 @@ label {
 
     .navbar-inverse .navbar-brand {
         color: #e0e0e0
+    }
+    .btn-nav {
+        background-color: #000331;
     }
 }
 
