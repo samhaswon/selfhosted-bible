@@ -33,5 +33,11 @@ class CompressCache(object):
         Loads the compressed JSON of the Bible
         :return: dictionary version of the loaded JSON
         """
-        with bz2.open(f"bibles/json-bibles/{self.__name}.json.pbz2", "rt", encoding='utf-8') as data_file:
-            return json.load(data_file)
+        # Normal load
+        try:
+            with bz2.open(f"bibles/json-bibles/{self.__name}.json.pbz2", "rt", encoding='utf-8') as data_file:
+                return json.load(data_file)
+        # Testing load
+        except FileNotFoundError:
+            with bz2.open(f"../bibles/json-bibles/{self.__name}.json.pbz2", "rt", encoding='utf-8') as data_file:
+                return json.load(data_file)
