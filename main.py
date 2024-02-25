@@ -45,7 +45,7 @@ def create_app() -> Flask:
               'ESV': ESV() if not len(api_key) else ESV((True, api_key)),
               'GNV': GNV(),
               'KJV': KJV(),
-              'KJV 1611': KJV(),
+              'KJV 1611': KJV1611(),
               'LSV': LSV(),
               'MSG': MSG(),
               'NASB 1995': NASB1995(),

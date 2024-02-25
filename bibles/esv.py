@@ -16,7 +16,10 @@ class ESV(Bible):
         super().__init__()
         self.__compress_cache = CompressCache("esv")
         # API Setup
-        self.__API_KEY = open("esv-api-key.txt", "r").read() if not key_in[0] else key_in[1]
+        try:
+            self.__API_KEY = open("esv-api-key.txt", "r").read() if not key_in[0] else key_in[1]
+        except FileNotFoundError:
+            self.__API_KEY = ""
         self.__API_URL: str = 'https://api.esv.org/v3/passage/text/'
         # Caching
         try:

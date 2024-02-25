@@ -22,16 +22,22 @@ class CompressCache(object):
         # Normal save
         try:
             with bz2.open(f"bibles/json-bibles/{self.__name}.json.pbz2", "wb") as data_file:
-                data_file.write(json.dumps(data).encode('utf-8'))
+                data_file.write(json.dumps(data, separators=(',', ':')).encode('utf-8'))
         # Testing save
         except FileNotFoundError:
             with bz2.open(f"../bibles/json-bibles/{self.__name}.json.pbz2", "wb") as data_file:
-                data_file.write(json.dumps(data).encode('utf-8'))
+                data_file.write(json.dumps(data, separators=(',', ':')).encode('utf-8'))
 
     def load(self) -> dict:
         """
         Loads the compressed JSON of the Bible
         :return: dictionary version of the loaded JSON
         """
-        with bz2.open(f"bibles/json-bibles/{self.__name}.json.pbz2", "rt", encoding='utf-8') as data_file:
-            return json.load(data_file)
+        # Normal load
+        try:
+            with bz2.open(f"bibles/json-bibles/{self.__name}.json.pbz2", "rt", encoding='utf-8') as data_file:
+                return json.load(data_file)
+        # Testing load
+        except FileNotFoundError:
+            with bz2.open(f"../bibles/json-bibles/{self.__name}.json.pbz2", "rt", encoding='utf-8') as data_file:
+                return json.load(data_file)
