@@ -6,27 +6,9 @@
         <div align="center">
             <input class="passage-form" type="text" id="search-box" placeholder="Type to search..." style="width: 70%">
             <select class="passage-form" id="version-selection">
-                <option value="AKJV">AKJV</option>
-                <option value="AMP">AMP</option>
-                <option value="ASV">ASV</option>
-                <option value="BBE">BBE</option>
-                <option value="BSB">BSB</option>
-                <option value="CSB">CSB</option>
-                <option value="ESV">ESV</option>
-                <option value="GNV">GNV</option>
-                <option selected value="KJV">KJV</option>
-                <option value="KJV 1611">KJV 1611</option>
-                <option value="LSV">LSV</option>
-                <option value="MSG">MSG</option>
-                <option value="NASB 1995">NASB 1995</option>
-                <option value="NET">NET</option>
-                <option value="NIV 1984">NIV 1984</option>
-                <option value="NIV 2011">NIV 2011</option>
-                <option value="NKJV">NKJV</option>
-                <option value="NLT">NLT</option>
-                <option value="RSV">RSV</option>
-                <option value="WEB">WEB</option>
-                <option value="YLT">YLT</option>
+                {% for version in versions %}
+                    <option {% if version == 'KJV' %}selected{% endif %} value="{{version}}">{{version}}</option>
+                {% endfor %}
             </select>
         </div>
         <ul id="search-results" style="list-style-type:none;"></ul>

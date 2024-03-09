@@ -9,6 +9,7 @@ from compress import Compress
 from navigate import NavigatePassage, NavigateRel, NavigateVersion
 
 from flask import Flask, jsonify, render_template, redirect, Response, session, url_for, request
+from itertools import zip_longest
 from typing import Tuple, Union
 import sys
 import re
@@ -39,12 +40,17 @@ def create_app() -> Flask:
         except IndexError:
             pass
 
-    bibles = {'AKJV': AKJV(),
+    bibles = {
+              'ACV': ACV(),
+              'AKJV': AKJV(),
               'AMP': AMP(),
               'ASV': ASV(),
               'BBE': BBE(),
               'BSB': BSB(),
               'CSB': CSB(),
+              'Darby': Darby(),
+              'DRA': DRA(),
+              'EBR': EBR(),
               'ESV': ESV() if not len(api_key) else ESV((True, api_key)),
               'GNV': GNV(),
               'KJV': KJV(),
@@ -57,7 +63,10 @@ def create_app() -> Flask:
               'NIV 2011': NIV2011(),
               'NKJV': NKJV(),
               'NLT': NLT(),
+              'RNKJV': RNKJV(),
               'RSV': RSV(),
+              'RWV': RWV(),
+              'UKJV': UKJV(),
               'WEB': WEB(),
               'YLT': YLT()
               }
@@ -214,7 +223,7 @@ def create_app() -> Flask:
                     return redirect(url_for("404.html"))
             else:
                 content.append(["Invalid version", "Please clear your cookies and try again"])
-        content = list(zip(*content))
+        content = list(zip_longest(*content, fillvalue=""))
         html = render_template('chapter_split.html', title=book_sel + " " + chapter_sel, debug=debug, form=form,
                                content=content, chapter_num=chapter_sel, version=version_sel, passage_form=passage_form,
                                version_select=version_select, book=book_sel)
@@ -292,7 +301,7 @@ def create_app() -> Flask:
 
     @app.route('/search/', methods=['GET'])
     def search() -> str:
-        html = render_template('search.html', title='search', debug=debug)
+        html = render_template('search.html', title='search', debug=debug, versions=bibles.keys())
         return minify.sub('', html)
 
     @app.errorhandler(500)

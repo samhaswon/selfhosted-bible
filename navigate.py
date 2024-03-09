@@ -106,12 +106,16 @@ class NavigateVersion(FlaskForm):
     Field for selecting a Bible version
     """
     select_version: SelectField = SelectMultipleField('Select version',
-                                                      choices=[('AKJV', 'American King James Version (AKJV)'),
+                                                      choices=[('ACV', 'A Conservative Version (ACV)'),
+                                                               ('AKJV', 'American King James Version (AKJV)'),
                                                                ('AMP', 'Amplified Bible (AMP)'),
                                                                ('ASV', 'American Standard Version (ASV)'),
                                                                ('BBE', 'Bible in Basic English (BBE)'),
                                                                ('BSB', 'Berean Standard Bible (BSB)'),
                                                                ('CSB', 'Christian Standard Bible (CSB)'),
+                                                               ('Darby', 'Darby Bible (Darby)'),
+                                                               ('DRA', 'Douay-Rheims 1899 American Edition (DRA)'),
+                                                               ('EBR', 'Rotherham\'s Emphasized Bible (EBR)'),
                                                                ('ESV', 'English Standard Version (ESV)'),
                                                                ('GNV', 'Geneva Bible (GNV)'),
                                                                ('KJV', 'King James Version (KJV, 1729)'),
@@ -124,7 +128,10 @@ class NavigateVersion(FlaskForm):
                                                                ('NIV 2011', 'New International Version (NIV, 2011)'),
                                                                ('NKJV', 'New King James Version (NKJV)'),
                                                                ('NLT', 'New Living Translation (NLT)'),
+                                                               ('RNKJV', 'Restored Name King James Version (RNKJV)'),
                                                                ('RSV', 'Revised Standard Version (RSV)'),
+                                                               ('RWV', 'Revised Webster Version 1833 (RWV)'),
+                                                               ('UKJV', 'Updated King James Version (UKJV)'),
                                                                ('WEB', 'World English Bible (WEB)'),
                                                                ('YLT', 'Young’s Literal Translation (YLT)')],
                                                       validators=[DataRequired()], default=['ESV'])

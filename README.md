@@ -107,6 +107,16 @@ To access a locally hosted version of the application, go to [localhost:5000](ht
 The code included in this repository is subject to the included license, but the content from external sources is not.
 
 <details>
+    <summary>ACV Notice</summary>
+
+> A Conservative Version (ACV) was translated by Dr. Walter L. Porter. The ACV is in the public domain. 
+> The translation can be accessed online at http://www.stillvoices.org.
+> 
+> Distribution license: Public Domain
+
+</details>
+
+<details>
     <summary>AKJV Notice</summary>
 
 > This is a translation of the Bible based on the original King James Version. It is a simple word for word update from the King James English. Care has been taken to change nothing doctrinally, but to simply update the spelling and vocabulary. The grammar has not changed the grammar because that could alter the doctrine.<br><br> 
@@ -160,6 +170,29 @@ The code included in this repository is subject to the included license, but the
 </details>
 
 <details>
+    <summary>Darby Bible Notice</summary>
+
+> The Darby Bible was first published in 1890 by John Nelson Darby, an Anglo-Irish Bible teacher associated with the early years of the Plymouth Brethren. Darby also published translations of the Bible in French and German.
+> 
+> J. N. Darby's purpose was, as he states in the preface to his English New Testament, to make a modern translation for the unlearned who have neither access to manuscript texts nor training and knowledge of ancient languages of the Scriptures. Darby's translation work was not intended to be read aloud. His work was for study and private use. In his own oral ministry he generally used the English KJV Bible.
+> 
+> This Bible is in the public domain in the United States.
+
+</details>
+
+<details>
+    <summary>Douay-Rheims 1899 American Edition Notice</summary>
+
+> Scripture quotations marked "DRA" have been taken from the Douay-Rheims 1899 American Edition (Public Domain).
+</details>
+
+<details>
+    <summary>EBR Notice</summary>
+
+> Scripture quotations marked "EBR" have been taken from Rotherham's Emphasized Bible, Public Domain.
+</details>
+
+<details>
     <summary>ESV Notice</summary>
 
 >Scripture quotations marked “ESV” are from the ESV® Bible (The Holy Bible, English Standard Version®), copyright © 2001 
@@ -167,7 +200,7 @@ The code included in this repository is subject to the included license, but the
 > not be quoted in any publication made available to the public by a Creative Commons license. The ESV may not be 
 > translated into any other language.
 >
->Users may not copy or download more than 500 verses of the ESV Bible or more than one half of any book of the ESV Bible.
+> Users may not copy or download more than 500 verses of the ESV Bible or more than one half of any book of the ESV Bible.
 </details>
 
 <details>
@@ -253,10 +286,31 @@ Geneva Bible (1599)
 </details>
 
 <details>
+    <summary>RNKJV Notice</summary>
+
+> Scripture quotations marked “RNKJV” are taken from the Restored Name King James Version (Public Domain).
+</details>
+
+<details>
     <summary>RSV Notice</summary>
 
 > Scriptures marked RSV are taken from the REVISED STANDARD VERSION (RSV): Scripture taken from the REVISED STANDARD 
 > VERSION, Grand Rapids: Zondervan, 1971.
+</details>
+
+<details>
+    <summary>RWV Notice</summary>
+
+> Scriptures marked "RWV" are taken from the Revised Webster Version (1833), Public Domain.
+</details>
+
+<details>
+    <summary>UKJV Notice</summary>
+
+> Freely distributable. Public Domain. True to the Authorized Version. Updated for modern reading using today's computing technology. Completed on 25th December, 2000. A Christmas gift to the world.<br>
+> This translation/update is in the Public Domain, so feel free to copy, publish, and use it. No permission in whatsoever form is needed. You already have 100% permission to publish, copy, and distribute the Updated King James Version (UKJV) as much as you want to in any form. However the author of "Translator" requests that the following be observed: -<br>
+> i) A credit line with the following words "I love Jesus (UKJV)." To be stated in the copyright page of the work that involves the UKJV.<br>
+> ii) No modifications to the UKJV, this does NOT include typographical corrections or adding of studies notes, comments and layouts modifications, which are essential to any publications. However NO addition of footnotes that indicates the preference of other manuscripts superiority in any form are allowed, e.g. "Most reliable manuscripts does not have so and so", "The verse x-x are not found in Vaticanus/Sinaiticus" etc.
 </details>
 
 <details>

@@ -24,7 +24,7 @@ static/navigate_readable.js
 static/search_readable.js
 
 # Scripts
-convert_getbible.py
+scripts/*
 
 # Local build exclusions
 bibles/json-bibles/esv.json
