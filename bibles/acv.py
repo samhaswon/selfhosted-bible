@@ -7,7 +7,7 @@ class ACV(Bible):
     def __init__(self) -> None:
         super().__init__()
         self.__compress_cache = CompressCache('acv')
-        self.__kjv = self.__compress_cache.load()
+        self.__acv = self.__compress_cache.load()
 
     def get_passage(self, book: str, chapter: int) -> dict:
         """
@@ -17,6 +17,6 @@ class ACV(Bible):
         :return:
         """
         if super().has_passage(book, chapter):
-            return {"book": book, "chapter": chapter, "verses": {'none': self.__kjv[book][str(chapter)]}}
+            return {"book": book, "chapter": chapter, "verses": {'none': self.__acv[book][str(chapter)]}}
         else:
             raise PassageInvalid
