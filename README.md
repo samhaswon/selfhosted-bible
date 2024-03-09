@@ -19,6 +19,8 @@ A self-hosted webapp of various Bible versions including the KJV, ESV, and ASV.
 ![Example view of using a single version. The passage is Genesis chapter 1](pictures/single_version.jpg)
 ### Split version reading
 ![Example image of two versions side by side. The example is using the ESV and KJV for the passage Genesis chapter 1](pictures/split_version.jpg)
+### Search (Work in progress)
+![Example image of Bible searching functionality. The example is using the KJV as the version to be searched.](pictures/search.jpg)
 
 # Instructions
 
