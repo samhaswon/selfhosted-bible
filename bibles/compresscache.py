@@ -24,6 +24,7 @@ class CompressCache(object):
         with bz2.open(f"{self.__base_path}/json-bibles/{self.__name}.json.pbz2", "wb") as data_file:
             data_file.write(json.dumps(data, separators=(',', ':')).encode('utf-8'))
 
+
     def load(self) -> dict:
         """
         Loads the compressed JSON of the Bible.
