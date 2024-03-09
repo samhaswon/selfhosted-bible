@@ -106,7 +106,8 @@ class NavigateVersion(FlaskForm):
     Field for selecting a Bible version
     """
     select_version: SelectField = SelectMultipleField('Select version',
-                                                      choices=[('AKJV', 'American King James Version (AKJV)'),
+                                                      choices=[('ACV', 'A Conservative Version (ACV)'),
+                                                               ('AKJV', 'American King James Version (AKJV)'),
                                                                ('AMP', 'Amplified Bible (AMP)'),
                                                                ('ASV', 'American Standard Version (ASV)'),
                                                                ('BBE', 'Bible in Basic English (BBE)'),

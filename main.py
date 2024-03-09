@@ -39,7 +39,9 @@ def create_app() -> Flask:
         except IndexError:
             pass
 
-    bibles = {'AKJV': AKJV(),
+    bibles = {
+              'ACV': ACV(),
+              'AKJV': AKJV(),
               'AMP': AMP(),
               'ASV': ASV(),
               'BBE': BBE(),
@@ -292,7 +294,7 @@ def create_app() -> Flask:
 
     @app.route('/search/', methods=['GET'])
     def search() -> str:
-        html = render_template('search.html', title='search', debug=debug)
+        html = render_template('search.html', title='search', debug=debug, versions=bibles.keys())
         return minify.sub('', html)
 
     @app.errorhandler(500)

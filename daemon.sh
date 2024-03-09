@@ -1,6 +1,7 @@
 #!/usr/bin/env ash
 
 # Retrieve any missing Bibles
+test -f /usr/src/app/bibles/json-bibles/acv.json.pbz2 || wget -O /usr/src/app/bibles/json-bibles/acv.json.pbz2 https://github.com/samhaswon/selfhosted-bible/raw/main/bibles/json-bibles/acv.json.pbz2
 test -f /usr/src/app/bibles/json-bibles/akjv.json.pbz2 || wget -O /usr/src/app/bibles/json-bibles/akjv.json.pbz2 https://github.com/samhaswon/selfhosted-bible/raw/main/bibles/json-bibles/akjv.json.pbz2
 test -f /usr/src/app/bibles/json-bibles/asv.json.pbz2 || wget -O /usr/src/app/bibles/json-bibles/asv.json.pbz2 https://github.com/samhaswon/selfhosted-bible/raw/main/bibles/json-bibles/asv.json.pbz2
 test -f /usr/src/app/bibles/json-bibles/bbe.json.pbz2 || wget -O /usr/src/app/bibles/json-bibles/bbe.json.pbz2 https://github.com/samhaswon/selfhosted-bible/raw/main/bibles/json-bibles/bbe.json.pbz2

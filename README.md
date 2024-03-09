@@ -107,6 +107,16 @@ To access a locally hosted version of the application, go to [localhost:5000](ht
 The code included in this repository is subject to the included license, but the content from external sources is not.
 
 <details>
+    <summary>ACV Notice</summary>
+
+> A Conservative Version (ACV) was translated by Dr. Walter L. Porter. The ACV is in the public domain. 
+> The translation can be accessed online at http://www.stillvoices.org.
+> 
+> Distribution license: Public Domain
+
+</details>
+
+<details>
     <summary>AKJV Notice</summary>
 
 > This is a translation of the Bible based on the original King James Version. It is a simple word for word update from the King James English. Care has been taken to change nothing doctrinally, but to simply update the spelling and vocabulary. The grammar has not changed the grammar because that could alter the doctrine.<br><br> 
