@@ -64,6 +64,7 @@ def create_app() -> Flask:
               'NLT': NLT(),
               'RNKJV': RNKJV(),
               'RSV': RSV(),
+              'RWV': RWV(),
               'WEB': WEB(),
               'YLT': YLT()
               }

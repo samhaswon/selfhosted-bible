@@ -293,6 +293,12 @@ Geneva Bible (1599)
 </details>
 
 <details>
+    <summary>RWV Notice</summary>
+
+> Scriptures marked "RWV" are taken from the Revised Webster Version (1833), Public Domain.
+</details>
+
+<details>
     <summary>WEB Notice</summary>
 
 - Note: Only canonical books available
