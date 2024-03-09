@@ -15,6 +15,7 @@ test -f /usr/src/app/bibles/json-bibles/kjv1611.json.pbz2 || wget -O /usr/src/ap
 test -f /usr/src/app/bibles/json-bibles/lsv.json.pbz2 || wget -O /usr/src/app/bibles/json-bibles/lsv.json.pbz2 https://github.com/samhaswon/selfhosted-bible/raw/main/bibles/json-bibles/lsv.json.pbz2
 test -f /usr/src/app/bibles/json-bibles/rnkjv.json.pbz2 || wget -O /usr/src/app/bibles/json-bibles/rnkjv.json.pbz2 https://github.com/samhaswon/selfhosted-bible/raw/main/bibles/json-bibles/rnkjv.json.pbz2
 test -f /usr/src/app/bibles/json-bibles/rwv.json.pbz2 || wget -O /usr/src/app/bibles/json-bibles/rwv.json.pbz2 https://github.com/samhaswon/selfhosted-bible/raw/main/bibles/json-bibles/rwv.json.pbz2
+test -f /usr/src/app/bibles/json-bibles/ukjv.json.pbz2 || wget -O /usr/src/app/bibles/json-bibles/ukjv.json.pbz2 https://github.com/samhaswon/selfhosted-bible/raw/main/bibles/json-bibles/ukjv.json.pbz2
 test -f /usr/src/app/bibles/json-bibles/web.json.pbz2 || wget -O /usr/src/app/bibles/json-bibles/web.json.pbz2 https://github.com/samhaswon/selfhosted-bible/raw/main/bibles/json-bibles/web.json.pbz2
 test -f /usr/src/app/bibles/json-bibles/ylt.json.pbz2 || wget -O /usr/src/app/bibles/json-bibles/ylt.json.pbz2 https://github.com/samhaswon/selfhosted-bible/raw/main/bibles/json-bibles/ylt.json.pbz2
 

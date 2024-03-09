@@ -305,6 +305,15 @@ Geneva Bible (1599)
 </details>
 
 <details>
+    <summary>UKJV Notice</summary>
+
+> Freely distributable. Public Domain. True to the Authorized Version. Updated for modern reading using today's computing technology. Completed on 25th December, 2000. A Christmas gift to the world.<br>
+> This translation/update is in the Public Domain, so feel free to copy, publish, and use it. No permission in whatsoever form is needed. You already have 100% permission to publish, copy, and distribute the Updated King James Version (UKJV) as much as you want to in any form. However the author of "Translator" requests that the following be observed: -<br>
+> i) A credit line with the following words "I love Jesus (UKJV)." To be stated in the copyright page of the work that involves the UKJV.<br>
+> ii) No modifications to the UKJV, this does NOT include typographical corrections or adding of studies notes, comments and layouts modifications, which are essential to any publications. However NO addition of footnotes that indicates the preference of other manuscripts superiority in any form are allowed, e.g. "Most reliable manuscripts does not have so and so", "The verse x-x are not found in Vaticanus/Sinaiticus" etc.
+</details>
+
+<details>
     <summary>WEB Notice</summary>
 
 - Note: Only canonical books available

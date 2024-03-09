@@ -30,6 +30,7 @@ class MyTestCase(unittest.TestCase):
             'RSV': RSV(),
             'RWV': RWV(),
             'RNKJV': RNKJV(),
+            'UKJV': UKJV(),
             'WEB': WEB(),
             'YLT': YLT()
         }

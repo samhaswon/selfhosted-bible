@@ -131,6 +131,7 @@ class NavigateVersion(FlaskForm):
                                                                ('RNKJV', 'Restored Name King James Version (RNKJV)'),
                                                                ('RSV', 'Revised Standard Version (RSV)'),
                                                                ('RWV', 'Revised Webster Version 1833 (RWV)'),
+                                                               ('UKJV', 'Updated King James Version (UKJV)'),
                                                                ('WEB', 'World English Bible (WEB)'),
                                                                ('YLT', 'Young’s Literal Translation (YLT)')],
                                                       validators=[DataRequired()], default=['ESV'])

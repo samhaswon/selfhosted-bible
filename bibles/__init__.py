@@ -23,6 +23,7 @@ from .nlt import NLT
 from .rnkjv import RNKJV
 from .rsv import RSV
 from .rwv import RWV
+from .ukjv import UKJV
 from .web import WEB
 from .ylt import YLT
 
