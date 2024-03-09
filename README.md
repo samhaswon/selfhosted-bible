@@ -181,6 +181,12 @@ The code included in this repository is subject to the included license, but the
 </details>
 
 <details>
+    <summary>Douay-Rheims 1899 American Edition Notice</summary>
+
+> Scripture quotations marked "DRA" have been taken from the Douay-Rheims 1899 American Edition (Public Domain).
+</details>
+
+<details>
     <summary>ESV Notice</summary>
 
 >Scripture quotations marked “ESV” are from the ESV® Bible (The Holy Bible, English Standard Version®), copyright © 2001 

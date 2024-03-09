@@ -114,6 +114,7 @@ class NavigateVersion(FlaskForm):
                                                                ('BSB', 'Berean Standard Bible (BSB)'),
                                                                ('CSB', 'Christian Standard Bible (CSB)'),
                                                                ('Darby', 'Darby Bible (Darby)'),
+                                                               ('DRA', 'Douay-Rheims 1899 American Edition (DRA)'),
                                                                ('ESV', 'English Standard Version (ESV)'),
                                                                ('GNV', 'Geneva Bible (GNV)'),
                                                                ('KJV', 'King James Version (KJV, 1729)'),
