@@ -9,6 +9,7 @@ from compress import Compress
 from navigate import NavigatePassage, NavigateRel, NavigateVersion
 
 from flask import Flask, jsonify, render_template, redirect, Response, session, url_for, request
+from itertools import zip_longest
 from typing import Tuple, Union
 import sys
 import re
@@ -216,7 +217,7 @@ def create_app() -> Flask:
                     return redirect(url_for("404.html"))
             else:
                 content.append(["Invalid version", "Please clear your cookies and try again"])
-        content = list(zip(*content))
+        content = list(zip_longest(*content, fillvalue=""))
         html = render_template('chapter_split.html', title=book_sel + " " + chapter_sel, debug=debug, form=form,
                                content=content, chapter_num=chapter_sel, version=version_sel, passage_form=passage_form,
                                version_select=version_select, book=book_sel)
