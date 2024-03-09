@@ -280,6 +280,12 @@ Geneva Bible (1599)
 </details>
 
 <details>
+    <summary>RNKJV Notice</summary>
+
+> Scripture quotations marked “RNKJV” are taken from the Restored Name King James Version (Public Domain).
+</details>
+
+<details>
     <summary>RSV Notice</summary>
 
 > Scriptures marked RSV are taken from the REVISED STANDARD VERSION (RSV): Scripture taken from the REVISED STANDARD 

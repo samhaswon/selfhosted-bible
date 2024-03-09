@@ -27,6 +27,7 @@ class MyTestCase(unittest.TestCase):
             'NKJV': NKJV(),
             'NLT': NLT(),
             'RSV': RSV(),
+            'RNKJV': RNKJV(),
             'WEB': WEB(),
             'YLT': YLT()
         }

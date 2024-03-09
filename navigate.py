@@ -127,6 +127,7 @@ class NavigateVersion(FlaskForm):
                                                                ('NIV 2011', 'New International Version (NIV, 2011)'),
                                                                ('NKJV', 'New King James Version (NKJV)'),
                                                                ('NLT', 'New Living Translation (NLT)'),
+                                                               ('RNKJV', 'Restored Name King James Version (RNKJV)'),
                                                                ('RSV', 'Revised Standard Version (RSV)'),
                                                                ('WEB', 'World English Bible (WEB)'),
                                                                ('YLT', 'Young’s Literal Translation (YLT)')],

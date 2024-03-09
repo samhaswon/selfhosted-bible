@@ -19,6 +19,7 @@ from .niv1984 import NIV1984
 from .niv2011 import NIV2011
 from .nkjv import NKJV
 from .nlt import NLT
+from .rnkjv import RNKJV
 from .rsv import RSV
 from .web import WEB
 from .ylt import YLT
