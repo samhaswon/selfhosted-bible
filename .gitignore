@@ -16,6 +16,8 @@ notes.txt
 bibles/convert.py
 tests/speedtest.py
 .gitignore
+scripts/*.json
+scripts/*.xml
 
 bibles/json-bibles/amp.json
 bibles/json-bibles/amp.json.pbz2
