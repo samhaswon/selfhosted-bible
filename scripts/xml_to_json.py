@@ -6,7 +6,7 @@ from bibles.compresscache import CompressCache
 if __name__ == '__main__':
     json_version = {}
 
-    tree = ET.parse("ACV.xml")
+    tree = ET.parse("DARBY.xml")
     root = tree.getroot()
     for book in root:
         if book.tag == 'INFORMATION':
@@ -23,11 +23,12 @@ if __name__ == '__main__':
             number = chapter.attrib["cnumber"]
             json_version[name][number] = []
             for verse in chapter:
-                content = verse.attrib["vnumber"] + " " + verse.text
-                json_version[name][number].append(content)
+                if verse.text:
+                    content = verse.attrib["vnumber"] + " " + verse.text
+                    json_version[name][number].append(content)
 
-    with open("acv.json", "w") as json_file:
+    with open("darby.json", "w") as json_file:
         json_file.write(json.dumps(json_version))
 
-    compress_cache = CompressCache("acv")
+    compress_cache = CompressCache("darby")
     compress_cache.save(json_version)

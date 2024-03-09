@@ -5,6 +5,7 @@ from .asv import ASV
 from .bbe import BBE
 from .bsb import BSB
 from .csb import CSB
+from .darby import Darby
 from .esv import ESV
 from .gnv import GNV
 from .kjv import KJV

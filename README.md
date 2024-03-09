@@ -170,6 +170,17 @@ The code included in this repository is subject to the included license, but the
 </details>
 
 <details>
+    <summary>Darby Bible Notice</summary>
+
+> The Darby Bible was first published in 1890 by John Nelson Darby, an Anglo-Irish Bible teacher associated with the early years of the Plymouth Brethren. Darby also published translations of the Bible in French and German.
+> 
+> J. N. Darby's purpose was, as he states in the preface to his English New Testament, to make a modern translation for the unlearned who have neither access to manuscript texts nor training and knowledge of ancient languages of the Scriptures. Darby's translation work was not intended to be read aloud. His work was for study and private use. In his own oral ministry he generally used the English KJV Bible.
+> 
+> This Bible is in the public domain in the United States.
+
+</details>
+
+<details>
     <summary>ESV Notice</summary>
 
 >Scripture quotations marked “ESV” are from the ESV® Bible (The Holy Bible, English Standard Version®), copyright © 2001 
@@ -177,7 +188,7 @@ The code included in this repository is subject to the included license, but the
 > not be quoted in any publication made available to the public by a Creative Commons license. The ESV may not be 
 > translated into any other language.
 >
->Users may not copy or download more than 500 verses of the ESV Bible or more than one half of any book of the ESV Bible.
+> Users may not copy or download more than 500 verses of the ESV Bible or more than one half of any book of the ESV Bible.
 </details>
 
 <details>

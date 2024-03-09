@@ -6,6 +6,7 @@ test -f /usr/src/app/bibles/json-bibles/akjv.json.pbz2 || wget -O /usr/src/app/b
 test -f /usr/src/app/bibles/json-bibles/asv.json.pbz2 || wget -O /usr/src/app/bibles/json-bibles/asv.json.pbz2 https://github.com/samhaswon/selfhosted-bible/raw/main/bibles/json-bibles/asv.json.pbz2
 test -f /usr/src/app/bibles/json-bibles/bbe.json.pbz2 || wget -O /usr/src/app/bibles/json-bibles/bbe.json.pbz2 https://github.com/samhaswon/selfhosted-bible/raw/main/bibles/json-bibles/bbe.json.pbz2
 test -f /usr/src/app/bibles/json-bibles/bsb.json.pbz2 || wget -O /usr/src/app/bibles/json-bibles/bsb.json.pbz2 https://github.com/samhaswon/selfhosted-bible/raw/main/bibles/json-bibles/bsb.json.pbz2
+test -f /usr/src/app/bibles/json-bibles/darby.json.pbz2 || wget -O /usr/src/app/bibles/json-bibles/darby.json.pbz2 https://github.com/samhaswon/selfhosted-bible/raw/main/bibles/json-bibles/darby.json.pbz2
 test -f /usr/src/app/bibles/json-bibles/gnv.json.pbz2 || wget -O /usr/src/app/bibles/json-bibles/gnv.json.pbz2 https://github.com/samhaswon/selfhosted-bible/raw/main/bibles/json-bibles/gnv.json.pbz2
 test -f /usr/src/app/bibles/json-bibles/kjv.json.pbz2 || wget -O /usr/src/app/bibles/json-bibles/kjv.json.pbz2 https://github.com/samhaswon/selfhosted-bible/raw/main/bibles/json-bibles/kjv.json.pbz2
 test -f /usr/src/app/bibles/json-bibles/kjv1611.json.pbz2 || wget -O /usr/src/app/bibles/json-bibles/kjv1611.json.pbz2 https://github.com/samhaswon/selfhosted-bible/raw/main/bibles/json-bibles/kjv1611.json.pbz2
