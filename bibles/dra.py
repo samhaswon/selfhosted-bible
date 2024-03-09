@@ -6,7 +6,7 @@ from bibles.compresscache import CompressCache
 class DRA(Bible):
     def __init__(self) -> None:
         super().__init__()
-        self.__compress_cache = CompressCache('kjv')
+        self.__compress_cache = CompressCache('dra')
         self.__dra = self.__compress_cache.load()
 
     def get_passage(self, book: str, chapter: int) -> dict:

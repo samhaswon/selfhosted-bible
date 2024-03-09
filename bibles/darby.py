@@ -17,7 +17,6 @@ class Darby(Bible):
         :return:
         """
         if super().has_passage(book, chapter):
-            book = book if book != "Psalms" else "Psalm"
             return {"book": book, "chapter": chapter, "verses": {'none': self.__darby[book][str(chapter)]}}
         else:
             raise PassageInvalid
