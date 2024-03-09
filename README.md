@@ -187,6 +187,12 @@ The code included in this repository is subject to the included license, but the
 </details>
 
 <details>
+    <summary>EBR Notice</summary>
+
+> Scripture quotations marked "EBR" have been taken from Rotherham's Emphasized Bible, Public Domain.
+</details>
+
+<details>
     <summary>ESV Notice</summary>
 
 >Scripture quotations marked “ESV” are from the ESV® Bible (The Holy Bible, English Standard Version®), copyright © 2001 

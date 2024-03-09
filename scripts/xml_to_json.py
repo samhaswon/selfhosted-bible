@@ -6,7 +6,7 @@ from bibles.compresscache import CompressCache
 if __name__ == '__main__':
     json_version = {}
 
-    version_short = "RWV"
+    version_short = "Roth"
 
     tree = ET.parse(f"{version_short}.xml")
     root = tree.getroot()

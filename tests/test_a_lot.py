@@ -14,6 +14,7 @@ class MyTestCase(unittest.TestCase):
             'CSB': CSB(),
             'Darby': Darby(),
             'DRA': DRA(),
+            'EBR': EBR(),
             'ESV': ESV(),
             'GNV': GNV(),
             'KJV': KJV(),

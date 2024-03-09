@@ -50,6 +50,7 @@ def create_app() -> Flask:
               'CSB': CSB(),
               'Darby': Darby(),
               'DRA': DRA(),
+              'EBR': EBR(),
               'ESV': ESV() if not len(api_key) else ESV((True, api_key)),
               'GNV': GNV(),
               'KJV': KJV(),

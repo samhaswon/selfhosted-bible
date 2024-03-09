@@ -7,6 +7,7 @@ from .bsb import BSB
 from .csb import CSB
 from .darby import Darby
 from .dra import DRA
+from .ebr import EBR
 from .esv import ESV
 from .gnv import GNV
 from .kjv import KJV
