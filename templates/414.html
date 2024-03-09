@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Request URI Too Long{% endblock %}
+
+{% block content %}
+<div class="error">
+  <h1>Error 414. What were you even doing 😂</h1>
+  <p><a href="{{ url_for('main_page') }}">Click Here</a> to go to the Home Page</p>
+</div>
+{% endblock %}

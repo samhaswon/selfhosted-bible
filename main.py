@@ -2,12 +2,13 @@
 
 # Bible + Exception Imports
 from bibles import *
+from multi_bible_search import BibleSearch
 
 # Internal imports
 from compress import Compress
 from navigate import NavigatePassage, NavigateRel, NavigateVersion
 
-from flask import Flask, jsonify, render_template, redirect, Response, session, url_for
+from flask import Flask, jsonify, render_template, redirect, Response, session, url_for, request
 from typing import Tuple, Union
 import sys
 import re
@@ -22,6 +23,8 @@ def create_app() -> Flask:
     minify = re.compile(r'<!--.*?-->|(\s{2,}\B)|\n')
 
     start = time.perf_counter()
+
+    searcher = BibleSearch()
     # Read the ESV API key
     api_key: str = ""
     try:
@@ -60,7 +63,7 @@ def create_app() -> Flask:
               }
 
     end = time.perf_counter()
-    print(f"Loaded Bibles in {end - start} seconds")
+    print(f"Loaded Bibles and search in {end - start} seconds")
 
     debug = False
 
@@ -226,15 +229,71 @@ def create_app() -> Flask:
         """
         return minify.sub('', render_template("copyright.html", debug=debug))
 
-    @app.route('/chapters/<book>')
+    @app.route('/chapters/<book>', methods=['GET'])
     def chapters(book) -> Response:
-        # get the number of chapters for the given book
+        """
+        Get the number of chapters for the given book.
+        :param book: Book to get the chapters of.
+        :return: JSON object of the format {"num_chapters": int}
+        """
         try:
             num_chapters = bibles['KJV'].books_of_the_bible[book]
         except KeyError:
             num_chapters = 1
         # return the number of chapters as a JSON response
         return jsonify({'num_chapters': num_chapters})
+
+    @app.route('/goto/', methods=['GET'])
+    def goto() -> Response:
+        """
+        Go to a passage as specified by the query parameters.
+        :return: Redirect to the chapter page.
+        """
+        # Get the parameters
+        version = request.args.get('version')
+        book = request.args.get('book')
+        chapter_ref = request.args.get('chapter')
+
+        # Use those for the session, validated elsewhere.
+        session['select_version'] = [version]
+        session['select_book'], session['select_chapter'] = book, chapter_ref
+        return redirect(url_for("chapter"))
+
+    @app.route('/search_endpoint/', methods=['GET'])
+    def search_endpoint() -> Response:
+        """
+        Endpoint queried by the frontend search.
+        :return: Search results with references and verse content.
+        """
+        version = request.args.get('version')
+        query = request.args.get('query')
+
+        if version not in bibles.keys():
+            return redirect(url_for("404.html"))
+
+        results = searcher.search(query, version=version)
+        references = {}
+        for result in results[:100]:
+            space_index = result.rfind(" ")
+            colon_index = result.rfind(":")
+            book, chapter_ref, verse_ref = \
+                result[0:space_index], int(result[space_index:colon_index]), result[colon_index + 1:] + " "
+
+            verses = bibles[version].get_passage(book, chapter_ref)['verses']
+            for heading in verses.keys():
+                for verse in verses[heading]:
+                    if verse.startswith(verse_ref):
+                        if result in references:
+                            references[result] += verse[verse.find(" ") + 1:]
+                        else:
+                            references[result] = verse[verse.find(" ") + 1:]
+        reference_list = [(ref, val) for ref, val in references.items()]
+        return jsonify({'results': reference_list})
+
+    @app.route('/search/', methods=['GET'])
+    def search() -> str:
+        html = render_template('search.html', title='search', debug=debug)
+        return minify.sub('', html)
 
     @app.errorhandler(500)
     def server_error(e) -> Tuple[str, int]:
@@ -255,6 +314,16 @@ def create_app() -> Flask:
         """
         str(e)
         return minify.sub('', render_template("404.html")), 404
+
+    @app.errorhandler(414)
+    def request_too_long(e) -> Tuple[str, int]:
+        """
+        Error 414 handler
+        :param e: error
+        :return: error 414 page
+        """
+        str(e)
+        return minify.sub('', render_template("414.html")), 414
 
     @app.route('/health', methods=['GET'])
     def health() -> str:

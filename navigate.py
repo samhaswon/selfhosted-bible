@@ -103,7 +103,7 @@ class NavigateRel(FlaskForm):
 
 class NavigateVersion(FlaskForm):
     """
-    Field for selecting Bible version
+    Field for selecting a Bible version
     """
     select_version: SelectField = SelectMultipleField('Select version',
                                                       choices=[('AKJV', 'American King James Version (AKJV)'),

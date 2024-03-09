@@ -20,6 +20,8 @@ tests/
 venv/
 esv-api-key.txt
 static/styles_readable.css
+static/navigate_readable.js
+static/search_readable.js
 
 # Scripts
 convert_getbible.py
