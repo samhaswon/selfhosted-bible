@@ -14,11 +14,11 @@ class Compress(object):
     """
     The Compress object allows your application to use Flask-Compress.
 
-    When initialising a Compress object you may optionally provide your
+    When initializing a Compress object, you may optionally provide your
     :class:`flask.Flask` application object if it is ready. Otherwise,
     you may provide it later by using the :meth:`init_app` method.
 
-    :param app: optional :class:`flask.Flask` application object
+    :param app: (Optional) :class:`flask.Flask` application object.
     :type app: :class:`flask.Flask` or None
     """
     def __init__(self, app = None) -> None:
@@ -68,15 +68,15 @@ class Compress(object):
         algorithms, together with a "quality factor" for each one (higher quality
         means the client prefers that algorithm more).
 
-        :param accept_encoding_header: Content of the `Accept-Encoding` header
-        :return: name of a compression algorithm (`gzip`, `deflate`, `br`) or `None` if
+        :param accept_encoding_header: `Accept-Encoding` header's content.
+        :return: Name of a compression algorithm (`gzip`, `deflate`, `br`) or `None` if
             the client and server don't agree on any.
         """
-        # A flag denoting that client requested using any (`*`) algorithm,
-        # in case a specific one is not supported by the server
+        # A flag denoting that client requested to use any (`*`) algorithm,
+        # in case the server does not support a specific one
         fallback_to_any: bool = False
 
-        # Map quality factors to requested algorithm names.
+        # Map quality factors to the requested algorithm names.
         algos_by_quality: dict = {}
 
         for part in accept_encoding_header.lower().split(','):
@@ -84,7 +84,7 @@ class Compress(object):
             if ';q=' in part:
                 # If the client associated a quality factor with an algorithm,
                 # try to parse it. We could do the matching using a regex, but
-                # the format is so simple that it would be overkill.
+                # the format is so simple that it is overkill to do so.
                 algo = part.split(';')[0].strip()
                 try:
                     quality = float(part.split('=')[1].strip())

@@ -9,16 +9,18 @@ from compress import Compress
 from navigate import NavigatePassage, NavigateRel, NavigateVersion
 
 from flask import Flask, jsonify, render_template, redirect, Response, session, url_for, request
+from hashlib import sha256
 from itertools import zip_longest
 from typing import Tuple, Union
 import sys
+from random import randint
 import re
 import time
 
 
 def create_app() -> Flask:
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'b^lC08A7d@z3'
+    app.config['SECRET_KEY'] = sha256(time.localtime().__str__().encode("utf-8")).__str__()
     Compress(app)
 
     minify = re.compile(r'<!--.*?-->|(\s{2,}\B)|\n')
@@ -51,7 +53,7 @@ def create_app() -> Flask:
               'Darby': Darby(),
               'DRA': DRA(),
               'EBR': EBR(),
-              'ESV': ESV() if not len(api_key) else ESV((True, api_key)),
+              'ESV': ESV() if not len(api_key) else ESV(api_key),
               'GNV': GNV(),
               'KJV': KJV(),
               'KJV 1611': KJV1611(),
@@ -304,15 +306,19 @@ def create_app() -> Flask:
         html = render_template('search.html', title='search', debug=debug, versions=bibles.keys())
         return minify.sub('', html)
 
+    @app.route('/500', methods=['GET'])
     @app.errorhandler(500)
-    def server_error(e) -> Tuple[str, int]:
+    def server_error(e=None) -> Tuple[str, int]:
         """
         Error 500 handler
         :param e: error
         :return: error 500 page
         """
         str(e)
-        return minify.sub('', render_template("500.html")), 500
+        return (minify.sub('',
+                          render_template("500.html",
+                                          image=f"500_im_{randint(1, 5)}.jpg")),
+                500)
 
     @app.errorhandler(404)
     def not_found(e) -> Tuple[str, int]:

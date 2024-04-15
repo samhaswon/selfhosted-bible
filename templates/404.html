@@ -3,7 +3,8 @@
 
 {% block content %}
 <div class="error">
-  <h1>Oops! Looks like the page doesn't exist</h1>
+  <h1>Oops! It looks like the page doesn't exist</h1>
   <p><a href="{{ url_for('main_page') }}">Click Here</a> to go to the Home Page</p>
+    <img src="{{ url_for('static', filename='empty_tomb.svg') }}">
 </div>
 {% endblock %}

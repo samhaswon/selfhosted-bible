@@ -6,7 +6,7 @@ class TestESV(TestCase):
     def setUp(self) -> None:
         with open("../esv-api-key.txt", "r") as key_in:
             key = key_in.read()
-        self.esv_obj = ESV((True, key))
+        self.esv_obj = ESV()    # (key)
 
     def test_get_passage(self):
         passage = self.esv_obj.get_passage("Isaiah", 13)

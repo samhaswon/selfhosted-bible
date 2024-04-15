@@ -22,6 +22,7 @@ esv-api-key.txt
 static/styles_readable.css
 static/navigate_readable.js
 static/search_readable.js
+assets/
 
 # Scripts
 scripts/*

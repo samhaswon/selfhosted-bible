@@ -94,8 +94,8 @@ class CSB(Bible):
     def get_passage(self, book: str, chapter: int) -> dict:
         """
         Gets a given passage of the CSB. Note: this is slow as it gets the whole book.
-        :param book: Book to get
-        :param chapter: Chapter of the book
+        :param book: Book to get.
+        :param chapter: Chapter of the book.
         :return: dictionary of the passage
         """
         if not super().has_passage(book, chapter):
