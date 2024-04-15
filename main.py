@@ -13,6 +13,7 @@ from hashlib import sha256
 from itertools import zip_longest
 from typing import Tuple, Union
 import sys
+from random import randint
 import re
 import time
 
@@ -305,15 +306,19 @@ def create_app() -> Flask:
         html = render_template('search.html', title='search', debug=debug, versions=bibles.keys())
         return minify.sub('', html)
 
+    @app.route('/500', methods=['GET'])
     @app.errorhandler(500)
-    def server_error(e) -> Tuple[str, int]:
+    def server_error(e=None) -> Tuple[str, int]:
         """
         Error 500 handler
         :param e: error
         :return: error 500 page
         """
         str(e)
-        return minify.sub('', render_template("500.html")), 500
+        return (minify.sub('',
+                          render_template("500.html",
+                                          image=f"500_im_{randint(1, 5)}.jpg")),
+                500)
 
     @app.errorhandler(404)
     def not_found(e) -> Tuple[str, int]:
