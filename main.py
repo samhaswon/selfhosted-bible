@@ -9,6 +9,7 @@ from compress import Compress
 from navigate import NavigatePassage, NavigateRel, NavigateVersion
 
 from flask import Flask, jsonify, render_template, redirect, Response, session, url_for, request
+from hashlib import sha256
 from itertools import zip_longest
 from typing import Tuple, Union
 import sys
@@ -18,7 +19,7 @@ import time
 
 def create_app() -> Flask:
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'b^lC08A7d@z3'
+    app.config['SECRET_KEY'] = sha256(time.localtime().__str__().encode("utf-8")).__str__()
     Compress(app)
 
     minify = re.compile(r'<!--.*?-->|(\s{2,}\B)|\n')
