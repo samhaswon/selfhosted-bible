@@ -13,7 +13,6 @@ dist/
 build/
 self_hosted_bible.egg-info/
 notes.txt
-bibles/convert.py
 tests/speedtest.py
 .gitignore
 scripts/*.json
