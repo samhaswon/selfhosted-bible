@@ -9,12 +9,13 @@ from typing import List
 
 
 class ESV(Bible):
-    def __init__(self, key_in="") -> None:
+    def __init__(self, key_in="", debug=False) -> None:
         """
         Gets a JSON formatted dictionary of an ESV passage
         :param key_in: (True, "API key"), with the default (False, "") being reading from the file api-key.txt
         """
         super().__init__()
+        self.__debug = debug
         self.__compress_cache = CompressCache("esv")
         # API Setup
         try:
@@ -32,11 +33,11 @@ class ESV(Bible):
 
     def get_passage(self, book: str, chapter: int) -> dict:
         """
-        Gets a book of the ESV
-        :param book: Name of the book to get from
-        :param chapter: chapter to get
-        :return: dictionary of the chapter
-        :raises: PassageInvalid for invalid passages
+        Gets a book of the ESV.
+        :param book: The name of the book to get from.
+        :param chapter: The chapter to get.
+        :return: The dictionary of the chapter.
+        :raises: PassageInvalid for invalid passages.
         """
         if super().has_passage(book, chapter):
             try:
@@ -51,9 +52,9 @@ class ESV(Bible):
 
     def __get_chapter_esv(self, chapter_in) -> tuple:
         """
-        Gets a full chapter of the ESV
-        :param chapter_in: Chapter to be queried
-        :return: The chapter
+        Gets a full chapter of the ESV.
+        :param chapter_in: Chapter to be queried.
+        :return: The chapter.
         """
         params = {
             'q': chapter_in,
@@ -92,9 +93,9 @@ class ESV(Bible):
     def __get_chapter_esv_json(self, chapter_in: str) -> dict:
         """
         Returns a dictionary (Format: {book: "", chapter: 0, verses: {'heading': ["1 content..."]}, footnotes: ""})
-        for JSON-ish usage for MongoDB or a similar database
-        :param chapter_in: The chapter to get from the API
-        :return: Dictionary of the chapter
+        for JSON-ish usage for MongoDB or a similar database.
+        :param chapter_in: The chapter to get from the API.
+        :return: Dictionary of the chapter.
         """
         # Check for 1 chapter books which the API returns (by name with 1) as only the first verse.
         single_chapter_check: str = chapter_in[0:chapter_in.rfind(' ')]
@@ -145,9 +146,9 @@ class ESV(Bible):
     @staticmethod
     def __parse_headings(passage: str) -> dict:
         """
-        Parses headings from a text based on leading spaces
-        :param passage: raw API passage output of a chapter
-        :return: parsed passage. Inserts "none" for sections without a heading
+        Parses headings from a text based on leading spaces.
+        :param passage: The raw API passage output of a chapter.
+        :return: A parsed passage. Inserts "none" for sections without a heading.
         """
         parsed: dict = {}
         heading: str = "none"
@@ -173,35 +174,38 @@ class ESV(Bible):
     @staticmethod
     def __parse_footnotes(passage: str) -> str:
         """
-        Parses footnotes from a text based on leading parenthesis
-        :param passage: raw API passage output of footnotes
-        :return: parsed footnotes
+        Parses footnotes from a text based on leading parenthesis.
+        :param passage: The raw API passage output of footnotes.
+        :return: Parsed footnotes.
         """
         return passage[passage.find('('):].replace("\\n\\n", "\n").replace("\\n", "\n")
 
     @staticmethod
     def __split_verses(verses_in: str) -> List[str]:
         """
-        Splits a given string of verses by the "[]" parts of the verse marker
-        :param verses_in: string of combined verses
-        :return: list of verses as one entry per verse
+        Splits a given string of verses by the "[]" parts of the verse marker.
+        :param verses_in: string of combined verses.
+        :return: A list of verses as one entry per verse.
         """
         pre = resplit(r'\[', sub(']', "", verses_in))
         return list(filter(None, [sub(r"\s+$", "", verse) for verse in pre]))
 
     def __api_return(self, book: str, chapter: int) -> dict:
         """
-        Gets the given verse from the API, and clears the cache in accordance with the ESV API caching limits
-        :param book: Book to retrieve from
-        :param chapter: chapter of that book
-        :return: dictionary formatted by book, chapter, verses, and footnotes
+        Gets the given verse from the API, and clears the cache in accordance with the ESV API caching limits.
+        :param book: Book to retrieve from.
+        :param chapter: The chapter of that book.
+        :return: A dictionary formatted by book, chapter, verses, and footnotes.
         """
         if len(self.__API_KEY):
             passage = self.__get_chapter_esv_json(book + " " + str(chapter))
         else:
             self.__non_api_fetch(book=book, chapter=str(chapter))
             passage = self.get_passage(book, chapter)
-        return passage
+
+        # This is to be able to evaluate more results at once.
+        if self.__debug:
+            return passage
 
 
         # Make sure the cache is within guidelines
@@ -239,12 +243,12 @@ class ESV(Bible):
             self.__cache[book][str(chapter)] = {'verses': passage['verses'], 'footnotes': passage['footnotes']}
         return passage
 
-    def __non_api_fetch(self, book: str, chapter: str):
+    def __non_api_fetch(self, book: str, chapter: str) -> None:
         """
         Retrieves a passage when an API key is not supplied.
         :param book: Book to fetch.
         :param chapter: Chapter of the book
-        :return:
+        :return: None
         """
         try:
             uri = "https://www.esv.org/"
@@ -294,6 +298,8 @@ class ESV(Bible):
                         self.__cache['Jude']['1']['verses'] = result['Jud']['Jude']
                     else:
                         self.__cache[book_ref][str(chapter_ref)]['verses'] = result[book_ref][chapter_ref]
+        if int(chapter) % 2 == 0:
+            self.__compress_cache.save(self.__cache)
 
 
     @classmethod
@@ -396,6 +402,3 @@ class ESV(Bible):
                 if len(verse):
                     results[book][chapter_ref][current_heading].append(verse)
         return results
-
-    def __del__(self):
-        self.__compress_cache.save(self.__cache)

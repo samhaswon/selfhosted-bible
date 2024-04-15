@@ -15,7 +15,7 @@ class MyTestCase(unittest.TestCase):
             'Darby': Darby(),
             'DRA': DRA(),
             'EBR': EBR(),
-            'ESV': ESV(),
+            'ESV': ESV(debug=True),
             'GNV': GNV(),
             'KJV': KJV(),
             'KJV 1611': KJV1611(),
