@@ -201,6 +201,7 @@ class ESV(Bible):
         else:
             self.__non_api_fetch(book=book, chapter=str(chapter))
             passage = self.get_passage(book, chapter)
+        return passage
 
 
         # Make sure the cache is within guidelines
