@@ -26,7 +26,7 @@ FROM python:3-alpine as application
 ENV PYTHONUNBUFFERED=TRUE
 
 # Get build-stage files
-COPY --from=build-stage /svc /usr/src/app
+COPY --link --from=build-stage /svc /usr/src/app
 WORKDIR /usr/src/app
 RUN echo "***** Installing dependencies *****" && \
     pip install --no-index --find-links=/usr/src/app/wheels -r requirements.txt
