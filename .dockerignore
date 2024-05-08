@@ -13,6 +13,7 @@ notes.txt
 LICENSE
 pictures/
 docker-compose.yml
+biblestore
 
 # Optimization of container size
 icon/
@@ -22,9 +23,13 @@ esv-api-key.txt
 static/styles_readable.css
 static/navigate_readable.js
 static/search_readable.js
-assets/
+assets
+assets/*
+# This is grabbed from GH anyways, so ignore it
+bibles/json-bibles/*
 
 # Scripts
+scripts
 scripts/*
 
 # Local build exclusions
