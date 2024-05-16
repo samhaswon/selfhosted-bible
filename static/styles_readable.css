@@ -591,6 +591,24 @@ label {
         overflow: auto;
         padding: 0 2%
     }
+
+    p {
+        padding-left:  10%;
+        padding-right: 10%;
+    }
+
+    h2 {
+        padding-left: 8%;
+    }
+
+    h4 {
+        padding-left: 8%;
+    }
+
+    h6 {
+        padding-left: 8%;
+    }
+
 }
 
 @media (max-width: 1000px) {
