@@ -282,9 +282,9 @@ def create_app() -> Flask:
         if version not in bibles.keys():
             return redirect(url_for("404.html"))
 
-        results = searcher.search(query, version=version)
+        results = searcher.search(query, version=version, max_results=100)
         references = {}
-        for result in results[:100]:
+        for result in results:
             space_index = result.rfind(" ")
             colon_index = result.rfind(":")
             book, chapter_ref, verse_ref = \
