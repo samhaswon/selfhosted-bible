@@ -8,7 +8,8 @@ from multi_bible_search import BibleSearch
 from compress import Compress
 from navigate import NavigatePassage, NavigateRel, NavigateVersion
 
-from flask import Flask, jsonify, render_template, redirect, Response, session, url_for, request
+from flask import Flask, jsonify, render_template, redirect, Response, session, url_for, request, abort
+from functools import cache
 from hashlib import sha256
 from itertools import zip_longest
 from typing import Tuple, Union
@@ -74,7 +75,7 @@ def create_app() -> Flask:
               }
 
     end = time.perf_counter()
-    print(f"Loaded Bibles and search in {end - start} seconds")
+    print(f"Loaded Bibles and search in {end - start:.6f} seconds")
 
     debug = False
 
@@ -106,7 +107,7 @@ def create_app() -> Flask:
                 elif len(versions) > 1:
                     return redirect(url_for('chapter_split'))
                 else:
-                    return redirect(url_for("404.html"))
+                    return abort(400)
             elif form.chapter.data:
                 error_mess = "Please submit the book first"
         html: str = render_template('index.html', title='Home', debug=debug, form=form, error_mess=error_mess,
@@ -160,8 +161,8 @@ def create_app() -> Flask:
         if version_sel in bibles.keys():
             try:
                 content: dict = bibles[version_sel].get_passage(book_sel, int(chapter_sel))
-            except PassageInvalid:
-                return redirect(url_for("404.html"))
+            except PassageInvalid or ValueError:
+                return abort(400)
         else:
             content = {"book": "Invalid version", "chapter": "",
                        "verses": {"": ["Please clear your cookies and try again"]}}
@@ -221,8 +222,8 @@ def create_app() -> Flask:
                 try:
                     tmp_content = bibles[version].get_passage(book_sel, int(chapter_sel))
                     content.append([verse for heading, verses in tmp_content.get('verses').items() for verse in verses])
-                except PassageInvalid:
-                    return redirect(url_for("404.html"))
+                except PassageInvalid or ValueError:
+                    return abort(400)
             else:
                 content.append(["Invalid version", "Please clear your cookies and try again"])
         content = list(zip_longest(*content, fillvalue=""))
@@ -231,6 +232,17 @@ def create_app() -> Flask:
                                version_select=version_select, book=book_sel)
         return minify.sub('', html)
 
+    @cache
+    @app.route('/grid', methods=['GET'])
+    @app.route('/grid.html', methods=['GET'])
+    def grid() -> str:
+        """
+        A grid of Bible passages.
+        :return: HTML page of iframes for Bible passages.
+        """
+        return minify.sub('', render_template("grid.html", debug=debug, versions=bibles.keys()))
+
+    @cache
     @app.route('/copyright', methods=['GET'])
     @app.route('/copyright.html', methods=['GET'])
     def copyright_notice() -> str:
@@ -254,6 +266,26 @@ def create_app() -> Flask:
         # return the number of chapters as a JSON response
         return jsonify({'num_chapters': num_chapters})
 
+    @app.route('/embed', methods=['GET'])
+    def embed() -> Union[str, Response]:
+        """
+        Generate passage embeddings for the grid of passages.
+        :return: The HTML for the iframe.
+        """
+        # Get the parameters
+        version = request.args.get('version', 'ESV')
+        book = request.args.get('book', 'Genesis')
+        chapter_ref = request.args.get('chapter', '1')
+
+        # Get the passage, returning 400 for invalid references
+        try:
+            content: dict = bibles[version].get_passage(book, int(chapter_ref))
+        except PassageInvalid or ValueError or KeyError:
+            return abort(400)
+        html = render_template('embed.html', title=book + " " + chapter_ref, debug=debug,
+                               content=content, version=version)
+        return minify.sub('', html)
+
     @app.route('/goto/', methods=['GET'])
     def goto() -> Response:
         """
@@ -261,9 +293,9 @@ def create_app() -> Flask:
         :return: Redirect to the chapter page.
         """
         # Get the parameters
-        version = request.args.get('version')
-        book = request.args.get('book')
-        chapter_ref = request.args.get('chapter')
+        version = request.args.get('version', 'ESV')
+        book = request.args.get('book', 'Genesis')
+        chapter_ref = request.args.get('chapter', '1')
 
         # Use those for the session, validated elsewhere.
         session['select_version'] = [version]
@@ -280,7 +312,7 @@ def create_app() -> Flask:
         query = request.args.get('query')
 
         if version not in bibles.keys():
-            return redirect(url_for("404.html"))
+            return abort(400)
 
         results = searcher.search(query, version=version, max_results=100)
         references = {}
@@ -301,7 +333,8 @@ def create_app() -> Flask:
         reference_list = [(ref, val) for ref, val in references.items()]
         return jsonify({'results': reference_list})
 
-    @app.route('/search/', methods=['GET'])
+    @cache
+    @app.route('/search', methods=['GET'])
     def search() -> str:
         html = render_template('search.html', title='search', debug=debug, versions=bibles.keys())
         return minify.sub('', html)
@@ -320,8 +353,9 @@ def create_app() -> Flask:
                                           image=f"500_im_{randint(1, 5)}.jpg")),
                 500)
 
+    @app.route('/404', methods=['GET'])
     @app.errorhandler(404)
-    def not_found(e) -> Tuple[str, int]:
+    def not_found(e = "") -> Tuple[str, int]:
         """
         Error 404 handler
         :param e: error
@@ -329,6 +363,17 @@ def create_app() -> Flask:
         """
         str(e)
         return minify.sub('', render_template("404.html")), 404
+
+    @app.route('/400', methods=['GET'])
+    @app.errorhandler(400)
+    def bad_request(e="") -> Tuple[str, int]:
+        """
+        Error 400 handler
+        :param e: error
+        :return: error 400 page
+        """
+        str(e)
+        return minify.sub('', render_template("400.html")), 400
 
     @app.errorhandler(414)
     def request_too_long(e) -> Tuple[str, int]:

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block navbar %}
+<div hidden aria-hidden="true">
+<button
+    type="button"
+    class="navbar-brand btn-nav"
+    data-theme-toggle
+    aria-label="🌞"
+    aria-hidden="true"
+    hidden>
+    🌞
+</button>
+</div>
+{% endblock navbar %}
+{% block content %}
+<div class="container-fluid mw-100">
+    <script>var book = "{{ content.get('book') }}";var chapterNumber = {{ content.get('chapter') }};</script>
+    <br><br>
+    <h2>{{ content.get('book') }} {{ content.get('chapter') }}</h2>
+    <span class=".h6 h6">© {{ version }}</span>
+    {% for heading, verses in content.get('verses').items() %}
+        {% if heading != 'none'%}
+            <h4><em>{{ heading }}</em></h4>
+        {% endif %}
+        {% for verse in verses %}
+            <p>{{ verse }}</p>
+        {% endfor %}
+    {% endfor %}
+    <br><br>
+    {% if content.get('footnotes') %}
+            <h5>Footnotes:</h5>
+            <p>{{ content.get('footnotes') }}</p>
+    {% endif %}
+</div>
+{% endblock content %}

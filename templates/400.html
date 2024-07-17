@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Error 400: Bad Request{% endblock %}
+
+{% block content %}
+<div class="error">
+  <h1>You have made a bad request.</h1>
+    <blockquote>Psalms 14:3 (ESV) They have all turned aside; together they have become corrupt; there is none who does good, not even one.</blockquote><br>
+    <p><a href="{{ url_for('main_page') }}">Click Here</a> to go to the Home Page</p>
+</div>
+{% endblock %}
