@@ -13,7 +13,7 @@
         </div>
         <br><br>
         <h2>{{ content.get('book') }} {{ content.get('chapter') }}</h2>
-        <h6>© {{ version }}</h6>
+        <span class=".h6 h6">© {{ version }}</span>
         {% for heading, verses in content.get('verses').items() %}
             {% if heading != 'none'%}
                 <h4><em>{{ heading }}</em></h4>
