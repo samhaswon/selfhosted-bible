@@ -8,15 +8,15 @@ from multi_bible_search import BibleSearch
 from compress import Compress
 from navigate import NavigatePassage, NavigateRel, NavigateVersion
 
-from flask import Flask, jsonify, render_template, redirect, Response, session, url_for, request, abort
+from flask import Flask, jsonify, render_template, redirect, Response, session, url_for, request, abort, make_response
 from functools import cache
 from hashlib import sha256
 from itertools import zip_longest
-from typing import Tuple, Union
-import sys
 from random import randint
 import re
+import sys
 import time
+from typing import Tuple, Union
 
 
 def create_app() -> Flask:
@@ -79,10 +79,12 @@ def create_app() -> Flask:
 
     debug = False
 
+    """
     # Fix for session expiry
     @app.before_request
     def make_session_permanent():
         session.permanent = True
+    """
 
     @app.route('/', methods=['GET', 'POST'])
     @app.route('/index.html', methods=['GET', 'POST'])
@@ -235,22 +237,27 @@ def create_app() -> Flask:
     @cache
     @app.route('/grid', methods=['GET'])
     @app.route('/grid.html', methods=['GET'])
-    def grid() -> str:
+    def grid() -> Response:
         """
         A grid of Bible passages.
         :return: HTML page of iframes for Bible passages.
         """
-        return minify.sub('', render_template("grid.html", debug=debug, versions=bibles.keys()))
+        response = make_response(minify.sub('', render_template("grid.html", debug=debug, versions=bibles.keys())))
+        response.cache_control.max_age = 60 * 60 * 24 * 7
+        return response # minify.sub('', render_template("grid.html", debug=debug, versions=bibles.keys()))
 
     @cache
     @app.route('/copyright', methods=['GET'])
     @app.route('/copyright.html', methods=['GET'])
-    def copyright_notice() -> str:
+    def copyright_notice() -> Response:
         """
         Copyright notice page
         :return: Copyright notice
         """
-        return minify.sub('', render_template("copyright.html", debug=debug))
+        response = make_response(minify.sub('', render_template("copyright.html", debug=debug)))
+        response.cache_control.max_age = 60 * 60 * 24 * 7
+        response.cache_control.public = True
+        return response
 
     @app.route('/chapters/<book>', methods=['GET'])
     def chapters(book) -> Response:
@@ -267,7 +274,7 @@ def create_app() -> Flask:
         return jsonify({'num_chapters': num_chapters})
 
     @app.route('/embed', methods=['GET'])
-    def embed() -> Union[str, Response]:
+    def embed() -> Response:
         """
         Generate passage embeddings for the grid of passages.
         :return: The HTML for the iframe.
@@ -282,9 +289,10 @@ def create_app() -> Flask:
             content: dict = bibles[version].get_passage(book, int(chapter_ref))
         except PassageInvalid or ValueError or KeyError:
             return abort(400)
-        html = render_template('embed.html', title=book + " " + chapter_ref, debug=debug,
-                               content=content, version=version)
-        return minify.sub('', html)
+        response = make_response(minify.sub('', render_template('embed.html', title=book + " " + chapter_ref, debug=debug,
+                               content=content, version=version)))
+        response.cache_control.max_age = 60 * 60 * 24 * 7
+        return response
 
     @app.route('/goto/', methods=['GET'])
     def goto() -> Response:
@@ -335,9 +343,10 @@ def create_app() -> Flask:
 
     @cache
     @app.route('/search', methods=['GET'])
-    def search() -> str:
-        html = render_template('search.html', title='search', debug=debug, versions=bibles.keys())
-        return minify.sub('', html)
+    def search() -> Response:
+        response = make_response(minify.sub('', render_template('search.html', title='search', debug=debug, versions=bibles.keys())))
+        response.cache_control.max_age = 60 * 60 * 24 * 7
+        return response
 
     @app.route('/500', methods=['GET'])
     @app.errorhandler(500)

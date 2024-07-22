@@ -7,6 +7,7 @@
         {% for i in range(4) %}
             {% if i % 2 == 0 %}<div class="container">{% endif %}
                 <div class="item">
+                <div align="center">
                 <select class="passage-form" id="book-{{ i }}" name="book" required>
                     <option selected value="Genesis">Genesis</option>
                     <option value="Exodus">Exodus</option>
@@ -80,8 +81,8 @@
                     {% for version in versions %}
                         <option {% if version == 'KJV' %}selected{% endif %} value="{{version}}">{{version}}</option>
                     {% endfor %}
-                </select><br>
-                <iframe style="border: none; width: 100%; height: 70vh;" id="bible-frame-{{ i }}"></iframe>
+                </select></div><br>
+                <iframe style="border: none; width: 100%; height: 70vh;" id="bible-frame-{{ i }}" title="Bible frame {{ i }}" referrerpolicy="origin" loading="lazy" src="/embed?version=KJV&book=Genesis&chapter=1"></iframe>
                 </div>
                 {% if i % 2 == 0 %}<br><span style="width: 2%">&nbsp;</span><br>{% endif %}
             {% if i % 2 != 0 %}</div><hr>{% endif %}

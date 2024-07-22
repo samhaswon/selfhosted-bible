@@ -658,5 +658,11 @@ th {
     flex-direction: row;
     flex-wrap: wrap;
     width: 47%;
+    min-width: 200px;
     justify-content: center;
+}
+
+iframe, .iframe {
+    flex-grow: 1;
+    min-height: 40px;
 }

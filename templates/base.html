@@ -82,7 +82,9 @@
             currentThemeSetting = newTheme;
         });
     </script>
-    <script type="text/javascript" async="" src="{{ url_for('static', filename='navigate.js') }}"></script>
+    {% block nav_script %}
+    <script type="text/javascript" async="async" src="{{ url_for('static', filename='navigate.js') }}"></script>
+    {% endblock nav_script %}
 {% endblock body %}
 </html>
 {% endblock doc -%}
