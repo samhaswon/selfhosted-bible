@@ -18,11 +18,16 @@ import sys
 import time
 from typing import Tuple, Union
 
+DEBUG = False
+
 
 def create_app() -> Flask:
     app = Flask(__name__)
     app.config['SECRET_KEY'] = sha256(time.localtime().__str__().encode("utf-8")).__str__()
     Compress(app)
+
+    if DEBUG:
+        app.jinja_env.auto_reload = True
 
     minify = re.compile(r'<!--.*?-->|(\s{2,}\B)|\n')
 
@@ -77,8 +82,6 @@ def create_app() -> Flask:
     end = time.perf_counter()
     print(f"Loaded Bibles and search in {end - start:.6f} seconds")
 
-    debug = False
-
     """
     # Fix for session expiry
     @app.before_request
@@ -112,8 +115,9 @@ def create_app() -> Flask:
                     return abort(400)
             elif form.chapter.data:
                 error_mess = "Please submit the book first"
-        html: str = render_template('index.html', title='Home', debug=debug, form=form, error_mess=error_mess,
-                                    version_select=version_select)
+        html: str = render_template('index.html', title='Home', debug=DEBUG, form=form, error_mess=error_mess,
+                                    version_select=version_select, book=session.get('select_book', 'Genesis'),
+                                    chapter=session.get('select_chapter', '1'))
         return minify.sub('', html)
 
     @app.route('/chapter', methods=['GET', 'POST'])
@@ -169,7 +173,7 @@ def create_app() -> Flask:
             content = {"book": "Invalid version", "chapter": "",
                        "verses": {"": ["Please clear your cookies and try again"]}}
 
-        html = render_template('chapter.html', title=book_sel + " " + chapter_sel, debug=debug, form=form,
+        html = render_template('chapter.html', title=book_sel + " " + chapter_sel, debug=DEBUG, form=form,
                                content=content, version=version_sel, passage_form=passage_form,
                                version_select=version_select)
         return minify.sub('', html)
@@ -229,7 +233,7 @@ def create_app() -> Flask:
             else:
                 content.append(["Invalid version", "Please clear your cookies and try again"])
         content = list(zip_longest(*content, fillvalue=""))
-        html = render_template('chapter_split.html', title=book_sel + " " + chapter_sel, debug=debug, form=form,
+        html = render_template('chapter_split.html', title=book_sel + " " + chapter_sel, debug=DEBUG, form=form,
                                content=content, chapter_num=chapter_sel, version=version_sel, passage_form=passage_form,
                                version_select=version_select, book=book_sel)
         return minify.sub('', html)
@@ -242,7 +246,7 @@ def create_app() -> Flask:
         A grid of Bible passages.
         :return: HTML page of iframes for Bible passages.
         """
-        response = make_response(minify.sub('', render_template("grid.html", debug=debug, versions=bibles.keys())))
+        response = make_response(minify.sub('', render_template("grid.html", debug=DEBUG, versions=bibles.keys())))
         response.cache_control.max_age = 60 * 60 * 24 * 7
         return response # minify.sub('', render_template("grid.html", debug=debug, versions=bibles.keys()))
 
@@ -254,7 +258,7 @@ def create_app() -> Flask:
         Copyright notice page
         :return: Copyright notice
         """
-        response = make_response(minify.sub('', render_template("copyright.html", debug=debug)))
+        response = make_response(minify.sub('', render_template("copyright.html", debug=DEBUG)))
         response.cache_control.max_age = 60 * 60 * 24 * 7
         response.cache_control.public = True
         return response
@@ -289,7 +293,7 @@ def create_app() -> Flask:
             content: dict = bibles[version].get_passage(book, int(chapter_ref))
         except PassageInvalid or ValueError or KeyError:
             return abort(400)
-        response = make_response(minify.sub('', render_template('embed.html', title=book + " " + chapter_ref, debug=debug,
+        response = make_response(minify.sub('', render_template('embed.html', title=book + " " + chapter_ref, debug=DEBUG,
                                content=content, version=version)))
         response.cache_control.max_age = 60 * 60 * 24 * 7
         return response
@@ -322,6 +326,10 @@ def create_app() -> Flask:
         if version not in bibles.keys():
             return abort(400)
 
+        # Make sure the query is a reasonable length (max is 528 in the KJV for reference).
+        if len(query) > 700:
+            query = query[:700]
+
         results = searcher.search(query, version=version, max_results=100)
         references = {}
         for result in results:
@@ -344,7 +352,7 @@ def create_app() -> Flask:
     @cache
     @app.route('/search', methods=['GET'])
     def search() -> Response:
-        response = make_response(minify.sub('', render_template('search.html', title='search', debug=debug, versions=bibles.keys())))
+        response = make_response(minify.sub('', render_template('search.html', title='search', debug=DEBUG, versions=bibles.keys())))
         response.cache_control.max_age = 60 * 60 * 24 * 7
         return response
 
@@ -406,6 +414,7 @@ def create_app() -> Flask:
 
 
 if __name__ == '__main__':
+    DEBUG = True
     # Dev start is also: `flask --app main.py run`
     app_create: Flask = create_app()
     app_create.run()

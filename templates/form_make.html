@@ -8,7 +8,7 @@
         {{ field(class='btn btn-default') }}
       {% endcall %}
     {% else -%}
-      <div class="form-group {%- if field.flags.required %} required{% endif -%}">
+      <div class="form-group {%- if field.flags.required %} required {% endif -%}">
             {{ field.label(class="control-label") }}
             {{ field(class="form-control", **kwargs) }}
       </div>

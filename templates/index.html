@@ -4,6 +4,7 @@
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
     <div class="container-fluid mw-100">
+        <script>var book = "{{ book }}";var chapterNumber = {{ chapter }};</script>
         <form method="POST" role="form">
             {{ form.hidden_tag() }}
             {{ wtf.form_field(version_select.select_version, size=4) }}
@@ -15,8 +16,5 @@
                 {{ error_mess }}
             {% endif %}
         </form>
-        <!--<br>&nbsp;<br>&nbsp;<br>
-        <button class="btn btn-default" onclick="window.location.href = '/grid'">Grid</button>
-        -->
     </div>
 {% endblock %}

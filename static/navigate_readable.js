@@ -6,6 +6,9 @@ const bookChapters = {'Genesis': 50, 'Exodus': 40, 'Leviticus': 27, 'Numbers': 3
 var bookSelectors = [], chapterSelectors = [], versionSelectors = [], bibleFrames = [];
 
 async function chapterOptions(count, chapterSelectElement) {
+    if (chapterSelectElement.value) {
+        window.chapterNumber = chapterSelectElement.value;
+    }
     // remove all options from the chapter select
     chapterSelectElement.innerHTML = '';
     // add options for each chapter
@@ -13,7 +16,7 @@ async function chapterOptions(count, chapterSelectElement) {
         const option = document.createElement('option');
         option.value = i;
         option.textContent = i;
-        if (window.chapterNumber && window.chapterNumber === i) {
+        if (window.chapterNumber && window.chapterNumber == i) {
             option.selected = true;
         }
         chapterSelectElement.appendChild(option);
