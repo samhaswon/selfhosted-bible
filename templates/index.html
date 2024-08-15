@@ -5,7 +5,7 @@
 {% block content %}
     <div class="container-fluid mw-100">
         <script>var book = "{{ book }}";var chapterNumber = {{ chapter }};</script>
-        <form method="POST" role="form">
+        <form method="POST" role="presentation">
             {{ form.hidden_tag() }}
             {{ wtf.form_field(version_select.select_version, size=4) }}
             <br>

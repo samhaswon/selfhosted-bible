@@ -3,11 +3,12 @@
 {% block title %}Passage Grid{% endblock %}
 {% block content %}
 <div class="container-fluid mw-100">
-    <form method="post" role="form">
+    <form method="post" role="presentation">
         {% for i in range(4) %}
             {% if i % 2 == 0 %}<div class="container">{% endif %}
                 <div class="item">
                 <div align="center">
+                <label for="book-{{ i }}" hidden="hidden" aria-label="Book selection {{ i }}"></label>
                 <select class="passage-form" id="book-{{ i }}" name="book" required>
                     <option selected value="Genesis">Genesis</option>
                     <option value="Exodus">Exodus</option>
@@ -76,7 +77,9 @@
                     <option value="Jude">Jude</option>
                     <option value="Revelation">Revelation</option>
                 </select>
+                <label for="chapter-{{ i }}" hidden="hidden" aria-label="Chapter selection {{ i }}"></label>
                 <select class="passage-form" id="chapter-{{ i }}" name="chapter"></select>
+                <label for="version-selection-{{ i }}" hidden="hidden" aria-label="Version selection {{ i }}"></label>
                 <select class="passage-form" id="version-selection-{{ i }}">
                     {% for version in versions %}
                         <option {% if version == 'KJV' %}selected{% endif %} value="{{version}}">{{version}}</option>

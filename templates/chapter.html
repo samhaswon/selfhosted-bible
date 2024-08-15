@@ -5,15 +5,17 @@
 {% block content %}
 <div class="container-fluid mw-100">
     <script>var book = "{{ content.get('book') }}";var chapterNumber = {{ content.get('chapter') }};</script>
-    <form method="post" role="form">
+    <form method="post" role="presentation">
         <div align="center">
-            {{ form.hidden_tag() }}{{ wtf.form_field(form.previous_button) }}{{ wtf.passage_field(passage_form.book) }}{{ wtf.passage_field(passage_form.chapter) }}{{ wtf.form_field(form.next_button) }}<br>
-            {{ wtf.passage_field(version_select.select_version) }}<br>
+            {{ form.hidden_tag() }}{{ wtf.form_field(form.previous_button) }}<label for="book" hidden="hidden" aria-label="Book selection"></label>{{ wtf.passage_field(passage_form.book) }}<label for="chapter" hidden="hidden" aria-label="Chapter selection"></label>{{ wtf.passage_field(passage_form.chapter) }}{{ wtf.form_field(form.next_button) }}<br>
+            <label for="select_version" hidden="hidden" aria-label="Version selection"></label>{{ wtf.passage_field(version_select.select_version) }}<br>
             {{ wtf.form_field(passage_form.submit) }}
         </div>
         <br><br>
         <h2>{{ content.get('book') }} {{ content.get('chapter') }}</h2>
         <span class=".h6 h6">© {{ version }}</span>
+        <!-- For accessibility -->
+        <span style="padding: 0%; position: absolute;"><h3></h3></span>
         {% for heading, verses in content.get('verses').items() %}
             {% if heading != 'none'%}
                 <h4><em>{{ heading }}</em></h4>
