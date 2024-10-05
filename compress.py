@@ -149,6 +149,11 @@ class Compress(object):
         response.headers['Content-Encoding'] = chosen_algorithm
         response.headers['Content-Length'] = response.content_length
 
+        if response.mimetype != 'text/html':
+            response.cache_control.max_age = 60 * 60 * 24 * 7
+            response.cache_control.public = True
+            response.cache_control.no_cache = None
+
         # "123456789"   => "123456789:gzip"   - A strong ETag validator
         # W/"123456789" => W/"123456789:gzip" - A weak ETag validator
         if etag := response.headers.get('ETag'):

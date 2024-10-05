@@ -53,6 +53,9 @@ searchBox.addEventListener('input', (event) => {
 });
 versionSelection.addEventListener('change', (event) => {
     const query = searchBox.value;
+    if (!query.length) {
+        return;
+    }
     const version = versionSelection.value;
     const searchResults = fetchSearchResults(query, version)
     .then((results) => {

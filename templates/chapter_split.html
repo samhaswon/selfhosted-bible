@@ -5,10 +5,10 @@
 {% block content %}
 <div class="container-fluid mw-100">
     <script>var book = "{{ book }}";var chapterNumber = {{ chapter_num }};</script>
-    <form method="post" role="form">
+    <form method="post" role="presentation">
         <div align="center">
-            {{ form.hidden_tag() }}{{ wtf.form_field(form.previous_button) }}{{ wtf.passage_field(passage_form.book) }}{{ wtf.passage_field(passage_form.chapter) }}{{ wtf.form_field(form.next_button) }}<br>
-            {{ wtf.passage_field(version_select.select_version) }}<br>
+            {{ form.hidden_tag() }}{{ wtf.form_field(form.previous_button) }}<label for="book" hidden="hidden" aria-label="Book selection"></label>{{ wtf.passage_field(passage_form.book) }}<label for="chapter" hidden="hidden" aria-label="Chapter selection"></label>{{ wtf.passage_field(passage_form.chapter) }}{{ wtf.form_field(form.next_button) }}<br>
+            <label for="select_version" hidden="hidden" aria-label="Version selection"></label>{{ wtf.passage_field(version_select.select_version) }}<br>
             {{ wtf.form_field(passage_form.submit) }}
         </div>
         <br><br>

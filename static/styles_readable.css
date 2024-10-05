@@ -25,7 +25,7 @@ body {
     margin: 0;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 14px;
-    line-height: 1.42857143;
+    line-height: 1.43;
     color: #333
 }
 
@@ -104,7 +104,6 @@ button,input,select,textarea {
 a {
     background-color: transparent;
     color: #337ab7;
-    text-decoration: none
 }
 
 .tab {
@@ -136,7 +135,7 @@ a:-webkit-any-link {
 .btn,.form-control {
     padding: 6px 12px;
     font-size: 14px;
-    line-height: 1.42857143;
+    line-height: 1.43;
     background-image: none
 }
 
@@ -234,11 +233,12 @@ label {
     height: 50px;
     padding: 15px;
     font-size: 18px;
-    line-height: 20px
+    line-height: 20px;
+    text-decoration: none;
 }
 
 .navbar-brand:focus,.navbar-brand:hover {
-    text-decoration: none
+    text-decoration: none;
 }
 
 .navbar-toggle {
@@ -334,7 +334,8 @@ label {
 }
 
 .navbar-inverse .btn-link,.navbar-inverse .navbar-brand,.navbar-inverse .navbar-link,.navbar-inverse .navbar-nav>li>a,.navbar-inverse .navbar-text {
-    color: #9d9d9d
+    color: #9d9d9d;
+    text-decoration: none;
 }
 
 .navbar-inverse .navbar-brand:focus,.navbar-inverse .navbar-brand:hover,.navbar-inverse .navbar-nav>li>a:focus,.navbar-inverse .navbar-nav>li>a:hover {
@@ -368,9 +369,10 @@ label {
     border-color: #101010
 }
 
-@media (max-width: 320px) {
+@media (max-width: 364px) {
     .navbar {
         margin-right: -1px;
+        font-size-adjust: cap-height 0.5
     }
 }
 
@@ -474,7 +476,7 @@ label {
     font-weight: 400;
     padding: 7px 12px;
     font-size: 14px;
-    line-height: 1.42857143;
+    line-height: 1.43;
     text-align: center;
     background-color: #fff;
 }
@@ -483,7 +485,7 @@ label {
     padding: 12px 14px;
     font-size: 14px;
     font-weight: 400
-    line-height: 1.42857143;
+    line-height: 1.43;
     background-image: none;
     margin: 0;
     display: inline-block;
@@ -529,7 +531,8 @@ label {
     }
 
     a {
-        color: #9d9d9d
+        color: #454ea3;
+        text-decoration: underline;
     }
 
     h4 {
@@ -558,7 +561,14 @@ label {
     }
 
     body {
-        background-color: #212435
+        background-color: #212435;
+        /*background-image: linear-gradient(
+            90deg,
+            transparent calc(50% - 700px),
+            #0003 calc(50% - 500px),
+            #0004 calc(50% + 500px),
+            transparent calc(50% + 700px)
+        );*/
     }
 
     .btn-default,.form-control,.passage-form {
@@ -568,7 +578,8 @@ label {
     }
 
     .navbar-inverse {
-        background-color: #000331
+        background-color: #000331;
+        background-image: linear-gradient(90deg, transparent, transparent, black);
     }
 
     button,input,optgroup,select,textarea {
@@ -577,7 +588,8 @@ label {
     }
 
     a {
-        color: #8080f1
+        color: #aaf;
+        text-decoration: underline;
     }
 
     h4 {
@@ -590,6 +602,9 @@ label {
 
     .navbar-inverse .navbar-brand {
         color: #e0e0e0
+    }
+    .navbar-brand:hover {
+        color: #fff;
     }
     .btn-nav {
         background-color: #000331;
@@ -658,5 +673,11 @@ th {
     flex-direction: row;
     flex-wrap: wrap;
     width: 47%;
+    min-width: 200px;
     justify-content: center;
+}
+
+iframe, .iframe {
+    flex-grow: 1;
+    min-height: 40px;
 }

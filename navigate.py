@@ -97,8 +97,8 @@ class NavigateRel(FlaskForm):
     """
     Two basic submit fields for chapter navigation
     """
-    next_button: SubmitField = SubmitField(">")
-    previous_button: SubmitField = SubmitField("<")
+    next_button: SubmitField = SubmitField("▶")
+    previous_button: SubmitField = SubmitField("◀")
 
 
 class NavigateVersion(FlaskForm):

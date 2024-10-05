@@ -5,6 +5,7 @@
     <div class="container-fluid mw-100">
         <div align="center">
             <input class="passage-form" type="text" id="search-box" placeholder="Type to search..." style="width: 70%">
+            <label for="version-selection" hidden="hidden" aria-label="Version selection"></label>
             <select class="passage-form" id="version-selection">
                 {% for version in versions %}
                     <option {% if version == 'KJV' %}selected{% endif %} value="{{version}}">{{version}}</option>
