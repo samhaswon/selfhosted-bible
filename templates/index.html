@@ -3,11 +3,11 @@
 
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
-    <div class="container-fluid mw-100">
+    <div class="container-fluid mw-100" style="max-width: 700px">
         <script>var book = "{{ book }}";var chapterNumber = {{ chapter }};</script>
         <form method="POST" role="presentation">
             {{ form.hidden_tag() }}
-            {{ wtf.form_field(version_select.select_version, size=4) }}
+            {{ wtf.form_field(version_select.select_version, size=6) }}
             <br>
             {{ wtf.form_field(form.book) }}
             {{ wtf.form_field(form.chapter) }}

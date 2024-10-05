@@ -8,7 +8,7 @@
     <form method="post" role="presentation">
         <div align="center">
             {{ form.hidden_tag() }}{{ wtf.form_field(form.previous_button) }}<label for="book" hidden="hidden" aria-label="Book selection"></label>{{ wtf.passage_field(passage_form.book) }}<label for="chapter" hidden="hidden" aria-label="Chapter selection"></label>{{ wtf.passage_field(passage_form.chapter) }}{{ wtf.form_field(form.next_button) }}<br>
-            <label for="select_version" hidden="hidden" aria-label="Version selection"></label>{{ wtf.passage_field(version_select.select_version) }}<br>
+            <label for="select_version" hidden="hidden" aria-label="Version selection"></label>{{ wtf.passage_field(version_select.select_version, size=5) }}<br>
             {{ wtf.form_field(passage_form.submit) }}
         </div>
         <br><br>
