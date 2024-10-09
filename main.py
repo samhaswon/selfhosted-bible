@@ -356,6 +356,57 @@ def create_app() -> Flask:
         response.cache_control.max_age = 60 * 60 * 24 * 7
         return response
 
+    @cache
+    @app.route('/manifest.json', methods=['GET'])
+    def manifest() -> Response:
+        return jsonify(
+            {
+                "lang": "en-us",
+                "name": "Self-hosted Bible",
+                "short_name": "Self-hosted Bible",
+                "start_url": request.url_root,
+                "id": request.url_root,
+                "display": "standalone",
+                "description": "A self-hosted webapp of various Bible versions including the KJV, ESV, and ASV.",
+                "orientation": "any",
+                "background_color": "#212435",
+                "theme_color": "#000",
+                "icons": [
+                    {
+                        "src": "static/favicon.svg",
+                        "sizes": "any",
+                        "type": "image/svg"
+                    },
+                    {
+                        "src": "static/favicon-192.png",
+                        "sizes": "192x192",
+                        "type": "image/png"
+                    },
+                    {
+                        "src": "static/favicon-512.png",
+                        "sizes": "512x512",
+                        "type": "image/png"
+                    }
+                ],
+                "screenshots" : [
+                    {
+                        "src": "static/mobile_screenshot.jpg",
+                        "sizes": "740x1460",
+                        "type": "image/jpeg",
+                        "form_factor": "narrow",
+                        "label": "Home screen of mobile version"
+                    },
+                    {
+                        "src": "static/home.jpg",
+                        "sizes": "1118x863",
+                        "type": "image/jpeg",
+                        "form_factor": "wide",
+                        "label": "Home screen of desktop version"
+                    }
+                ]
+            }
+        )
+
     @app.route('/500', methods=['GET'])
     @app.errorhandler(500)
     def server_error(e=None) -> Tuple[str, int]:
