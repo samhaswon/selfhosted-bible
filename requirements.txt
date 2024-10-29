@@ -3,7 +3,7 @@ multipledispatch==1.0.0
 Flask==3.0.3
 Flask-WTF==1.2.2
 waitress==3.0.0
-WTForms==3.2.0
+WTForms==3.2.1
 Brotli==1.1.0
 beautifulsoup4==4.12.3
 multi_bible_search>=2.0.1
