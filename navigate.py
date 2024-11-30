@@ -133,5 +133,7 @@ class NavigateVersion(FlaskForm):
                                                                ('RWV', 'Revised Webster Version 1833 (RWV)'),
                                                                ('UKJV', 'Updated King James Version (UKJV)'),
                                                                ('WEB', 'World English Bible (WEB)'),
-                                                               ('YLT', 'Young’s Literal Translation (YLT)')],
+                                                               ('YLT', 'Young’s Literal Translation (YLT)'),
+                                                               ('BTX3', 'La Biblia Textual 3ra Edicion (BTX3)'),
+                                                               ],
                                                       validators=[DataRequired()], default=['ESV'])

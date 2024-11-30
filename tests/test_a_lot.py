@@ -11,6 +11,7 @@ class MyTestCase(unittest.TestCase):
             'ASV': ASV(),
             'BBE': BBE(),
             'BSB': BSB(),
+            'BTX3': BTX3(),
             'CSB': CSB(),
             'Darby': Darby(),
             'DRA': DRA(),

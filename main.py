@@ -55,6 +55,7 @@ def create_app() -> Flask:
               'ASV': ASV(),
               'BBE': BBE(),
               'BSB': BSB(),
+              'BTX3': BTX3(),
               'CSB': CSB(),
               'Darby': Darby(),
               'DRA': DRA(),

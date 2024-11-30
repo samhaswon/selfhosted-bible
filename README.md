@@ -1,5 +1,6 @@
 # [Self-hosted Bible](https://github.com/samhaswon/selfhosted-bible)
 ![An icon with the letters S, H, and B on a black background.](static/favicon.svg "Logo")
+
 A self-hosted webapp of various Bible versions including the KJV, ESV, and ASV.
 
 ## Supported Architectures
@@ -326,6 +327,14 @@ Geneva Bible (1599)
     <summary>YLT Notice</summary>
 
 > Scripture quotations marked “YLT” are taken from The Young’s Literal Translation Bible (Public Domain).
+</details>
+
+<details>
+    <summary>BTX Notice</summary>
+
+> Biblia Textual<br>
+> © 1999 por la Sociedad Bíblica Iberoamericana Todos los derechos reservados Derechos internacionales registrados<br>
+> No se permite su reproducción (con excepción de citas breves), ni su incorporación a un sistema informático, ni su transmisión en cualquier forma o por cualquier medio, sea este electrónico, mecánico, reprográfico, gramofónico u otro sin autorización escrita de los titulares del copyright.
 </details>
 
 ## Credits

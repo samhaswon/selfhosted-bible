@@ -20,6 +20,7 @@ scripts/*.xml
 
 bibles/json-bibles/amp.json
 bibles/json-bibles/amp.json.pbz2
+bibles/json-bibles/btx3.json.pbz2
 bibles/json-bibles/csb.json
 bibles/json-bibles/csb.json.pbz2
 bibles/json-bibles/esv.json
