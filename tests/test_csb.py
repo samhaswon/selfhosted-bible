@@ -2,6 +2,7 @@ from unittest import TestCase
 from bibles.csb import CSB
 from bibles.kjv import KJV
 import time # Speed testing
+import bz2
 
 
 class TestCSB(TestCase):
@@ -47,7 +48,7 @@ class TestCSB(TestCase):
             self.csb.get_passage(book, 1)
             end = time.perf_counter()
             print(f"Total time parsing {book}: {end - start}")
-        with open("../bibles/json-bibles/csb.json", "r") as cache_file:
+        with bz2.open("../bibles/json-bibles/csb.json.pbz2", "rt", encoding='utf-8') as cache_file:
             self.assertNotIn("<", cache_file.read())
 
     def test_close_to_kjv(self):
