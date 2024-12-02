@@ -135,5 +135,6 @@ class NavigateVersion(FlaskForm):
                                                                ('WEB', 'World English Bible (WEB)'),
                                                                ('YLT', 'Young’s Literal Translation (YLT)'),
                                                                ('BTX3', 'La Biblia Textual 3ra Edicion (BTX3)'),
+                                                               ('RV1960', 'Reina-Valera 1960 (RV1960)'),
                                                                ],
                                                       validators=[DataRequired()], default=['ESV'])

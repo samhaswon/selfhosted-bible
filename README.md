@@ -337,5 +337,41 @@ Geneva Bible (1599)
 > No se permite su reproducción (con excepción de citas breves), ni su incorporación a un sistema informático, ni su transmisión en cualquier forma o por cualquier medio, sea este electrónico, mecánico, reprográfico, gramofónico u otro sin autorización escrita de los titulares del copyright.
 </details>
 
+<details>
+    <summary>RV1960 Notice</summary>
+
+> In 1960,
+>     the British and Foreign Bible Society and the American Bible Society jointly published the popular revision of the Version Reina-Valera. 
+>     This version has been the basic text of the Spanish Protestant Church for generations.
+>     It is the most beloved translation of Spanish-speaking Christians
+>     because it retains the traditional style of the Spanish language.<br><br>
+> 
+> Scriptures marked as RV1960 are taken from the Reina-Valera 1960 version.
+>     Copyright © Sociedades Bíblicas en América Latina;
+>     Copyright © renewed 1988 United Bible Societies.
+>     Used by permission.<br><br>
+> 
+> Las porciones marcadas como RV1960 son tomadas de la versión Reina-Valera 1960 Copyright © 1960 Sociedades Bíblicas en América Latina;
+>     Copyright © renovado 1988 Sociedades Bíblicas Unidas.
+>     Usado con permiso.<br><br>
+> 
+> The text of the Reina-Valera 1960 version (RV1960)
+>     appearing on or deriving from this or any other web page is for personal use only.
+>     The RV1960 text may be quoted in any form (written, visual, electronic or audio) up to & inclusive of five hundred (500) verses without written permission, providing the verses quoted do not amount to fifty (50%) of a complete book of the Bible nor do the verses account for twenty-five percent (25%) or more of the total text of the work in which they are quoted.<br><br>
+> 
+> This permission is contingent upon an appropriate copyright acknowledgment.
+>     Any use of the RV1960 shall be governed by above policy and shall be solely restricted to noncommercial,
+>     personal study purposes.<br><br>
+> 
+> For any other use, please address your inquiries to:<br><br>
+> 
+> > American Bible Society<br>
+> > Office of Latino Affairs<br>
+> > Attn. Permissions Department<br>
+> > 300 NW 82nd Avenue, Suite 505A<br>
+> > Plantation, Florida, 33324<br>
+> > http://www.americanbibleespanol.org.
+</details>
+
 ## Credits
 Credit to [@bibleapi](https://github.com/bibleapi/bibleapi-bibles-json) for KJV and ASV original JSON

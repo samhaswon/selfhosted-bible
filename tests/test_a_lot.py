@@ -11,7 +11,6 @@ class MyTestCase(unittest.TestCase):
             'ASV': ASV(),
             'BBE': BBE(),
             'BSB': BSB(),
-            'BTX3': BTX3(),
             'CSB': CSB(),
             'Darby': Darby(),
             'DRA': DRA(),
@@ -33,7 +32,9 @@ class MyTestCase(unittest.TestCase):
             'RNKJV': RNKJV(),
             'UKJV': UKJV(),
             'WEB': WEB(),
-            'YLT': YLT()
+            'YLT': YLT(),
+            'BTX3': BTX3(),
+            'RV1960': RV1960(),
         }
 
         for version in bibles.keys():

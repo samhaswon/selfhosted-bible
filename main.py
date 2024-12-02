@@ -55,7 +55,6 @@ def create_app() -> Flask:
               'ASV': ASV(),
               'BBE': BBE(),
               'BSB': BSB(),
-              'BTX3': BTX3(),
               'CSB': CSB(),
               'Darby': Darby(),
               'DRA': DRA(),
@@ -77,7 +76,9 @@ def create_app() -> Flask:
               'RWV': RWV(),
               'UKJV': UKJV(),
               'WEB': WEB(),
-              'YLT': YLT()
+              'YLT': YLT(),
+              'BTX3': BTX3(),
+              'RV1960': RV1960(),
               }
 
     end = time.perf_counter()

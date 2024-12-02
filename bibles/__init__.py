@@ -4,7 +4,6 @@ from .amp import AMP
 from .asv import ASV
 from .bbe import BBE
 from .bsb import BSB
-from .btx3 import BTX3
 from .csb import CSB
 from .darby import Darby
 from .dra import DRA
@@ -27,5 +26,8 @@ from .rwv import RWV
 from .ukjv import UKJV
 from .web import WEB
 from .ylt import YLT
+
+from .btx3 import BTX3
+from .rv1960 import RV1960
 
 from bibles.passage import PassageInvalid, PassageNotFound
