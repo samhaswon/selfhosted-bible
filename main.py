@@ -79,6 +79,7 @@ def create_app() -> Flask:
               'YLT': YLT(),
               'BTX3': BTX3(),
               'RV1960': RV1960(),
+              'RV2004': RV2004(),
               }
 
     end = time.perf_counter()

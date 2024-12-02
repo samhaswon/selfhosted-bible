@@ -22,6 +22,7 @@ from .nkjv import NKJV
 from .nlt import NLT
 from .rnkjv import RNKJV
 from .rsv import RSV
+from .rv2004 import RV2004
 from .rwv import RWV
 from .ukjv import UKJV
 from .web import WEB

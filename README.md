@@ -373,5 +373,33 @@ Geneva Bible (1599)
 > > http://www.americanbibleespanol.org.
 </details>
 
+<details>
+    <summary>RV2004 Notice</summary>
+
+> copyright © 2004, 2010, 2023 Dr. Humberto Gómez Caballero
+> Language: Español (Spanish)
+> Translation by: Dr. Humberto Gómez Caballero
+> 
+> DERECHOS RESERVADOS
+> Rights Reserved
+> 
+> Copyright 2004, 2010, 2023 By Dr. Humberto Gómez Caballero.
+> Iglesia Bautista Libertad de Matamoros Tam. México.
+> Liberty Baptist Church of Matamoros Tam. Mexico
+> 
+> P.O. Box 1286
+> Olmito, Tx 78575
+> 
+> Estados Unidos de América.
+> E Mail humberto_gmz@yahoo.com
+> Ph. (956)867-1281
+> 
+> Totalmente prohibido imprimirlo, o reproducirlo con fines de lucro. Los derechos reservados no están de venta y son sólo para ampararnos de cualquier organización, o persona que quisiera adueñarse de ella.
+> Toda Iglesia u organización que desee imprimirla o reproducirla para su distribución gratuita tendrá la plena libertad de hacerlo sin necesidad de pagar regalías, siempre y cuando no cambie ninguna de las palabras escritas.
+> 
+> Completely prohibited to print, or reproduce the text for the purpose of profit. The rights reserved are not for sale, and are only to protect us against any organization, or person that wants to take possession of the text.
+> All Churches or organizations that want to print or reproduce it for free distribution have the clear liberty to do so without need to pay royalties, always and when they do not change any of the written words.
+</details>
+
 ## Credits
 Credit to [@bibleapi](https://github.com/bibleapi/bibleapi-bibles-json) for KJV and ASV original JSON

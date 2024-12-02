@@ -7,8 +7,8 @@ from bibles.kjv import KJV
 from bibles.compresscache import CompressCache
 
 if __name__ == '__main__':
-    filename = "../RV1960.json"
-    abbreviation = "rv1960"
+    filename = "../RV2004.json"
+    abbreviation = "rv2004"
     tag_remover = re.compile(r'<.*?>')
     kjv_obj = KJV()
     bible = {book.name: {str(chapter): [] for chapter in range(1, book.chapter_count + 1)} for book in KJV().books}
