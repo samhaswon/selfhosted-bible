@@ -354,7 +354,7 @@ def create_app() -> Flask:
     @cache
     @app.route('/search', methods=['GET'])
     def search() -> Response:
-        response = make_response(minify.sub('', render_template('search.html', title='search', debug=DEBUG, versions=bibles.keys())))
+        response = make_response(minify.sub('', render_template('search.html', title='search', debug=DEBUG, versions=sorted(searcher.versions))))
         response.cache_control.max_age = 60 * 60 * 24 * 7
         return response
 
