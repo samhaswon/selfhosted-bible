@@ -628,6 +628,11 @@ label {
         padding-right: 10%;
     }
 
+    blockquote {
+        padding-left: 11%;
+        padding-right: 11%;
+    }
+
     h2 {
         padding-left: 8%;
     }
