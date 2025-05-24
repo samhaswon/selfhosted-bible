@@ -7,12 +7,16 @@ from bibles.kjv import KJV
 from bibles.compresscache import CompressCache
 
 if __name__ == '__main__':
-    filename = "../RV2004.json"
-    abbreviation = "rv2004"
+    FILENAME = "../RV2004.json"
+    ABBREVIATION = "rv2004"
     tag_remover = re.compile(r'<.*?>')
     kjv_obj = KJV()
-    bible = {book.name: {str(chapter): [] for chapter in range(1, book.chapter_count + 1)} for book in KJV().books}
-    with open(filename, "r") as data_file:
+    bible = {
+        book.name: {
+            str(chapter): [] for chapter in range(1, book.chapter_count + 1)
+        } for book in KJV().books
+    }
+    with open(FILENAME, "r", encoding="utf-8") as data_file:
         input_file = json.load(data_file)
     for verse in input_file:
         # No extra books or apocrypha, WEB version
@@ -23,7 +27,7 @@ if __name__ == '__main__':
         verse_num = verse['verse']
         content = tag_remover.sub('', verse['text'])
         bible[book_name][str(chapter)].append(f"{verse_num} {content}")
-    with open(filename, "w") as bible_save:
+    with open(FILENAME, "w", encoding="utf-8") as bible_save:
         json.dump(bible, bible_save)
-    compress_cache = CompressCache(abbreviation)
+    compress_cache = CompressCache(ABBREVIATION)
     compress_cache.save(bible)

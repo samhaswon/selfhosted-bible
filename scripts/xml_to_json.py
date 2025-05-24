@@ -1,3 +1,6 @@
+"""
+Converts some XML bibles to JSON
+"""
 import json
 import xml.etree.ElementTree as ET
 from bibles.compresscache import CompressCache
@@ -6,13 +9,14 @@ from bibles.compresscache import CompressCache
 if __name__ == '__main__':
     json_version = {}
 
-    version_short = "UKJV"
+    VERSION_SHORT = "UKJV"
 
-    tree = ET.parse(f"{version_short}.xml")
+    tree = ET.parse(f"{VERSION_SHORT}.xml")
     root = tree.getroot()
     for book in root:
         if book.tag == 'INFORMATION':
             continue
+        # pylint: disable=invalid-name
         name = book.attrib["bname"]
         if name.startswith("I "):
             name = "1" + name[1:]
@@ -35,8 +39,8 @@ if __name__ == '__main__':
                     content = verse.attrib["vnumber"] + " " + verse.text
                     json_version[name][number].append(content)
 
-    with open(f"{version_short.lower()}.json", "w") as json_file:
+    with open(f"{VERSION_SHORT.lower()}.json", "w", encoding="utf-8") as json_file:
         json_file.write(json.dumps(json_version))
 
-    compress_cache = CompressCache(version_short.lower())
+    compress_cache = CompressCache(VERSION_SHORT.lower())
     compress_cache.save(json_version)

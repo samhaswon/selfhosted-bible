@@ -1,3 +1,7 @@
+"""
+Bible classes and their related classes for use.
+"""
+
 from .acv import ACV
 from .akjv import AKJV
 from .amp import AMP
@@ -22,7 +26,6 @@ from .nkjv import NKJV
 from .nlt import NLT
 from .rnkjv import RNKJV
 from .rsv import RSV
-from .rv2004 import RV2004
 from .rwv import RWV
 from .ukjv import UKJV
 from .web import WEB
@@ -30,5 +33,6 @@ from .ylt import YLT
 
 from .btx3 import BTX3
 from .rv1960 import RV1960
+from .rv2004 import RV2004
 
-from bibles.passage import PassageInvalid, PassageNotFound
+from .passage import PassageInvalid, PassageNotFound

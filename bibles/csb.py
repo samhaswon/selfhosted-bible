@@ -1,15 +1,30 @@
-from bibles.passage import PassageInvalid, PassageNotFound
+"""
+Class for the CSB version
+"""
+
 from typing import Dict
-from bibles.bible import Bible
-import xml.etree.ElementTree as ElementTree
+import re
+
+from xml.etree import ElementTree
 from requests import get, HTTPError
 # (testing cache) import requests_cache
-import re
+
+# pylint: disable=import-error
+from bibles.bible import Bible
 from bibles.compresscache import CompressCache
+from bibles.passage import PassageInvalid, PassageNotFound
 
 
+# You get a lot from the ABC, so there is no need for more.
+# pylint: disable=too-few-public-methods
 class CSB(Bible):
+    """
+    Class for the CSB version
+    """
     def __init__(self):
+        """
+        Create an instance of the CSB
+        """
         super().__init__()
         self.__compress_cache = CompressCache("csb")
         # (testing cache) requests_cache.install_cache('verses', expire_after=999999999**99)
@@ -105,10 +120,14 @@ class CSB(Bible):
         if not super().has_passage(book, chapter):
             raise PassageInvalid(f"{book} {chapter}")
         # Dump the cache every time a new book is gotten. This doesn't lead to much disk activity
-        if not len(self.__cache[book][str(chapter)]):
+        if len(self.__cache[book][str(chapter)]) <= 0:
             self.__get_book(book)
             self.__compress_cache.save(self.__cache)
-        return {'book': book, 'chapter': chapter, 'verses': self.__cache[book][str(chapter)]}
+        return {
+            'book': book,
+            'chapter': chapter,
+            'verses': self.__cache[book][str(chapter)]
+        }
 
     def __get_book(self, book: str) -> None:
         """
@@ -134,13 +153,19 @@ class CSB(Bible):
                 'Sec-Fetch-Site': 'same-origin'
             }
             passage = self.__file_aliases[book]
-            response = get(f"{uri}{passage}", headers=headers, cookies={'credentials': 'include'})
+            response = get(
+                f"{uri}{passage}",
+                headers=headers,
+                cookies={'credentials': 'include'},
+                timeout=30
+            )
             response.raise_for_status()
 
             self.__parse(response.text)
         except HTTPError as ex:
-            raise PassageNotFound(f"Error getting {book}: {ex.__str__()}")
+            raise PassageNotFound(f"Error getting {book}: {str(ex)}") from ex
 
+    # pylint: disable=consider-using-in,too-many-locals,too-many-branches,too-many-nested-blocks,too-many-statements
     def __parse(self, xml_in: str) -> None:
         """
         Parses the given XML into the cache
@@ -318,9 +343,11 @@ class CSB(Bible):
                         new_text = ''.join(verse.itertext())
                         verse_text += new_text if new_text not in verse_text else ""
                         verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
-                    if len(chapter_dict[current_heading]) > 0 and chapter_dict[current_heading][-1][
-                                                                  0:chapter_dict[current_heading][-1].find(
-                                                                          " ")] != verse_number:
+                    if (len(chapter_dict[current_heading]) > 0 and
+                            chapter_dict[current_heading][-1][
+                            0:chapter_dict[current_heading][-1].find(" ")
+                            ] != verse_number
+                    ):
                         chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
                     elif len(chapter_dict[current_heading]) > 0:
                         chapter_dict[current_heading][-1] = \

@@ -1,14 +1,7 @@
 #!/usr/bin/env python
-
-# Bible + Exception Imports
-from bibles import *
-from multi_bible_search import BibleSearch
-
-# Internal imports
-from compress import Compress
-from navigate import NavigatePassage, NavigateRel, NavigateVersion
-
-from flask import Flask, jsonify, render_template, redirect, Response, session, url_for, request, abort, make_response
+"""
+A self-hosted webapp of various Bible versions including the KJV, ESV, and ASV.
+"""
 from functools import cache
 from hashlib import sha256
 from itertools import zip_longest
@@ -18,12 +11,30 @@ import sys
 import time
 from typing import Tuple, Union
 
+from flask import (
+    Flask, jsonify, render_template,
+    redirect, Response, session, url_for,
+    request, abort, make_response
+)
+from multi_bible_search import BibleSearch
+
+# pylint: disable=import-error,wildcard-import
+# Internal imports
+from compress import Compress
+from navigate import NavigatePassage, NavigateRel, NavigateVersion
+# Bible + Exception Imports
+from bibles import *
+
 DEBUG = False
 
 
+# pylint: disable=too-many-locals,undefined-variable,too-many-statements,consider-iterating-dictionary
 def create_app() -> Flask:
+    """
+    Creates the webapp
+    """
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = sha256(time.localtime().__str__().encode("utf-8")).__str__()
+    app.config['SECRET_KEY'] = str(sha256(str(time.localtime()).encode("utf-8")))
     Compress(app)
 
     if DEBUG:
@@ -37,7 +48,7 @@ def create_app() -> Flask:
     # Read the ESV API key
     api_key: str = ""
     try:
-        with open("esv-api-key.txt", "r") as key_in:
+        with open("esv-api-key.txt", "r", encoding="utf-8") as key_in:
             key: str = key_in.read()
             if key != "<key-goes-here>":
                 api_key = key
@@ -59,7 +70,7 @@ def create_app() -> Flask:
               'Darby': Darby(),
               'DRA': DRA(),
               'EBR': EBR(),
-              'ESV': ESV() if not len(api_key) else ESV(api_key),
+              'ESV': ESV() if len(api_key) <= 0 else ESV(api_key),
               'GNV': GNV(),
               'KJV': KJV(),
               'KJV 1611': KJV1611(),
@@ -85,13 +96,6 @@ def create_app() -> Flask:
     end = time.perf_counter()
     print(f"Loaded Bibles and search in {end - start:.6f} seconds")
 
-    """
-    # Fix for session expiry
-    @app.before_request
-    def make_session_permanent():
-        session.permanent = True
-    """
-
     @app.route('/', methods=['GET', 'POST'])
     @app.route('/index.html', methods=['GET', 'POST'])
     def main_page() -> Union[str, Response]:
@@ -112,15 +116,21 @@ def create_app() -> Flask:
                     bibles['KJV'].has_passage(book, int(chapter_dat)):
                 if len(versions) == 1:
                     return redirect(url_for('chapter'))
-                elif len(versions) > 1:
+                if len(versions) > 1:
                     return redirect(url_for('chapter_split'))
-                else:
-                    return abort(400)
-            elif form.chapter.data:
+                return abort(400)
+            if form.chapter.data:
                 error_mess = "Please submit the book first"
-        html: str = render_template('index.html', title='Home', debug=DEBUG, form=form, error_mess=error_mess,
-                                    version_select=version_select, book=session.get('select_book', 'Genesis'),
-                                    chapter=session.get('select_chapter', '1'))
+        html: str = render_template(
+            'index.html',
+            title='Home',
+            debug=DEBUG,
+            form=form,
+            error_mess=error_mess,
+            version_select=version_select,
+            book=session.get('select_book', 'Genesis'),
+            chapter=session.get('select_chapter', '1')
+        )
         return minify.sub('', html)
 
     @app.route('/chapter', methods=['GET', 'POST'])
@@ -130,7 +140,8 @@ def create_app() -> Flask:
         Reading view of a passage in a selected version
         :return: Page of the selected passage
         """
-        book_sel: str = session.get('select_book') if session.get('select_book') is not None else "Genesis"
+        book_sel: str = \
+            session.get('select_book') if session.get('select_book') is not None else "Genesis"
         chapter_sel: str = session.get('select_chapter') if session.get('select_chapter') else "1"
 
         form = NavigateRel()
@@ -143,12 +154,15 @@ def create_app() -> Flask:
         if form.validate_on_submit():
             if form.next_button.data:
                 form.next_button.data = False
-                session['select_book'], session['select_chapter'] = bibles['KJV'].next_passage(book_sel, chapter_sel)
+                session['select_book'], session['select_chapter'] = \
+                    bibles['KJV'].next_passage(book_sel, chapter_sel)
             elif form.previous_button.data:
                 form.previous_button.data = False
-                session['select_book'], session['select_chapter'] = bibles['KJV'].previous_passage(book_sel, chapter_sel)
+                session['select_book'], session['select_chapter'] = \
+                    bibles['KJV'].previous_passage(book_sel, chapter_sel)
 
-            book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
+            book_sel = \
+                session.get('select_book') if session.get('select_book') is not None else "Genesis"
             chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
 
         if passage_form.validate_on_submit() and passage_form.submit.data:
@@ -156,29 +170,44 @@ def create_app() -> Flask:
             session['select_book'] = book_sel = passage_form.book.data
             session['select_chapter'] = chapter_sel = passage_form.chapter.data
 
-            if len(version_select.data['select_version']) > 1 and isinstance(version_select.data['select_version'], list):
+            if (len(version_select.data['select_version']) > 1 and
+                    isinstance(version_select.data['select_version'], list)):
                 session['select_version'] = version_select.select_version.data
                 return redirect(url_for('chapter_split'))
-            else:
-                session['select_version'] = version_select.select_version.data
+            session['select_version'] = version_select.select_version.data
 
         version_sel: list = session.get('select_version')[0] if \
             session.get('select_version') else 'ESV'
 
         version_select.select_version.data = [version_sel]
 
+        # pylint: disable=consider-iterating-dictionary
         if version_sel in bibles.keys():
             try:
                 content: dict = bibles[version_sel].get_passage(book_sel, int(chapter_sel))
-            except PassageInvalid or ValueError:
+            except (PassageInvalid, ValueError):
                 return abort(400)
         else:
-            content = {"book": "Invalid version", "chapter": "",
-                       "verses": {"": ["Please clear your cookies and try again"]}}
+            content = {
+                "book": "Invalid version",
+                "chapter": "",
+                "verses": {
+                    "": [
+                        "Please clear your cookies and try again"
+                    ]
+                }
+            }
 
-        html = render_template('chapter.html', title=book_sel + " " + chapter_sel, debug=DEBUG, form=form,
-                               content=content, version=version_sel, passage_form=passage_form,
-                               version_select=version_select)
+        html = render_template(
+            'chapter.html',
+            title=book_sel + " " + chapter_sel,
+            debug=DEBUG,
+            form=form,
+            content=content,
+            version=version_sel,
+            passage_form=passage_form,
+            version_select=version_select
+        )
         return minify.sub('', html)
 
     @app.route('/chapter_split', methods=['GET', 'POST'])
@@ -188,7 +217,8 @@ def create_app() -> Flask:
         Split between selected versions
         :return: Split view page of a passage in selected versions
         """
-        book_sel: str = session.get('select_book') if session.get('select_book') is not None else "Genesis"
+        book_sel: str = \
+            session.get('select_book') if session.get('select_book') is not None else "Genesis"
         chapter_sel: str = session.get('select_chapter') if session.get('select_chapter') else "1"
 
         form = NavigateRel()
@@ -201,12 +231,15 @@ def create_app() -> Flask:
         if form.validate_on_submit():
             if form.next_button.data:
                 form.next_button.data = False
-                session['select_book'], session['select_chapter'] = bibles['KJV'].next_passage(book_sel, chapter_sel)
+                session['select_book'], session['select_chapter'] = \
+                    bibles['KJV'].next_passage(book_sel, chapter_sel)
             elif form.previous_button.data:
                 form.previous_button.data = False
-                session['select_book'], session['select_chapter'] = bibles['KJV'].previous_passage(book_sel, chapter_sel)
+                session['select_book'], session['select_chapter'] = \
+                    bibles['KJV'].previous_passage(book_sel, chapter_sel)
 
-            book_sel = session.get('select_book') if session.get('select_book') is not None else "Genesis"
+            book_sel = \
+                session.get('select_book') if session.get('select_book') is not None else "Genesis"
             chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
 
         if passage_form.validate_on_submit() and passage_form.submit.data:
@@ -214,11 +247,11 @@ def create_app() -> Flask:
             session['select_book'] = book_sel = passage_form.book.data
             session['select_chapter'] = chapter_sel = passage_form.chapter.data
 
-            if len(version_select.data['select_version']) == 1 or isinstance(version_select.data['select_version'], str):
+            if (len(version_select.data['select_version']) == 1 or
+                    isinstance(version_select.data['select_version'], str)):
                 session['select_version'] = version_select.select_version.data
                 return redirect(url_for('chapter'))
-            else:
-                session['select_version'] = version_select.select_version.data
+            session['select_version'] = version_select.select_version.data
 
         version_sel: list = session.get('select_version') if session.get('select_version') \
             else ['ESV', 'KJV']
@@ -230,15 +263,30 @@ def create_app() -> Flask:
             if version in bibles.keys():
                 try:
                     tmp_content = bibles[version].get_passage(book_sel, int(chapter_sel))
-                    content.append([verse for heading, verses in tmp_content.get('verses').items() for verse in verses])
-                except PassageInvalid or ValueError:
+                    content.append(
+                        [
+                            verse
+                            for heading, verses in tmp_content.get('verses').items()
+                            for verse in verses
+                        ]
+                    )
+                except (PassageInvalid, ValueError):
                     return abort(400)
             else:
                 content.append(["Invalid version", "Please clear your cookies and try again"])
         content = list(zip_longest(*content, fillvalue=""))
-        html = render_template('chapter_split.html', title=book_sel + " " + chapter_sel, debug=DEBUG, form=form,
-                               content=content, chapter_num=chapter_sel, version=version_sel, passage_form=passage_form,
-                               version_select=version_select, book=book_sel)
+        html = render_template(
+            'chapter_split.html',
+            title=book_sel + " " + chapter_sel,
+            debug=DEBUG,
+            form=form,
+            content=content,
+            chapter_num=chapter_sel,
+            version=version_sel,
+            passage_form=passage_form,
+            version_select=version_select,
+            book=book_sel
+        )
         return minify.sub('', html)
 
     @cache
@@ -249,9 +297,18 @@ def create_app() -> Flask:
         A grid of Bible passages.
         :return: HTML page of iframes for Bible passages.
         """
-        response = make_response(minify.sub('', render_template("grid.html", debug=DEBUG, versions=bibles.keys())))
+        response = make_response(
+            minify.sub(
+                '',
+                render_template(
+                    "grid.html",
+                    debug=DEBUG,
+                    versions=bibles.keys()
+                )
+            )
+        )
         response.cache_control.max_age = 60 * 60 * 24 * 7
-        return response # minify.sub('', render_template("grid.html", debug=debug, versions=bibles.keys()))
+        return response
 
     @cache
     @app.route('/copyright', methods=['GET'])
@@ -261,7 +318,15 @@ def create_app() -> Flask:
         Copyright notice page
         :return: Copyright notice
         """
-        response = make_response(minify.sub('', render_template("copyright.html", debug=DEBUG)))
+        response = make_response(
+            minify.sub(
+                '',
+                render_template(
+                    "copyright.html",
+                    debug=DEBUG
+                )
+            )
+        )
         response.cache_control.max_age = 60 * 60 * 24 * 7
         response.cache_control.public = True
         return response
@@ -294,10 +359,20 @@ def create_app() -> Flask:
         # Get the passage, returning 400 for invalid references
         try:
             content: dict = bibles[version].get_passage(book, int(chapter_ref))
-        except PassageInvalid or ValueError or KeyError:
+        except (PassageInvalid, ValueError, KeyError):
             return abort(400)
-        response = make_response(minify.sub('', render_template('embed.html', title=book + " " + chapter_ref, debug=DEBUG,
-                               content=content, version=version)))
+        response = make_response(
+            minify.sub(
+                '',
+                render_template(
+                    'embed.html',
+                    title=book + " " + chapter_ref,
+                    debug=DEBUG,
+                    content=content,
+                    version=version
+                )
+            )
+        )
         response.cache_control.max_age = 60 * 60 * 24 * 7
         return response
 
@@ -339,7 +414,10 @@ def create_app() -> Flask:
             space_index = result.rfind(" ")
             colon_index = result.rfind(":")
             book, chapter_ref, verse_ref = \
-                result[0:space_index], int(result[space_index:colon_index]), result[colon_index + 1:] + " "
+                (result[0:space_index],
+                 int(result[space_index:colon_index]),
+                 result[colon_index + 1:] + " "
+                 )
 
             verses = bibles[version].get_passage(book, chapter_ref)['verses']
             for heading in verses.keys():
@@ -349,13 +427,23 @@ def create_app() -> Flask:
                             references[result] += verse[verse.find(" ") + 1:]
                         else:
                             references[result] = verse[verse.find(" ") + 1:]
-        reference_list = [(ref, val) for ref, val in references.items()]
+        reference_list = list(references.items())
         return jsonify({'results': reference_list})
 
     @cache
     @app.route('/search', methods=['GET'])
     def search() -> Response:
-        response = make_response(minify.sub('', render_template('search.html', title='search', debug=DEBUG, versions=sorted(searcher.versions))))
+        response = make_response(
+            minify.sub(
+                '',
+                render_template(
+                    'search.html',
+                    title='search',
+                    debug=DEBUG,
+                    versions=sorted(searcher.versions)
+                )
+            )
+        )
         response.cache_control.max_age = 60 * 60 * 24 * 7
         return response
 
@@ -370,7 +458,8 @@ def create_app() -> Flask:
                 "start_url": request.url_root,
                 "id": request.url_root,
                 "display": "standalone",
-                "description": "A self-hosted webapp of various Bible versions including the KJV, ESV, and ASV.",
+                "description": "A self-hosted webapp of various Bible versions "
+                               "including the KJV, ESV, and ASV.",
                 "orientation": "any",
                 "background_color": "#212435",
                 "theme_color": "#000",
