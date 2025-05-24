@@ -1,9 +1,16 @@
+"""
+Test a lot of queries
+"""
 import unittest
 from bibles import *
 
 
-class MyTestCase(unittest.TestCase):
+class ManyBibleTest(unittest.TestCase):
+    """
+    Get ever chapter possible
+    """
     def test_all(self):
+        """Get passages from everything"""
         bibles = {
             'ACV': ACV(),
             'AKJV': AKJV(),
@@ -32,19 +39,22 @@ class MyTestCase(unittest.TestCase):
             'RNKJV': RNKJV(),
             'UKJV': UKJV(),
             'WEB': WEB(),
-            'YLT': YLT()
+            'YLT': YLT(),
+            'BTX3': BTX3(),
+            'RV1960': RV1960(),
+            'RV2004': RV2004(),
         }
 
-        for version in bibles.keys():
-            for book in bibles[version].books_of_the_bible.keys():
-                for chapter in range(1, bibles[version].books_of_the_bible[book] + 1):
-                    passage_result = bibles[version].get_passage(book, chapter)['verses']
-                    if version == 'ESV' and book == 'Song of Solomon':
+        for version_string, version_object in bibles.items():
+            for book in version_object.books_of_the_bible.keys():
+                for chapter in range(1, version_object.books_of_the_bible[book] + 1):
+                    passage_result = version_object.get_passage(book, chapter)['verses']
+                    if version_string == 'ESV' and book == 'Song of Solomon':
                         continue
                     for heading in passage_result.keys():
                         # Tokenize each verse, adding its reference
-                        for passage in passage_result[heading]:
-                            self.assertTrue(len(passage) >= 1, msg=f"{version}; {book} {chapter}")
+                        for passage_r in passage_result[heading]:
+                            self.assertTrue(len(passage_r) >= 1, msg=f"{version_string}; {book} {chapter}")
 
 
 if __name__ == '__main__':

@@ -1,36 +1,54 @@
-from bibles.bible import Bible
-from bibles.compresscache import CompressCache
-from bibles.passage import PassageInvalid, PassageNotFound
-from bs4 import BeautifulSoup, Tag, NavigableString
-from requests import get, HTTPError
+"""
+Class for the ESV
+"""
 from re import split as resplit
 from re import sub, search, match
 from typing import List
 
+from bs4 import BeautifulSoup, Tag, NavigableString
+from requests import get, HTTPError
+
+# pylint: disable=import-error
+from bibles.bible import Bible
+from bibles.compresscache import CompressCache
+from bibles.passage import PassageInvalid, PassageNotFound
+
 
 class ESV(Bible):
+    """
+    Class for the ESV
+    """
     def __init__(self, key_in="", debug=False) -> None:
         """
         Gets a JSON formatted dictionary of an ESV passage
-        :param key_in: (True, "API key"), with the default (False, "") being reading from the file api-key.txt
+        :param key_in: (True, "API key"),
+        with the default (False, "") being reading from the file api-key.txt
         """
         super().__init__()
         self.__debug = debug
         self.__compress_cache = CompressCache("esv")
         # API Setup
         try:
-            self.__API_KEY = open("esv-api-key.txt", "r").read() if not len(key_in) else key_in
+            if len(key_in) < 0:
+                with open("esv-api-key.txt", "r", encoding="utf-8") as key_file:
+                    self.__api_key = key_file.read()
+            else:
+                self.__api_key = key_in
         except FileNotFoundError:
-            self.__API_KEY = ""
-        self.__API_URL: str = 'https://api.esv.org/v3/passage/text/'
+            self.__api_key = ""
+        self.__api_url: str = 'https://api.esv.org/v3/passage/text/'
         # Caching
         try:
             self.__cache: dict = self.__compress_cache.load()
         except FileNotFoundError:
             # Initialize empty cache
-            self.__cache: dict = {book.name: {str(chapter): {} for chapter in range(1, book.chapter_count + 1)} for
-                                  book in super().books}
+            self.__cache: dict = {
+                book.name: {
+                    str(chapter): {} for chapter in range(1, book.chapter_count + 1)
+                } for book in super().books
+            }
 
+    # pylint: disable=inconsistent-return-statements
     def get_passage(self, book: str, chapter: int) -> dict:
         """
         Gets a book of the ESV.
@@ -43,8 +61,15 @@ class ESV(Bible):
             try:
                 # Try to use the cache to retrieve the verse
                 if len(self.__cache[book][str(chapter)]['verses']):
-                    return {'book': book, 'chapter': chapter, 'verses': self.__cache[book][str(chapter)]['verses'],
-                            'footnotes': self.__cache[book][str(chapter)]['footnotes'] if 'footnotes' in self.__cache[book][str(chapter)] else ""}
+                    return {
+                        'book': book,
+                        'chapter': chapter,
+                        'verses': self.__cache[book][str(chapter)]['verses'],
+                        'footnotes':
+                            self.__cache[book][str(chapter)]['footnotes']
+                            if 'footnotes' in self.__cache[book][str(chapter)]
+                            else ""
+                    }
             except KeyError:
                 return self.__api_return(book, chapter)
         else:
@@ -66,12 +91,18 @@ class ESV(Bible):
             'include-passage-references': False
         }
 
-        headers: dict = {'Authorization': 'Token %s' % self.__API_KEY}
+        headers: dict = {'Authorization': f"Token {self.__api_key}"}
 
         try:
-            response: dict = get(self.__API_URL, params=params, headers=headers).json()
+            response: dict = get(
+                self.__api_url,
+                params=params,
+                headers=headers,
+                timeout=30
+            ).json()
             loc_footnotes: int = str(response['passages']).find('Footnotes')
-            footnotes: str = self.__parse_footnotes(str(response['passages'])[loc_footnotes:-2]) if \
+            footnotes: str = (
+                self.__parse_footnotes(str(response['passages'])[loc_footnotes:-2])) if \
                 loc_footnotes != -1 else ""
 
             passage: tuple = response['canonical'], self.__parse_headings(
@@ -79,20 +110,33 @@ class ESV(Bible):
 
         except KeyError:
             return "API Overloaded", \
-                   {"try again later": "If this keeps happening, the app could be heavily throttled"}, ""
+                   {"try again later":
+                        "If this keeps happening, "
+                        "the app could be heavily throttled"
+                    }, ""
         except HTTPError:
             return "API down?", \
                 {"Issue connecting to the ESV API":
-                     "Try checking the status of the ESV API and the server's network connection"}, ""
+                     "Try checking the status of the ESV API and "
+                     "the server's network connection"}, ""
 
         if passage:
             return passage
-        else:
-            raise PassageNotFound
+        raise PassageNotFound
 
     def __get_chapter_esv_json(self, chapter_in: str) -> dict:
         """
-        Returns a dictionary (Format: {book: "", chapter: 0, verses: {'heading': ["1 content..."]}, footnotes: ""})
+        Returns a dictionary
+        (Format:
+        {
+            book: "",
+            chapter: 0,
+            verses: {
+                'heading':
+                    ["1 content..."],
+                footnotes: ""
+            }
+        })
         for JSON-ish usage for MongoDB or a similar database.
         :param chapter_in: The chapter to get from the API.
         :return: Dictionary of the chapter.
@@ -101,46 +145,61 @@ class ESV(Bible):
         single_chapter_check: str = chapter_in[0:chapter_in.rfind(' ')]
 
         if single_chapter_check in ["Obadiah", "Philemon", "2 John", "3 John", "Jude"]:
+            # pylint: disable=consider-iterating-dictionary
             if single_chapter_check == "Obadiah":
                 chapter_pre = self.__get_chapter_esv("Obadiah 1-21")
                 return {"book": "Obadiah",
                         "chapter": "1",
-                        "verses": {heading: self.__split_verses(chapter_pre[1][heading]) for heading in
-                                   chapter_pre[1].keys()},
+                        "verses": {
+                            heading: self.__split_verses(chapter_pre[1][heading])
+                            for heading in chapter_pre[1].keys()
+                        },
                         "footnotes": chapter_pre[2]}
-            elif single_chapter_check == "Philemon":
+            if single_chapter_check == "Philemon":
                 chapter_pre = self.__get_chapter_esv("Philemon 1-25")
                 return {"book": "Philemon",
                         "chapter": "1",
-                        "verses": {heading: self.__split_verses(chapter_pre[1][heading]) for heading in
-                                   chapter_pre[1].keys()},
+                        "verses": {
+                            heading: self.__split_verses(chapter_pre[1][heading])
+                            for heading in chapter_pre[1].keys()
+                        },
                         "footnotes": chapter_pre[2]}
-            elif single_chapter_check == "2 John":
+            if single_chapter_check == "2 John":
                 chapter_pre = self.__get_chapter_esv("2 John 1-13")
                 return {"book": "2 John",
                         "chapter": "1",
-                        "verses": {heading: self.__split_verses(chapter_pre[1][heading]) for heading in
-                                   chapter_pre[1].keys()},
+                        "verses": {
+                            heading: self.__split_verses(chapter_pre[1][heading])
+                            for heading in chapter_pre[1].keys()
+                        },
                         "footnotes": chapter_pre[2]}
-            elif single_chapter_check == "3 John":
+            if single_chapter_check == "3 John":
                 chapter_pre = self.__get_chapter_esv("3 John 1-15")
                 return {"book": "3 John",
                         "chapter": "1",
-                        "verses": {heading: self.__split_verses(chapter_pre[1][heading]) for heading in
-                                   chapter_pre[1].keys()},
+                        "verses": {
+                            heading: self.__split_verses(chapter_pre[1][heading])
+                            for heading in chapter_pre[1].keys()
+                        },
                         "footnotes": chapter_pre[2]}
-            elif single_chapter_check == "Jude":
+            if single_chapter_check == "Jude":
                 chapter_pre = self.__get_chapter_esv("Jude 1-25")
                 return {"book": "Jude",
                         "chapter": "1",
-                        "verses": {heading: self.__split_verses(chapter_pre[1][heading]) for heading in
-                                   chapter_pre[1].keys()},
+                        "verses": {
+                            heading: self.__split_verses(chapter_pre[1][heading])
+                            for heading in chapter_pre[1].keys()
+                        },
                         "footnotes": chapter_pre[2]}
 
         chapter_pre = self.__get_chapter_esv(chapter_in)
+        # pylint: disable=consider-iterating-dictionary
         return {"book": chapter_pre[0][0:chapter_pre[0].rfind(' ')],
                 "chapter": chapter_pre[0][chapter_pre[0].rfind(' ') + 1:],
-                "verses": {heading: self.__split_verses(chapter_pre[1][heading]) for heading in chapter_pre[1].keys()},
+                "verses": {
+                    heading: self.__split_verses(chapter_pre[1][heading])
+                    for heading in chapter_pre[1].keys()
+                },
                 "footnotes": chapter_pre[2]}
 
     @staticmethod
@@ -162,6 +221,7 @@ class ESV(Bible):
             if search(r"^\s{4}[A-Z][a-zA-Z’\s]+\n\n$", line):
                 heading = sub(r"^\s+", "", sub(r"\s+$", "", line))
             elif line[0:1].isspace() and is_not_end:
+                # pylint: disable=consider-iterating-dictionary
                 if heading in parsed.keys():
                     parsed[heading] = parsed[heading] + line + '\n'
                 else:
@@ -190,14 +250,16 @@ class ESV(Bible):
         pre = resplit(r'\[', sub(']', "", verses_in))
         return list(filter(None, [sub(r"\s+$", "", verse) for verse in pre]))
 
+    # pylint: disable=too-many-branches
     def __api_return(self, book: str, chapter: int) -> dict:
         """
-        Gets the given verse from the API, and clears the cache in accordance with the ESV API caching limits.
+        Gets the given verse from the API,
+        and clears the cache in accordance with the ESV API caching limits.
         :param book: Book to retrieve from.
         :param chapter: The chapter of that book.
         :return: A dictionary formatted by book, chapter, verses, and footnotes.
         """
-        if len(self.__API_KEY):
+        if len(self.__api_key):
             passage = self.__get_chapter_esv_json(book + " " + str(chapter))
         else:
             self.__non_api_fetch(book=book, chapter=str(chapter))
@@ -219,8 +281,9 @@ class ESV(Bible):
                     # Empty entry
                     pass
 
-        """ If the cache is outside the guidelines, then remove passages until it is. This also has the side benefit of
-            keeping the cache small. """
+        # If the cache is outside the guidelines,
+        # then remove passages until it is.
+        # This also has the side benefit of keeping the cache small.
         if verse_count + len(passage['verses']) >= 500:
             verse_count_to_remove: int = verse_count + len(passage['verses']) - 500
             for book_iter in self.__cache.keys():
@@ -237,10 +300,16 @@ class ESV(Bible):
                         break
 
             # Cache the passage and save
-            self.__cache[book][str(chapter)] = {'verses': passage['verses'], 'footnotes': passage['footnotes']}
+            self.__cache[book][str(chapter)] = {
+                'verses': passage['verses'],
+                'footnotes': passage['footnotes']
+            }
             self.__compress_cache.save(self.__cache)
         else:
-            self.__cache[book][str(chapter)] = {'verses': passage['verses'], 'footnotes': passage['footnotes']}
+            self.__cache[book][str(chapter)] = {
+                'verses': passage['verses'],
+                'footnotes': passage['footnotes']
+            }
         return passage
 
     def __non_api_fetch(self, book: str, chapter: str) -> None:
@@ -254,8 +323,10 @@ class ESV(Bible):
             uri = "https://www.esv.org/"
             # Hey website! I'm a browser!
             headers = {
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,"
-                          "*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+                "Accept":
+                    "text/html,application/xhtml+xml,application/xml;"
+                    "q=0.9,image/avif,image/webp,image/apng,"
+                    "*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
                 "Accept-Encoding": "gzip, deflate, br, zstd",
                 "Accept-Language": "en-US,en;q=0.9",
                 "Cache-Control": "no-cache",
@@ -270,38 +341,47 @@ class ESV(Bible):
                 "Sec-Fetch-Site": "same-origin",
                 "Sec-Fetch-User": "?1",
                 "Upgrade-Insecure-Requests": "1",
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-                              "Chrome/122.0.0.0 Safari/537.36",
-                "sec-ch-ua": '"Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
+                "User-Agent":
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                    "AppleWebKit/537.36 (KHTML, like Gecko) "
+                    "Chrome/131.0.0.0 Safari/537.36",
+                "sec-ch-ua": '"Chromium";v="131", "Not(A:Brand";v="24", "Google Chrome";v="131"',
                 "sec-ch-ua-mobile": "?0",
                 "sec-ch-ua-platform": '"Windows"'
             }
 
-            response = get(f"{uri}{book if book != 'Psalms' else 'Psalm'}+{chapter}", headers=headers)
+            response = get(
+                f"{uri}{book if book != 'Psalms' else 'Psalm'}+{chapter}", 
+                headers=headers,
+                timeout=30
+            )
         except HTTPError as ex:
-            raise PassageNotFound(ex.__str__())
-        else:
-            result = self.parse(response.content.decode('utf-8'))
-            for book_ref in result.keys():
-                for chapter_ref in result[book_ref].keys():
-                    if book_ref == 'Psalm':
-                        self.__cache['Psalms'][str(chapter_ref)]['verses'] = result[book_ref][chapter_ref]
-                    elif book_ref == 'Obadia':
-                        self.__cache['Obadiah']['1']['verses'] = result['Obadia']['Obadiah']
-                    elif book_ref == 'Philemo':
-                        self.__cache['Philemon']['1']['verses'] = result['Philemo']['Philemon']
-                    elif book_ref == '2':
-                        self.__cache['2 John']['1']['verses'] = result['2']['John']
-                    elif book_ref == '3':
-                        self.__cache['3 John']['1']['verses'] = result['3']['John']
-                    elif book_ref == 'Jud':
-                        self.__cache['Jude']['1']['verses'] = result['Jud']['Jude']
-                    else:
-                        self.__cache[book_ref][str(chapter_ref)]['verses'] = result[book_ref][chapter_ref]
+            raise PassageNotFound(str(ex)) from ex
+        result = self.parse(response.content.decode('utf-8'))
+        # pylint: disable=consider-using-dict-items,consider-iterating-dictionary
+        for book_ref in result.keys():
+            for chapter_ref in result[book_ref].keys():
+                if book_ref == 'Psalm':
+                    self.__cache['Psalms'][str(chapter_ref)]['verses'] = \
+                        result[book_ref][chapter_ref]
+                elif book_ref == 'Obadia':
+                    self.__cache['Obadiah']['1']['verses'] = result['Obadia']['Obadiah']
+                elif book_ref == 'Philemo':
+                    self.__cache['Philemon']['1']['verses'] = result['Philemo']['Philemon']
+                elif book_ref == '2':
+                    self.__cache['2 John']['1']['verses'] = result['2']['John']
+                elif book_ref == '3':
+                    self.__cache['3 John']['1']['verses'] = result['3']['John']
+                elif book_ref == 'Jud':
+                    self.__cache['Jude']['1']['verses'] = result['Jud']['Jude']
+                else:
+                    self.__cache[book_ref][str(chapter_ref)]['verses'] = \
+                        result[book_ref][chapter_ref]
         if int(chapter) % 2 == 0:
             self.__compress_cache.save(self.__cache)
 
 
+    # pylint: disable=too-many-locals,too-many-statements
     @classmethod
     def parse(cls, content: str) -> dict:
         """
@@ -317,10 +397,14 @@ class ESV(Bible):
         # Drill down to where the verses are
         body = soup.body.div.main.article
         body = [x for x in body if x.name == 'div'][0]
-        body = [x for x in body.contents[1].contents if isinstance(x, Tag) and x.name == 'section']
+        body = [
+            x for x in body.contents[1].contents
+            if isinstance(x, Tag) and x.name == 'section'
+        ]
         del soup
 
         # Go through each chapter
+        # pylint: disable=too-many-nested-blocks
         for chapter in body:
             reference = chapter.attrs['data-reference']
             book = reference[:reference.rfind(" ")]
@@ -354,14 +438,16 @@ class ESV(Bible):
                     for verse_words in elements.contents:
                         if isinstance(verse_words, NavigableString):
                             continue
-                        if verse_words.name == 'span' and 'small-caps' in verse_words.attrs['class']:
+                        if (verse_words.name == 'span' and
+                                'small-caps' in verse_words.attrs['class']):
                             verse += 'Lord'
                         if verse_words.name == 'span':
                             for words in verse_words.contents:
-                                if words.name == 'span' and 'small-caps' in words.attrs['class']:
+                                if (words.name == 'span' and
+                                        'small-caps' in words.attrs['class']):
                                     verse += 'Lord'
                                 if words.name == 'b':
-                                    if len(verse):
+                                    if len(verse) > 0:
                                         if current_heading not in results[book][chapter_ref]:
                                             results[book][chapter_ref][current_heading] = []
                                         results[book][chapter_ref][current_heading].append(verse)
@@ -372,16 +458,19 @@ class ESV(Bible):
                                         verse += "1 "
                                 elif words.name == 'u' and len(verse) == 0:
                                     if current_heading in results[book][chapter_ref]:
-                                        results[book][chapter_ref][current_heading][-1] += words.text
+                                        results[
+                                            book][chapter_ref][current_heading][-1
+                                        ] += words.text
                                     else:
                                         verse = words.text
                                 elif words.name == 'u':
-                                    if not (verse[-1] == ' ' or verse[-1] == " " or verse[-1] == "“") and \
+                                    if not (verse[-1] == ' ' or
+                                            verse[-1] == " " or verse[-1] == "“") and \
                                             not match(r'[  ,;.!?“”]', words.text):
                                         verse += " "
                                     verse += words.text
                         if verse_words.name == 'b':
-                            if len(verse):
+                            if len(verse) > 0:
                                 if current_heading not in results[book][chapter_ref]:
                                     results[book][chapter_ref][current_heading] = []
                                 results[book][chapter_ref][current_heading].append(verse)
@@ -397,8 +486,8 @@ class ESV(Bible):
                                 verse = verse_words.text
                         elif verse_words.name == 'u':
                             verse += verse_words.text
-                if current_heading not in results[book][chapter_ref] and len(verse):
+                if current_heading not in results[book][chapter_ref] and len(verse) > 0:
                     results[book][chapter_ref][current_heading] = []
-                if len(verse):
+                if len(verse) > 0:
                     results[book][chapter_ref][current_heading].append(verse)
         return results

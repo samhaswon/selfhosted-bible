@@ -552,6 +552,9 @@ label {
     .btn-nav {
         background-color: #222;
     }
+    th {
+        background-color: #fff
+    }
 }
 
 [data-theme="dark"] {
@@ -562,13 +565,6 @@ label {
 
     body {
         background-color: #212435;
-        /*background-image: linear-gradient(
-            90deg,
-            transparent calc(50% - 700px),
-            #0003 calc(50% - 500px),
-            #0004 calc(50% + 500px),
-            transparent calc(50% + 700px)
-        );*/
     }
 
     .btn-default,.form-control,.passage-form {
@@ -609,6 +605,9 @@ label {
     .btn-nav {
         background-color: #000331;
     }
+    th {
+        background-color: #212435;
+    }
 }
 
 @media (min-width: 1000px) {
@@ -626,6 +625,11 @@ label {
     p {
         padding-left:  10%;
         padding-right: 10%;
+    }
+
+    blockquote {
+        padding-left: 11%;
+        padding-right: 11%;
     }
 
     h2 {

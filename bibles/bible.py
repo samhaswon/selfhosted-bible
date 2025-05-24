@@ -1,8 +1,11 @@
-from bibles.book import Book
-from typing import List
+"""
+Base class for Bible objects
+"""
 from abc import ABC, abstractmethod
+from typing import List, Tuple
 from multipledispatch import dispatch
-from typing import Tuple
+
+from bibles.book import Book
 
 
 class Bible(ABC):
@@ -11,6 +14,9 @@ class Bible(ABC):
     """
 
     def __init__(self) -> None:
+        """
+        Instantiate the abstract Bible class and its attribute
+        """
         books_of_the_bible: List[Tuple[str, int]] = [("Genesis", 50),
                                                      ("Exodus", 40),
                                                      ("Leviticus", 27),
@@ -77,51 +83,88 @@ class Bible(ABC):
                                                      ("3 John", 1),
                                                      ("Jude", 1),
                                                      ("Revelation", 22)]
-        self.__books: List[Book] = [Book(title, chapters) for title, chapters in books_of_the_bible]
+        self.__books: List[Book] = [
+            Book(title, chapters) for title, chapters in books_of_the_bible
+        ]
         self.__books_of_the_bible: dict = dict(books_of_the_bible)
 
     @property
     def books(self) -> List[Book]:
+        """
+        List of book objects for each book in the Bible
+        """
         return self.__books
 
     @property
     def books_of_the_bible(self) -> dict:
+        """
+        List of book dictionaries for each book in the Bible
+        """
         return self.__books_of_the_bible
 
     @abstractmethod
     def get_passage(self, book, chapter) -> dict:
+        """
+        Abstract method for getting a passage.
+        :param book: The book to get from.
+        :param chapter: The chapter to get.
+        :return: A dictionary representing that chapter.
+        """
         raise NotImplementedError
 
     @dispatch(str, str)
     def next_passage(self, book: str, chapter: str) -> Tuple[str, str]:
+        """
+        Get the passage after the given one.
+        :param book: The current book.
+        :param chapter: The current chapter.
+        :return: The next book and chapter reference.
+        """
         return self.next_passage(book, int(chapter))
 
+    # pylint: disable=function-redefined,inconsistent-return-statements
     @dispatch(str, int)
     def next_passage(self, book: str, chapter: int) -> Tuple[str, str]:
+        """
+        Get the passage after the given one.
+        :param book: The current book.
+        :param chapter: The current chapter.
+        :return: The next book and chapter reference.
+        """
         it_books = iter(self.__books_of_the_bible)
         for key in it_books:
             if key == book:
                 if chapter == self.__books_of_the_bible[key]:
                     return next(it_books, "Genesis"), "1"
-                else:
-                    return book, str(chapter + 1)
+                return book, str(chapter + 1)
 
     @dispatch(str, str)
     def previous_passage(self, book: str, chapter: str) -> Tuple[str, str]:
+        """
+        Get the passage before the given one.
+        :param book: The current book.
+        :param chapter: The current chapter.
+        :return: The previous book and chapter reference.
+        """
         return self.previous_passage(book, int(chapter))
 
+    # pylint: disable=function-redefined,inconsistent-return-statements
     @dispatch(str, int)
     def previous_passage(self, book: str, chapter: int) -> Tuple[str, str]:
+        """
+        Get the passage before the given one.
+        :param book: The current book.
+        :param chapter: The current chapter.
+        :return: The previous book and chapter reference.
+        """
         it_books = iter(self.__books_of_the_bible)
         previous_key = "Revelation"
         for key in it_books:
             if key == book:
                 if chapter == 1:
                     return previous_key, str(self.__books_of_the_bible[previous_key])
-                else:
-                    return book, str(chapter - 1)
-            else:
-                previous_key = key
+                return book, str(chapter - 1)
+            previous_key = key
 
     def has_passage(self, book_name: str, chapter: int) -> bool:
         """

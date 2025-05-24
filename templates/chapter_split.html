@@ -14,12 +14,14 @@
         <br><br>
         <h2 style="padding-left: unset"> {{ title }}</h2>
         <table>
-            <tbody>
+            <thead>
                 <tr>
-                {% for v in version %}
-                    <th>© {{ v }} </th>
-                {% endfor %}
+                    {% for v in version %}
+                        <th style="position: sticky; top: 0">© {{ v }} </th>
+                    {% endfor %}
                 </tr>
+            </thead>
+            <tbody>
                 {% for verses in content %}
                 <tr>
                 {% for verse in verses %}

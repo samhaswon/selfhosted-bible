@@ -1,7 +1,9 @@
+"""
+Geneva Bible (1599)
+"""
 from bibles.bible import Bible
 from bibles.passage import PassageInvalid
 from bibles.compresscache import CompressCache
-import json
 
 
 class GNV(Bible):
@@ -15,12 +17,18 @@ class GNV(Bible):
 
     def get_passage(self, book: str, chapter: int) -> dict:
         """
-        Returns a dictionary (Format: {book: "", chapter: 0, verses: ["1 content..."]}) of the chapter
+        Returns a dictionary (Format: {book: "", chapter: 0, verses: ["1 content..."]}) of the
+        chapter
         :param book: Name of the book
         :param chapter: chapter number
         :return:
         """
         if super().has_passage(book, chapter):
-            return {"book": book, "chapter": chapter, "verses": {'none': self.__gnv[book][str(chapter)]}}
-        else:
-            raise PassageInvalid
+            return {
+                "book": book,
+                "chapter": chapter,
+                "verses": {
+                    'none': self.__gnv[book][str(chapter)]
+                }
+            }
+        raise PassageInvalid

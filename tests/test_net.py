@@ -1,13 +1,18 @@
+"""
+Test NET passage retrieval
+"""
+import time
 from unittest import TestCase
 from bibles.net import NET
-import time
 
 
 class TestNET(TestCase):
+    """Test the NET"""
     def setUp(self) -> None:
         self.net = NET()
 
     def test_get_passage(self):
+        """Test passage retrieval for the NET"""
         john_3 = self.net.get_passage("John", 3)
         self.assertEqual(36, len(john_3['verses']['none']))
 

@@ -1,23 +1,27 @@
 """
-NLT
+Class for the BTX3
 """
-import re
 from typing import List
+import re
 import requests
-from bibles.passage import PassageInvalid, PassageNotFound
+
 from bibles.bible import Bible
 from bibles.bolls_translate import translate
 from bibles.compresscache import CompressCache
+from bibles.passage import PassageInvalid, PassageNotFound
 
 
-class NLT(Bible):
-    """NLT"""
+
+class BTX3(Bible):
+    """
+    Class for the BTX3
+    """
     def __init__(self) -> None:
         """
-        Gets a JSON formatted dictionary of an NLT passage
+        Gets a JSON formatted dictionary of a La Biblia Textual 3ra Edicion passage.
         """
         super().__init__()
-        self.__compress_cache = CompressCache('nlt')
+        self.__compress_cache = CompressCache('btx3')
 
         # Caching
         try:
@@ -30,26 +34,31 @@ class NLT(Bible):
                 } for book in super().books
             }
 
-        self.__api_url: str = "https://bolls.life/get-chapter/NLT/"
+        self.__api_url: str = "https://bolls.life/get-chapter/BTX3/"
 
     def get_passage(self, book: str, chapter: int) -> dict:
         """
-        Gets a chapter of the NLT
+        Gets a chapter of the La Biblia Textual 3ra Edicion
         :param book: Name of the book to get from
         :param chapter: the chapter to get
-        :return: dict of the chapter in the format
-        {"book": bookname, "chapter": chapter_number, "verses":
-            {'none': ["1 ...", "2 ..."]}}
+        :return: dict of the chapter in the format 
+        {
+            "book": bookname, 
+            "chapter": chapter_number, 
+            "verses": {
+                'none': ["1 ...", "2 ..."]
+            }
+        }
         :raises: PassageInvalid for invalid passages (According to Bible ABC validator)
         """
         if super().has_passage(book, chapter):
             try:
                 # Try to use the cache to retrieve the verse
-                if len(self.__cache[book][str(chapter)]) == 0:
+                if len(self.__cache[book][str(chapter)]) <= 0:
                     self.__api_return(book, chapter)
                 return {
-                    'book': book,
-                    'chapter': chapter,
+                    'book': book, 
+                    'chapter': chapter, 
                     'verses': {
                         'none': self.__cache[book][str(chapter)]
                     }
@@ -75,9 +84,7 @@ class NLT(Bible):
             response = response.json()
             tmp_verses: List[str] = []
             for verse in response:
-                tmp_verses.append(
-                    str(verse['verse']) + " " + tag_remover.sub('', verse['text'])
-                )
+                tmp_verses.append(str(verse['verse']) + " " + tag_remover.sub('', verse['text']))
             self.__cache[book][str(chapter)] = tmp_verses
         except KeyError as exc:
             raise PassageInvalid(book + " " + str(chapter)) from exc

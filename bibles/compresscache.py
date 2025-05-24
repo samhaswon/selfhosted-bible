@@ -1,9 +1,12 @@
+"""
+For saving and loading compressed JSON of the Bible.
+"""
 import bz2
 import json
 import os
 
 
-class CompressCache(object):
+class CompressCache:
     """
     For saving and loading compressed JSON of the Bible.
     """
@@ -30,5 +33,9 @@ class CompressCache(object):
         Loads the compressed JSON of the Bible.
         :return: The dictionary version of the loaded JSON
         """
-        with bz2.open(f"{self.__base_path}/json-bibles/{self.__name}.json.pbz2", "rt", encoding='utf-8') as data_file:
+        with bz2.open(
+                f"{self.__base_path}/json-bibles/{self.__name}.json.pbz2",
+                "rt",
+                encoding='utf-8'
+        ) as data_file:
             return json.load(data_file)

@@ -1,17 +1,19 @@
 """
-RWV
+Class for the RV2004 version
 """
 from bibles.bible import Bible
 from bibles.passage import PassageInvalid
 from bibles.compresscache import CompressCache
 
 
-class RWV(Bible):
-    """RWV"""
+class RV2004(Bible):
+    """
+    Class for the RV2004 version
+    """
     def __init__(self) -> None:
         super().__init__()
-        self.__compress_cache = CompressCache('rwv')
-        self.__rwv = self.__compress_cache.load()
+        self.__compress_cache = CompressCache('rv2004')
+        self.__rv2004 = self.__compress_cache.load()
 
     def get_passage(self, book: str, chapter: int) -> dict:
         """
@@ -26,7 +28,7 @@ class RWV(Bible):
                 "book": book,
                 "chapter": chapter,
                 "verses": {
-                    'none': self.__rwv[book][str(chapter)]
+                    'none': self.__rv2004[book][str(chapter)]
                 }
             }
         raise PassageInvalid

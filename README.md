@@ -1,5 +1,6 @@
 # [Self-hosted Bible](https://github.com/samhaswon/selfhosted-bible)
 ![An icon with the letters S, H, and B on a black background.](static/favicon.svg "Logo")
+
 A self-hosted webapp of various Bible versions including the KJV, ESV, and ASV.
 
 ## Supported Architectures
@@ -326,6 +327,78 @@ Geneva Bible (1599)
     <summary>YLT Notice</summary>
 
 > Scripture quotations marked “YLT” are taken from The Young’s Literal Translation Bible (Public Domain).
+</details>
+
+<details>
+    <summary>BTX Notice</summary>
+
+> Biblia Textual<br>
+> © 1999 por la Sociedad Bíblica Iberoamericana Todos los derechos reservados Derechos internacionales registrados<br>
+> No se permite su reproducción (con excepción de citas breves), ni su incorporación a un sistema informático, ni su transmisión en cualquier forma o por cualquier medio, sea este electrónico, mecánico, reprográfico, gramofónico u otro sin autorización escrita de los titulares del copyright.
+</details>
+
+<details>
+    <summary>RV1960 Notice</summary>
+
+> In 1960,
+>     the British and Foreign Bible Society and the American Bible Society jointly published the popular revision of the Version Reina-Valera. 
+>     This version has been the basic text of the Spanish Protestant Church for generations.
+>     It is the most beloved translation of Spanish-speaking Christians
+>     because it retains the traditional style of the Spanish language.<br><br>
+> 
+> Scriptures marked as RV1960 are taken from the Reina-Valera 1960 version.
+>     Copyright © Sociedades Bíblicas en América Latina;
+>     Copyright © renewed 1988 United Bible Societies.
+>     Used by permission.<br><br>
+> 
+> Las porciones marcadas como RV1960 son tomadas de la versión Reina-Valera 1960 Copyright © 1960 Sociedades Bíblicas en América Latina;
+>     Copyright © renovado 1988 Sociedades Bíblicas Unidas.
+>     Usado con permiso.<br><br>
+> 
+> The text of the Reina-Valera 1960 version (RV1960)
+>     appearing on or deriving from this or any other web page is for personal use only.
+>     The RV1960 text may be quoted in any form (written, visual, electronic or audio) up to & inclusive of five hundred (500) verses without written permission, providing the verses quoted do not amount to fifty (50%) of a complete book of the Bible nor do the verses account for twenty-five percent (25%) or more of the total text of the work in which they are quoted.<br><br>
+> 
+> This permission is contingent upon an appropriate copyright acknowledgment.
+>     Any use of the RV1960 shall be governed by above policy and shall be solely restricted to noncommercial,
+>     personal study purposes.<br><br>
+> 
+> For any other use, please address your inquiries to:<br><br>
+> 
+> > American Bible Society<br>
+> > Office of Latino Affairs<br>
+> > Attn. Permissions Department<br>
+> > 300 NW 82nd Avenue, Suite 505A<br>
+> > Plantation, Florida, 33324<br>
+> > http://www.americanbibleespanol.org.
+</details>
+
+<details>
+    <summary>RV2004 Notice</summary>
+
+> copyright © 2004, 2010, 2023 Dr. Humberto Gómez Caballero
+> Language: Español (Spanish)
+> Translation by: Dr. Humberto Gómez Caballero
+> 
+> DERECHOS RESERVADOS
+> Rights Reserved
+> 
+> Copyright 2004, 2010, 2023 By Dr. Humberto Gómez Caballero.
+> Iglesia Bautista Libertad de Matamoros Tam. México.
+> Liberty Baptist Church of Matamoros Tam. Mexico
+> 
+> P.O. Box 1286
+> Olmito, Tx 78575
+> 
+> Estados Unidos de América.
+> E Mail humberto_gmz@yahoo.com
+> Ph. (956)867-1281
+> 
+> Totalmente prohibido imprimirlo, o reproducirlo con fines de lucro. Los derechos reservados no están de venta y son sólo para ampararnos de cualquier organización, o persona que quisiera adueñarse de ella.
+> Toda Iglesia u organización que desee imprimirla o reproducirla para su distribución gratuita tendrá la plena libertad de hacerlo sin necesidad de pagar regalías, siempre y cuando no cambie ninguna de las palabras escritas.
+> 
+> Completely prohibited to print, or reproduce the text for the purpose of profit. The rights reserved are not for sale, and are only to protect us against any organization, or person that wants to take possession of the text.
+> All Churches or organizations that want to print or reproduce it for free distribution have the clear liberty to do so without need to pay royalties, always and when they do not change any of the written words.
 </details>
 
 ## Credits

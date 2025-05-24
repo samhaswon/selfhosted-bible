@@ -1,14 +1,19 @@
+"""
+Test ESV stuff
+"""
 from unittest import TestCase
 from bibles.esv import ESV
 
 
 class TestESV(TestCase):
+    """
+    Test ESV passage retrieval
+    """
     def setUp(self) -> None:
-        with open("../esv-api-key.txt", "r") as key_in:
-            key = key_in.read()
-        self.esv_obj = ESV()    # (key)
+        self.esv_obj = ESV()
 
     def test_get_passage(self):
+        """Get passages from the ESV"""
         passage = self.esv_obj.get_passage("Isaiah", 13)
         self.assertEqual(1, len(passage['verses']))
         passage2 = self.esv_obj.get_passage("Matthew", 5)
