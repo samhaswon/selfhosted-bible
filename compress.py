@@ -1,16 +1,18 @@
-# Authors: William Fagan, Samuel Howard
-# Copyright (c) 2013-2017 William Fagan
-# License: The MIT License (MIT)
-
-import brotli
-from flask import request
+"""
+Authors: William Fagan, Samuel Howard
+Copyright (c) 2013-2017 William Fagan
+License: The MIT License (MIT)
+"""
 from gzip import GzipFile
 from io import BytesIO
 from typing import Union, List
 import zlib
 
+import brotli
+from flask import request
 
-class Compress(object):
+
+class Compress:
     """
     The Compress object allows your application to use Flask-Compress.
 
@@ -35,6 +37,11 @@ class Compress(object):
             self.init_app(app)
 
     def init_app(self, app) -> None:
+        """
+        Enables this module for the given app.
+        :param app: The app to enable compression for.
+        :return: None.
+        """
         defaults: List[tuple] = [
             ('COMPRESS_MIMETYPES', ['text/html', 'text/css', 'text/xml', 'application/json',
                                     'application/javascript', 'image/x-icon', 'image/svg+xml']),
@@ -113,7 +120,7 @@ class Compress(object):
         for _, viable_algos in sorted(algos_by_quality.items(), reverse=True):
             if len(viable_algos) == 1:
                 return viable_algos.pop()
-            elif len(viable_algos) > 1:
+            if len(viable_algos) > 1:
                 for server_algo in self.enabled_algorithms:
                     if server_algo in viable_algos:
                         return server_algo
@@ -121,15 +128,22 @@ class Compress(object):
         return self.enabled_algorithms[0] if fallback_to_any else None
 
     def after_request(self, response):
+        """
+        Choose the appropriate algorithm to compress the response with,
+        then return the compressed response.
+        :param response: The response to compress.
+        :return: The compressed response.
+        """
         vary = response.headers.get('Vary')
         if not vary:
             response.headers['Vary'] = 'Accept-Encoding'
         elif 'accept-encoding' not in vary.lower():
-            response.headers['Vary'] = '{}, Accept-Encoding'.format(vary)
+            response.headers['Vary'] = f"{vary}, Accept-Encoding"
 
         accept_encoding = request.headers.get('Accept-Encoding', '')
         chosen_algorithm = self._choose_compress_algorithm(accept_encoding)
 
+        # pylint: disable=too-many-boolean-expressions
         if (not chosen_algorithm or
             response.mimetype not in self.app.config["COMPRESS_MIMETYPES"] or
             response.status_code < 200 or
@@ -161,8 +175,16 @@ class Compress(object):
 
         return response
 
+    # pylint: disable=inconsistent-return-statements
     @staticmethod
-    def compress(app, response, algorithm):
+    def compress(app, response, algorithm) -> bytes:
+        """
+        Compress the given response with the given algorithm.
+        :param app: This app.
+        :param response: The response to compress.
+        :param algorithm: The algorithm used.
+        :return: The compressed version of the response.
+        """
         if algorithm == 'gzip':
             gzip_buffer = BytesIO()
             with GzipFile(mode='wb',
@@ -170,12 +192,12 @@ class Compress(object):
                           fileobj=gzip_buffer) as gzip_file:
                 gzip_file.write(response.get_data())
             return gzip_buffer.getvalue()
-        elif algorithm == 'deflate':
+        if algorithm == 'deflate':
             return zlib.compress(response.get_data(),
                                  app.config['COMPRESS_DEFLATE_LEVEL'])
-        elif algorithm == 'br':
-            return brotli.compress(response.get_data(),
+        if algorithm == 'br':
+            return bytes(brotli.compress(response.get_data(),
                                    mode=app.config['COMPRESS_BR_MODE'],
                                    quality=app.config['COMPRESS_BR_LEVEL'],
                                    lgwin=app.config['COMPRESS_BR_WINDOW'],
-                                   lgblock=app.config['COMPRESS_BR_BLOCK'])
+                                   lgblock=app.config['COMPRESS_BR_BLOCK']))

@@ -1,3 +1,6 @@
+"""
+Passage exceptions
+"""
 class PassageNotFound(Exception):
     """
     Exception to be thrown whenever a query results in a passage not being found
@@ -8,7 +11,7 @@ class PassageNotFound(Exception):
         self.__verse = verse
 
     def __str__(self) -> str:
-        return "Passage not found {}".format(self.__verse)
+        return f"Passage not found {self.__verse}"
 
 
 class PassageInvalid(Exception):
@@ -21,4 +24,4 @@ class PassageInvalid(Exception):
         self.__verse = verse
 
     def __str__(self) -> str:
-        return "Passage Invalid {}".format(self.__verse)
+        return f"Passage Invalid {self.__verse}"

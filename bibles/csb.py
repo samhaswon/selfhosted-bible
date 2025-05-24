@@ -1,15 +1,30 @@
-from bibles.passage import PassageInvalid, PassageNotFound
+"""
+Class for the CSB version
+"""
+
 from typing import Dict
-from bibles.bible import Bible
-import xml.etree.ElementTree as ElementTree
+import re
+
+from xml.etree import ElementTree
 from requests import get, HTTPError
 # (testing cache) import requests_cache
-import re
+
+# pylint: disable=import-error
+from bibles.bible import Bible
 from bibles.compresscache import CompressCache
+from bibles.passage import PassageInvalid, PassageNotFound
 
 
+# You get a lot from the ABC, so there is no need for more.
+# pylint: disable=too-few-public-methods
 class CSB(Bible):
+    """
+    Class for the CSB version
+    """
     def __init__(self):
+        """
+        Create an instance of the CSB
+        """
         super().__init__()
         self.__compress_cache = CompressCache("csb")
         # (testing cache) requests_cache.install_cache('verses', expire_after=999999999**99)
@@ -88,8 +103,12 @@ class CSB(Bible):
             self.__cache: dict = self.__compress_cache.load()
         except FileNotFoundError:
             # Initialize empty cache
-            self.__cache: dict = {book.name: {str(chapter): {} for chapter in range(1, book.chapter_count + 1)} for
-                                  book in super().books}
+            self.__cache: dict = {
+                book.name: {
+                    str(chapter): {}
+                    for chapter in range(1, book.chapter_count + 1)}
+                for book in super().books
+            }
 
     def get_passage(self, book: str, chapter: int) -> dict:
         """
@@ -101,16 +120,20 @@ class CSB(Bible):
         if not super().has_passage(book, chapter):
             raise PassageInvalid(f"{book} {chapter}")
         # Dump the cache every time a new book is gotten. This doesn't lead to much disk activity
-        if not len(self.__cache[book][str(chapter)]):
+        if len(self.__cache[book][str(chapter)]) <= 0:
             self.__get_book(book)
             self.__compress_cache.save(self.__cache)
-        return {'book': book, 'chapter': chapter, 'verses': self.__cache[book][str(chapter)]}
+        return {
+            'book': book,
+            'chapter': chapter,
+            'verses': self.__cache[book][str(chapter)]
+        }
 
     def __get_book(self, book: str) -> None:
         """
-        So, I'm not a fan of doing this how I am. The API only has the full books afaik. Their search method gets all
-        66, so it was not made to be the most efficient. Though, this does cache it, which is efficient (~5µs access
-        times on my dev machine).
+        So, I'm not a fan of doing this how I am. The API only has the full books afaik.
+        Their search method gets all 66, so it was not made to be the most efficient.
+        Though, this does cache it, which is efficient (~5µs access times on my dev machine).
         :param book: Book to get, pre validated
         :return: The full book as a dictionary
         """
@@ -120,7 +143,8 @@ class CSB(Bible):
 
             # Hey website! I'm a browser!
             headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 '
+                              'Firefox/112.0',
                 'Accept': 'application/xml, text/xml, */*; q=0.01',
                 'Accept-Language': 'en-US,en;q=0.5',
                 'X-Requested-With': 'XMLHttpRequest',
@@ -129,13 +153,19 @@ class CSB(Bible):
                 'Sec-Fetch-Site': 'same-origin'
             }
             passage = self.__file_aliases[book]
-            response = get(f"{uri}{passage}", headers=headers, cookies={'credentials': 'include'})
+            response = get(
+                f"{uri}{passage}",
+                headers=headers,
+                cookies={'credentials': 'include'},
+                timeout=30
+            )
             response.raise_for_status()
 
             self.__parse(response.text)
         except HTTPError as ex:
-            raise PassageNotFound(f"Error getting {book}: {ex.__str__()}")
+            raise PassageNotFound(f"Error getting {book}: {str(ex)}") from ex
 
+    # pylint: disable=consider-using-in,too-many-locals,too-many-branches,too-many-nested-blocks,too-many-statements
     def __parse(self, xml_in: str) -> None:
         """
         Parses the given XML into the cache
@@ -146,7 +176,9 @@ class CSB(Bible):
         root = ElementTree.fromstring(xml_in)
 
         result = {}
-        bookname = root.find('bookname').text if root.find('bookname').text != "Song of Songs" else "Song of Solomon"
+        bookname = root.find('bookname').text if (
+                root.find('bookname').text != "Song of Songs") \
+            else "Song of Solomon"
         result[bookname] = {}
 
         for chapter in root.findall('chapter'):
@@ -164,10 +196,15 @@ class CSB(Bible):
                     for verse in element.findall('.//verse'):
                         verse_number = verse.get('display-number')
                         verse_text = ''.join(verse.itertext())
-                        verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
-                        if len(chapter_dict[current_heading]) > 0 and chapter_dict[current_heading][-1][
-                                                                      0:chapter_dict[current_heading][-1].find(
-                                                                              " ")] != verse_number:
+                        verse_text = condense.sub(
+                            ' ', re.sub(r'^\s*\d+\s*',
+                                        '',
+                                        verse_text)
+                        )
+                        if (len(chapter_dict[current_heading]) > 0 and
+                                chapter_dict[current_heading][-1][
+                                0:chapter_dict[current_heading][-1].find(" ")] != verse_number
+                        ):
                             chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
                         elif len(chapter_dict[current_heading]) > 0:
                             chapter_dict[current_heading][-1] += verse_text
@@ -179,10 +216,18 @@ class CSB(Bible):
                     for verse in element.findall('.//verse'):
                         verse_number = verse.get('display-number')
                         verse_text = ''.join(verse.itertext())
-                        verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
-                        if len(chapter_dict[current_heading]) > 0 and chapter_dict[current_heading][-1][
-                                                                      0:chapter_dict[current_heading][-1].find(
-                                                                              " ")] != verse_number:
+                        verse_text = condense.sub(
+                            ' ',
+                            re.sub(
+                                r'^\s*\d+\s*',
+                                '',
+                                verse_text
+                            )
+                        )
+                        if (len(chapter_dict[current_heading]) > 0 and
+                                chapter_dict[current_heading][-1][
+                                0:chapter_dict[current_heading][-1].find(" ")] != verse_number
+                        ):
                             chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
                         elif len(chapter_dict[current_heading]) > 0:
                             chapter_dict[current_heading][-1] += verse_text
@@ -194,10 +239,18 @@ class CSB(Bible):
                     for verse in element.findall('verse'):
                         verse_number = verse.get('display-number')
                         verse_text = ''.join(verse.itertext())
-                        verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
-                        if len(chapter_dict[current_heading]) > 0 and chapter_dict[current_heading][-1][
-                                                                      0:chapter_dict[current_heading][-1].find(
-                                                                              " ")] != verse_number:
+                        verse_text = condense.sub(
+                            ' ',
+                            re.sub(
+                                r'^\s*\d+\s*',
+                                '',
+                                verse_text
+                            )
+                        )
+                        if (len(chapter_dict[current_heading]) > 0 and
+                                chapter_dict[current_heading][-1][
+                                0:chapter_dict[current_heading][-1].find(" ")] != verse_number
+                        ):
                             chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
                         elif len(chapter_dict[current_heading]) > 0:
                             chapter_dict[current_heading][-1] += verse_text
@@ -209,10 +262,18 @@ class CSB(Bible):
                     for verse in element.findall('verse'):
                         verse_number = verse.get('display-number')
                         verse_text = ''.join(verse.itertext())
-                        verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
-                        if len(chapter_dict[current_heading]) > 0 and chapter_dict[current_heading][-1][
-                                                                      0:chapter_dict[current_heading][-1].find(
-                                                                              " ")] != verse_number:
+                        verse_text = condense.sub(
+                            ' ',
+                            re.sub(
+                                r'^\s*\d+\s*',
+                                '',
+                                verse_text
+                            )
+                        )
+                        if (len(chapter_dict[current_heading]) > 0 and
+                                chapter_dict[current_heading][-1][
+                                0:chapter_dict[current_heading][-1].find(" ")] != verse_number
+                        ):
                             chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
                         elif len(chapter_dict[current_heading]) > 0:
                             chapter_dict[current_heading][-1] += verse_text
@@ -224,10 +285,18 @@ class CSB(Bible):
                     for verse in element.findall('.//verse'):
                         verse_number = verse.get('display-number')
                         verse_text = ''.join(verse.itertext())
-                        verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
-                        if len(chapter_dict[current_heading]) > 0 and chapter_dict[current_heading][-1][
-                                                                      0:chapter_dict[current_heading][-1].find(
-                                                                              " ")] != verse_number:
+                        verse_text = condense.sub(
+                            ' ',
+                            re.sub(
+                                r'^\s*\d+\s*',
+                                '',
+                                verse_text
+                            )
+                        )
+                        if (len(chapter_dict[current_heading]) > 0 and
+                                chapter_dict[current_heading][-1][
+                                0:chapter_dict[current_heading][-1].find(" ")] != verse_number
+                        ):
                             chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
                         elif len(chapter_dict[current_heading]) > 0:
                             chapter_dict[current_heading][-1] += verse_text
@@ -244,12 +313,26 @@ class CSB(Bible):
                         verse_number = element.get('display-number')
                         new_text = ''.join(verse.itertext())
                         verse_text += new_text if new_text not in verse_text else ""
-                        verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
+                        verse_text = condense.sub(
+                            ' ',
+                            re.sub(
+                                r'^\s*\d+\s*',
+                                '',
+                                verse_text
+                            )
+                        )
                     for verse in element.findall('p'):
                         verse_number = element.get('display-number')
                         new_text = ''.join(verse.itertext())
                         verse_text += new_text if new_text not in verse_text else ""
-                        verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
+                        verse_text = condense.sub(
+                            ' ',
+                            re.sub(
+                                r'^\s*\d+\s*',
+                                '',
+                                verse_text
+                            )
+                        )
                     for verse in element.findall('.//p'):
                         verse_number = element.get('display-number')
                         new_text = ''.join(verse.itertext())
@@ -260,9 +343,11 @@ class CSB(Bible):
                         new_text = ''.join(verse.itertext())
                         verse_text += new_text if new_text not in verse_text else ""
                         verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
-                    if len(chapter_dict[current_heading]) > 0 and chapter_dict[current_heading][-1][
-                                                                  0:chapter_dict[current_heading][-1].find(
-                                                                          " ")] != verse_number:
+                    if (len(chapter_dict[current_heading]) > 0 and
+                            chapter_dict[current_heading][-1][
+                            0:chapter_dict[current_heading][-1].find(" ")
+                            ] != verse_number
+                    ):
                         chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
                     elif len(chapter_dict[current_heading]) > 0:
                         chapter_dict[current_heading][-1] = \
@@ -274,13 +359,23 @@ class CSB(Bible):
                     if current_heading not in chapter_dict:
                         chapter_dict[current_heading] = []
                     for verse in element.findall('.//verse'):
-                        verse_number = verse.get('display-number') if verse.get('display-number') else \
-                            verse.get('reference')[verse.get('reference').rfind('.') + 1:] if verse.get('reference') \
+                        verse_number = verse.get('display-number') \
+                            if verse.get('display-number') else \
+                            verse.get('reference')[verse.get('reference').rfind('.') + 1:] \
+                                if verse.get('reference') \
                                 else verse.get('id')[verse.get('id').rfind('.') + 1:]
                         verse_text = ''.join(verse.itertext())
-                        verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
+                        verse_text = condense.sub(
+                            ' ',
+                            re.sub(
+                                r'^\s*\d+\s*',
+                                '',
+                                verse_text
+                            )
+                        )
                         if len(chapter_dict[current_heading]) > 0 and \
-                                chapter_dict[current_heading][-1][0:chapter_dict[current_heading][-1].find(" ")] !=\
+                                chapter_dict[current_heading][-1][
+                                0:chapter_dict[current_heading][-1].find(" ")] !=\
                                 verse_number:
                             chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
                         elif len(chapter_dict[current_heading]) > 0:
@@ -296,11 +391,25 @@ class CSB(Bible):
 
                         if verse is not None:
                             verse_number = verse.get('display')
-                            verse_text = ''.join(cells[0].itertext()) + " " + ''.join(cells[1].itertext())
-                            verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
-                            if len(chapter_dict[current_heading]) > 0 and chapter_dict[current_heading][-1][
-                                                                          0:chapter_dict[current_heading][-1].find(
-                                                                                  " ")] != verse_number:
+                            verse_text = (
+                                    ''.join(
+                                        cells[0].itertext()
+                                    ) + " " +
+                                    ''.join(
+                                        cells[1].itertext()
+                                    )
+                            )
+                            verse_text = condense.sub(
+                                ' ',
+                                re.sub(r'^\s*\d+\s*',
+                                       '',
+                                       verse_text
+                                       )
+                            )
+                            if (len(chapter_dict[current_heading]) > 0 and
+                                    chapter_dict[current_heading][-1][
+                                    0:chapter_dict[current_heading][-1].find(" ")] != verse_number
+                            ):
                                 chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
                             elif len(chapter_dict[current_heading]) > 0:
                                 chapter_dict[current_heading][-1] += verse_text
@@ -316,10 +425,18 @@ class CSB(Bible):
                     for verse in element.findall('verse'):
                         verse_number = verse.get('display-number')
                         verse_text = ''.join(verse.itertext())
-                        verse_text = condense.sub(' ', re.sub(r'^\s*\d+\s*', '', verse_text))
-                        if len(chapter_dict[current_heading]) > 0 and chapter_dict[current_heading][-1][
-                                                                      0:chapter_dict[current_heading][-1].find(
-                                                                          " ")] != verse_number:
+                        verse_text = condense.sub(
+                            ' ',
+                            re.sub(
+                                r'^\s*\d+\s*',
+                                '',
+                                verse_text
+                            )
+                        )
+                        if (len(chapter_dict[current_heading]) > 0 and
+                                chapter_dict[current_heading][-1][
+                                0:chapter_dict[current_heading][-1].find(" ")] != verse_number
+                        ):
                             chapter_dict[current_heading].append(f"{verse_number} {verse_text}")
                         elif len(chapter_dict[current_heading]) > 0:
                             chapter_dict[current_heading][-1] += verse_text
@@ -329,15 +446,19 @@ class CSB(Bible):
 
         # Split verses that are not separated by a unique verse tag
         if bookname == 'Genesis':
-            result[bookname]['3']['Sin’s Consequences'][9] = result[bookname]['3']['Sin’s Consequences'][9][135:]
-            result[bookname]['4']['Cain Murders Abel'][8] = result[bookname]['4']['Cain Murders Abel'][8][:120]
+            result[bookname]['3']['Sin’s Consequences'][9] = \
+                result[bookname]['3']['Sin’s Consequences'][9][135:]
+            result[bookname]['4']['Cain Murders Abel'][8] = \
+                result[bookname]['4']['Cain Murders Abel'][8][:120]
             result[bookname]['22']['The Sacrifice of Isaac'][6] = \
                 result[bookname]['22']['The Sacrifice of Isaac'][6][:193]
-            result[bookname]['27']['The Stolen Blessing'][38] += "Look, your dwelling place will be away from the " \
-                                                                 "richness of the land, away from the dew of the sky " \
-                                                                 "above."
+            result[bookname]['27']['The Stolen Blessing'][38] += \
+                "Look, your dwelling place will be away from the " \
+                "richness of the land, away from the dew of the sky " \
+                "above."
             result[bookname]['30']['none'][14] = result[bookname]['30']['none'][14][:221]
-            result[bookname]['37']['Joseph’s Dreams'][1] = result[bookname]['37']['Joseph’s Dreams'][1][:245]
+            result[bookname]['37']['Joseph’s Dreams'][1] = \
+                result[bookname]['37']['Joseph’s Dreams'][1][:245]
 
             split_location = result[bookname]['9']['God’s Covenant with Noah'][14].find('16')
             tmp_split = result[bookname]['9']['God’s Covenant with Noah'][14][0:split_location], \
@@ -346,14 +467,16 @@ class CSB(Bible):
             result[bookname]['9']['God’s Covenant with Noah'].insert(15, tmp_split[1])
 
             split_location = result[bookname]['39']['Joseph in Potiphar’s House'][12].find('14')
-            tmp_split = result[bookname]['39']['Joseph in Potiphar’s House'][12][0:split_location], \
+            tmp_split = \
+                result[bookname]['39']['Joseph in Potiphar’s House'][12][0:split_location], \
                 result[bookname]['39']['Joseph in Potiphar’s House'][12][split_location:]
             result[bookname]['39']['Joseph in Potiphar’s House'][12] = tmp_split[0]
             result[bookname]['39']['Joseph in Potiphar’s House'].insert(13, tmp_split[1])
 
         elif bookname == 'Exodus':
-            result[bookname]['32']['The Gold Calf'][17] += "It’s not the sound of a victory cry and not the sound of " \
-                                                           "a cry of defeat; I hear the sound of singing!"
+            result[bookname]['32']['The Gold Calf'][17] += \
+                "It’s not the sound of a victory cry and not the sound of " \
+                "a cry of defeat; I hear the sound of singing!"
 
         elif bookname == 'Numbers':
             split_location = result[bookname]['1']['The Census of Israel'][31].find('33')
@@ -377,28 +500,41 @@ class CSB(Bible):
 
         elif bookname == 'Judges':
             # Once again, duplicated data
-            result[bookname]['15']['Samson’s Revenge'][5] = result[bookname]['15']['Samson’s Revenge'][5][:238]
-            result[bookname]['17']['Micah’s Priest'][8] = result[bookname]['17']['Micah’s Priest'][8][:155]
+            result[bookname]['15']['Samson’s Revenge'][5] = \
+                result[bookname]['15']['Samson’s Revenge'][5][:238]
+            result[bookname]['17']['Micah’s Priest'][8] = \
+                result[bookname]['17']['Micah’s Priest'][8][:155]
 
         elif bookname == 'Ruth':
-            result[bookname]['2']['Ruth and Boaz Meet'][18] = result[bookname]['2']['Ruth and Boaz Meet'][18][:252]
+            result[bookname]['2']['Ruth and Boaz Meet'][18] = \
+                result[bookname]['2']['Ruth and Boaz Meet'][18][:252]
 
         elif bookname == '1 Samuel':
             # Once again, duplicated data
-            result[bookname]['3']['Samuel’s Call'][4] = result[bookname]['3']['Samuel’s Call'][4][:133]
-            result[bookname]['3']['Samuel’s Call'][5] = result[bookname]['3']['Samuel’s Call'][5][:167]
-            result[bookname]['3']['Samuel’s Call'][9] = result[bookname]['3']['Samuel’s Call'][9][:130]
-            result[bookname]['3']['Samuel’s Call'][15] = result[bookname]['3']['Samuel’s Call'][15][:80]
+            result[bookname]['3']['Samuel’s Call'][4] = \
+                result[bookname]['3']['Samuel’s Call'][4][:133]
+            result[bookname]['3']['Samuel’s Call'][5] = \
+                result[bookname]['3']['Samuel’s Call'][5][:167]
+            result[bookname]['3']['Samuel’s Call'][9] = \
+                result[bookname]['3']['Samuel’s Call'][9][:130]
+            result[bookname]['3']['Samuel’s Call'][15] = \
+                result[bookname]['3']['Samuel’s Call'][15][:80]
 
             result[bookname]['27']['David Flees to Ziklag'][9] = \
                 result[bookname]['27']['David Flees to Ziklag'][9][:172]
 
-            result[bookname]['28']['Saul and the Medium'][1] = result[bookname]['28']['Saul and the Medium'][1][:163]
-            result[bookname]['28']['Saul and the Medium'][6] = result[bookname]['28']['Saul and the Medium'][6][:166]
-            result[bookname]['28']['Saul and the Medium'][10] = result[bookname]['28']['Saul and the Medium'][10][:110]
-            result[bookname]['28']['Saul and the Medium'][12] = result[bookname]['28']['Saul and the Medium'][12][:136]
-            result[bookname]['28']['Saul and the Medium'][13] = result[bookname]['28']['Saul and the Medium'][13][:211]
-            result[bookname]['28']['Saul and the Medium'][14] = result[bookname]['28']['Saul and the Medium'][14][:308]
+            result[bookname]['28']['Saul and the Medium'][1] = \
+                result[bookname]['28']['Saul and the Medium'][1][:163]
+            result[bookname]['28']['Saul and the Medium'][6] = \
+                result[bookname]['28']['Saul and the Medium'][6][:166]
+            result[bookname]['28']['Saul and the Medium'][10] = \
+                result[bookname]['28']['Saul and the Medium'][10][:110]
+            result[bookname]['28']['Saul and the Medium'][12] = \
+                result[bookname]['28']['Saul and the Medium'][12][:136]
+            result[bookname]['28']['Saul and the Medium'][13] = \
+                result[bookname]['28']['Saul and the Medium'][13][:211]
+            result[bookname]['28']['Saul and the Medium'][14] = \
+                result[bookname]['28']['Saul and the Medium'][14][:308]
 
             result[bookname]['29']['Philistines Reject David'][2] = \
                 result[bookname]['29']['Philistines Reject David'][2][:289]
@@ -417,9 +553,12 @@ class CSB(Bible):
             result[bookname]['1']['Responses to Saul’s Death'][12] = \
                 result[bookname]['1']['Responses to Saul’s Death'][12][:154]
 
-            result[bookname]['16']['Ziba Helps David'][1] = result[bookname]['16']['Ziba Helps David'][1][:250]
-            result[bookname]['16']['Ziba Helps David'][2] = result[bookname]['16']['Ziba Helps David'][2][:204]
-            result[bookname]['16']['Ziba Helps David'][3] = result[bookname]['16']['Ziba Helps David'][3][:154]
+            result[bookname]['16']['Ziba Helps David'][1] = \
+                result[bookname]['16']['Ziba Helps David'][1][:250]
+            result[bookname]['16']['Ziba Helps David'][2] = \
+                result[bookname]['16']['Ziba Helps David'][2][:204]
+            result[bookname]['16']['Ziba Helps David'][3] = \
+                result[bookname]['16']['Ziba Helps David'][3][:154]
 
             result[bookname]['17']['David Informed of Absalom’s Plans'][5] = \
                 result[bookname]['17']['David Informed of Absalom’s Plans'][5][:232]
@@ -427,21 +566,28 @@ class CSB(Bible):
                 result[bookname]['17']['David Informed of Absalom’s Plans'][14][:42] + \
                 result[bookname]['17']['David Informed of Absalom’s Plans'][14][51:]
 
-            result[bookname]['18']['Absalom’s Death'][13] = result[bookname]['18']['Absalom’s Death'][13][:201]
-            result[bookname]['18']['Absalom’s Death'][18] = result[bookname]['18']['Absalom’s Death'][18][:170]
-            result[bookname]['18']['Absalom’s Death'][20] = result[bookname]['18']['Absalom’s Death'][20][:184]
-            result[bookname]['18']['Absalom’s Death'][23] = result[bookname]['18']['Absalom’s Death'][23][:229]
+            result[bookname]['18']['Absalom’s Death'][13] = \
+                result[bookname]['18']['Absalom’s Death'][13][:201]
+            result[bookname]['18']['Absalom’s Death'][18] = \
+                result[bookname]['18']['Absalom’s Death'][18][:170]
+            result[bookname]['18']['Absalom’s Death'][20] = \
+                result[bookname]['18']['Absalom’s Death'][20][:184]
+            result[bookname]['18']['Absalom’s Death'][23] = \
+                result[bookname]['18']['Absalom’s Death'][23][:229]
 
             # This one is messed up in the XML to the extent it's messed up on their site too
-            result[bookname]['24']['David’s Punishment'][5] = result[bookname]['24']['David’s Punishment'][5][:270] + \
-                                                              " the Jebusite."
+            result[bookname]['24']['David’s Punishment'][5] = \
+                result[bookname]['24']['David’s Punishment'][5][:270] + " the Jebusite."
 
-            result[bookname]['24']['David’s Altar'][3] = result[bookname]['24']['David’s Altar'][3][:202]
+            result[bookname]['24']['David’s Altar'][3] = \
+                result[bookname]['24']['David’s Altar'][3][:202]
 
         elif bookname == "1 Kings":
             # The whole verse is in this one twice. Weird
-            result[bookname]['2']['Joab’s Execution'][1] = result[bookname]['2']['Joab’s Execution'][1][:187]
-            result[bookname]['3']['Solomon’s Wisdom'][6] = result[bookname]['3']['Solomon’s Wisdom'][6][:197]
+            result[bookname]['2']['Joab’s Execution'][1] = \
+                result[bookname]['2']['Joab’s Execution'][1][:187]
+            result[bookname]['3']['Solomon’s Wisdom'][6] = \
+                result[bookname]['3']['Solomon’s Wisdom'][6][:197]
 
             result[bookname]['8']['Solomon’s Dedication of the Temple'][17] = \
                 result[bookname]['8']['Solomon’s Dedication of the Temple'][16][104:]
@@ -455,8 +601,10 @@ class CSB(Bible):
             result[bookname]['20']['Ahab Rebuked by theLord'][5] = \
                 result[bookname]['20']['Ahab Rebuked by theLord'][5][:160]
 
-            split_location = result[bookname]['22']['Jehoshaphat’s Alliance with Ahab'][3].find('5')
-            tmp_split = result[bookname]['22']['Jehoshaphat’s Alliance with Ahab'][3][0:split_location], \
+            split_location = \
+                result[bookname]['22']['Jehoshaphat’s Alliance with Ahab'][3].find('5')
+            tmp_split = \
+                result[bookname]['22']['Jehoshaphat’s Alliance with Ahab'][3][0:split_location], \
                 result[bookname]['22']['Jehoshaphat’s Alliance with Ahab'][3][split_location:278]
             result[bookname]['22']['Jehoshaphat’s Alliance with Ahab'][3] = tmp_split[0]
             result[bookname]['22']['Jehoshaphat’s Alliance with Ahab'].insert(4, tmp_split[1])
@@ -477,7 +625,8 @@ class CSB(Bible):
 
             result[bookname]['7']['none'][1] = result[bookname]['7']['none'][1][:253]
 
-            result[bookname]['8']['Aram’s King Hazael'][5] = result[bookname]['8']['Aram’s King Hazael'][5][:288]
+            result[bookname]['8']['Aram’s King Hazael'][5] = \
+                result[bookname]['8']['Aram’s King Hazael'][5][:288]
 
             result[bookname]['9']['Jehu Anointed as Israel’s King'][11] = \
                 result[bookname]['9']['Jehu Anointed as Israel’s King'][11][:172]
@@ -486,16 +635,19 @@ class CSB(Bible):
             result[bookname]['9']['Jehu Kills Joram and Ahaziah'][6] =\
                 "22 " + result[bookname]['9']['Jehu Kills Joram and Ahaziah'][1][3:183]
 
-            result[bookname]['20']['Hezekiah’s Folly'][3] = result[bookname]['20']['Hezekiah’s Folly'][3][:180]
+            result[bookname]['20']['Hezekiah’s Folly'][3] = \
+                result[bookname]['20']['Hezekiah’s Folly'][3][:180]
 
-            result[bookname]['23']['Josiah’s Reforms'][13] = result[bookname]['23']['Josiah’s Reforms'][13][:205]
+            result[bookname]['23']['Josiah’s Reforms'][13] = \
+                result[bookname]['23']['Josiah’s Reforms'][13][:205]
 
         elif bookname == "1 Chronicles":
             result[bookname]['11']['Exploits of David’s Warriors'][1] = \
                 result[bookname]['11']['Exploits of David’s Warriors'][1][:90] + \
                 result[bookname]['11']['Exploits of David’s Warriors'][1][344:]
 
-            result[bookname]['29']['David’s Prayer'][12] = "22 " + result[bookname]['29']['David’s Prayer'][12][3:]
+            result[bookname]['29']['David’s Prayer'][12] = \
+                "22 " + result[bookname]['29']['David’s Prayer'][12][3:]
             result[bookname]['29']['The Enthronement of Solomon'][0] = \
                 "22 " + result[bookname]['29']['The Enthronement of Solomon'][0][4:]
 
@@ -507,21 +659,28 @@ class CSB(Bible):
                 result[bookname]['25']['Amaziah’s Campaign against Edom'][11][:276]
 
         elif bookname == "Ezra":
-            result[bookname]['2']['The Exiles Who Returned'][35] += "Jedaiah’s descendants of the house of Jeshua 973"
-            result[bookname]['2']['The Exiles Who Returned'][39] += "Jeshua’s and Kadmiel’s descendants from Hodaviah’s" \
-                                                                    " descendants 74"
-            result[bookname]['2']['The Exiles Who Returned'][40] += "Asaph’s descendants 128"
-            result[bookname]['2']['The Exiles Who Returned'][41] += "Shallum’s descendants, Ater’s descendants, " \
-                                                                    "Talmon’s descendants, Akkub’s descendants, " \
-                                                                    "Hatita’s descendants, Shobai’s descendants, " \
-                                                                    "in all 139"
-            result[bookname]['2']['The Exiles Who Returned'][43] += " Siaha’s descendants, Padon’s descendants,"
-            result[bookname]['2']['The Exiles Who Returned'][44] += "Akkub’s descendants,"
+            result[bookname]['2']['The Exiles Who Returned'][35] += \
+                "Jedaiah’s descendants of the house of Jeshua 973"
+            result[bookname]['2']['The Exiles Who Returned'][39] += \
+                "Jeshua’s and Kadmiel’s descendants from Hodaviah’s" \
+                " descendants 74"
+            result[bookname]['2']['The Exiles Who Returned'][40] += \
+                "Asaph’s descendants 128"
+            result[bookname]['2']['The Exiles Who Returned'][41] += \
+                "Shallum’s descendants, Ater’s descendants, " \
+                "Talmon’s descendants, Akkub’s descendants, " \
+                "Hatita’s descendants, Shobai’s descendants, " \
+                "in all 139"
+            result[bookname]['2']['The Exiles Who Returned'][43] += \
+                " Siaha’s descendants, Padon’s descendants,"
+            result[bookname]['2']['The Exiles Who Returned'][44] += \
+                "Akkub’s descendants,"
             result[bookname]['2']['The Exiles Who Returned'][44] = \
                 result[bookname]['2']['The Exiles Who Returned'][44][3:]
 
         elif bookname == "Nehemiah":
-            result[bookname]['5']['Social Injustice'][12] = result[bookname]['5']['Social Injustice'][12][:283]
+            result[bookname]['5']['Social Injustice'][12] = \
+                result[bookname]['5']['Social Injustice'][12][:283]
             result[bookname]['13']['Nehemiah’s Further Reforms'][21] = \
                 result[bookname]['13']['Nehemiah’s Further Reforms'][21][:234]
             result[bookname]['13']['Nehemiah’s Further Reforms'][30] = \
@@ -530,11 +689,14 @@ class CSB(Bible):
         elif bookname == "Isaiah":
             result[bookname]['31']['The Lord, the Only Help'][8] = \
                 result[bookname]['31']['The Lord, the Only Help'][8][:195]
-            result[bookname]['39']['Hezekiah’s Folly'][3] = result[bookname]['39']['Hezekiah’s Folly'][3][:239]
+            result[bookname]['39']['Hezekiah’s Folly'][3] = \
+                result[bookname]['39']['Hezekiah’s Folly'][3][:239]
 
         elif bookname == "Jeremiah":
-            split_location = result[bookname]['49']['Prophecies against Kedar and Hazor'][0].find('29')
-            tmp_split = result[bookname]['49']['Prophecies against Kedar and Hazor'][0][0:split_location], \
+            split_location = \
+                result[bookname]['49']['Prophecies against Kedar and Hazor'][0].find('29')
+            tmp_split = \
+                result[bookname]['49']['Prophecies against Kedar and Hazor'][0][0:split_location], \
                 result[bookname]['49']['Prophecies against Kedar and Hazor'][0][split_location:]
             result[bookname]['49']['Prophecies against Kedar and Hazor'][0] = tmp_split[0]
             result[bookname]['49']['Prophecies against Kedar and Hazor'].insert(1, tmp_split[1])
@@ -553,7 +715,8 @@ class CSB(Bible):
             result[bookname]["7"]['Third Vision: A Plumb Line'].pop(2)
 
         elif bookname == "Zechariah":
-            result[bookname]['1']['A Plea for Repentance'][5] = result[bookname]['1']['A Plea for Repentance'][5][:243]
+            result[bookname]['1']['A Plea for Repentance'][5] = \
+                result[bookname]['1']['A Plea for Repentance'][5][:243]
             result[bookname]['1']['Second Vision: Four Horns and Craftsmen'][3] = \
                 result[bookname]['1']['Second Vision: Four Horns and Craftsmen'][3][:269]
 
@@ -569,24 +732,38 @@ class CSB(Bible):
             result[bookname]['4']['Ministry in Galilee'][4] = tmp_split[1]
 
             # Verses 3-9 of Matthew 5 get grabbed at the same time for whatever reason, so yeah.
-            result[bookname]['5']['The Beatitudes'][1] = result[bookname]['5']['The Beatitudes'][0][73:132]
-            result[bookname]['5']['The Beatitudes'][2] = result[bookname]['5']['The Beatitudes'][0][132:191]
-            result[bookname]['5']['The Beatitudes'][3] = result[bookname]['5']['The Beatitudes'][0][191:277]
-            result[bookname]['5']['The Beatitudes'][4] = result[bookname]['5']['The Beatitudes'][0][277:335]
-            result[bookname]['5']['The Beatitudes'][5] = result[bookname]['5']['The Beatitudes'][0][335:391]
-            result[bookname]['5']['The Beatitudes'][6] = result[bookname]['5']['The Beatitudes'][0][391:]
-            result[bookname]['5']['The Beatitudes'][0] = result[bookname]['5']['The Beatitudes'][0][:73]
+            result[bookname]['5']['The Beatitudes'][1] = \
+                result[bookname]['5']['The Beatitudes'][0][73:132]
+            result[bookname]['5']['The Beatitudes'][2] = \
+                result[bookname]['5']['The Beatitudes'][0][132:191]
+            result[bookname]['5']['The Beatitudes'][3] = \
+                result[bookname]['5']['The Beatitudes'][0][191:277]
+            result[bookname]['5']['The Beatitudes'][4] = \
+                result[bookname]['5']['The Beatitudes'][0][277:335]
+            result[bookname]['5']['The Beatitudes'][5] = \
+                result[bookname]['5']['The Beatitudes'][0][335:391]
+            result[bookname]['5']['The Beatitudes'][6] = \
+                result[bookname]['5']['The Beatitudes'][0][391:]
+            result[bookname]['5']['The Beatitudes'][0] = \
+                result[bookname]['5']['The Beatitudes'][0][:73]
 
             # Same thing for 6:9-13
-            result[bookname]['6']['The Lord’s Prayer'][1] = result[bookname]['6']['The Lord’s Prayer'][0][94:163]
-            result[bookname]['6']['The Lord’s Prayer'][2] = result[bookname]['6']['The Lord’s Prayer'][0][163:197]
-            result[bookname]['6']['The Lord’s Prayer'][3] = result[bookname]['6']['The Lord’s Prayer'][0][197:264]
-            result[bookname]['6']['The Lord’s Prayer'][4] = result[bookname]['6']['The Lord’s Prayer'][0][264:]
-            result[bookname]['6']['The Lord’s Prayer'][0] = result[bookname]['6']['The Lord’s Prayer'][0][:94]
+            result[bookname]['6']['The Lord’s Prayer'][1] = \
+                result[bookname]['6']['The Lord’s Prayer'][0][94:163]
+            result[bookname]['6']['The Lord’s Prayer'][2] = \
+                result[bookname]['6']['The Lord’s Prayer'][0][163:197]
+            result[bookname]['6']['The Lord’s Prayer'][3] = \
+                result[bookname]['6']['The Lord’s Prayer'][0][197:264]
+            result[bookname]['6']['The Lord’s Prayer'][4] = \
+                result[bookname]['6']['The Lord’s Prayer'][0][264:]
+            result[bookname]['6']['The Lord’s Prayer'][0] = \
+                result[bookname]['6']['The Lord’s Prayer'][0][:94]
 
             # Odd one
-            split_location = result[bookname]['11']['An Unresponsive Generation'][0].find(':') + 1
-            tmp_split = result[bookname]['11']['An Unresponsive Generation'][0][0:split_location], \
+            split_location = \
+                result[bookname]['11']['An Unresponsive Generation'][0].find(':') + 1
+            tmp_split = \
+                result[bookname]['11']['An Unresponsive Generation'][0][0:split_location], \
                 "17" + result[bookname]['11']['An Unresponsive Generation'][0][split_location:]
             result[bookname]['11']['An Unresponsive Generation'][0] = tmp_split[0]
             result[bookname]['11']['An Unresponsive Generation'].insert(1, tmp_split[1])
@@ -619,9 +796,12 @@ class CSB(Bible):
         elif bookname == "John":
             result[bookname]['1']['John the Baptist’s Testimony'][2] = \
                 result[bookname]['1']['John the Baptist’s Testimony'][2][:115]
-            result[bookname]['1']['The Lamb of God'][9] = result[bookname]['1']['The Lamb of God'][9][:173]
-            result[bookname]['1']['The Lamb of God'][13] = result[bookname]['1']['The Lamb of God'][13][:151]
-            result[bookname]['1']['Philip and Nathanael'][5] = result[bookname]['1']['Philip and Nathanael'][5][:132]
+            result[bookname]['1']['The Lamb of God'][9] = \
+                result[bookname]['1']['The Lamb of God'][9][:173]
+            result[bookname]['1']['The Lamb of God'][13] = \
+                result[bookname]['1']['The Lamb of God'][13][:151]
+            result[bookname]['1']['Philip and Nathanael'][5] = \
+                result[bookname]['1']['Philip and Nathanael'][5][:132]
 
             result[bookname]['20']['Mary Magdalene Sees the Risen Lord'][2] = \
                 result[bookname]['20']['Mary Magdalene Sees the Risen Lord'][2][:146]
@@ -644,9 +824,11 @@ class CSB(Bible):
             result[bookname]['16']['Paul and Silas in Prison'][2] = \
                 result[bookname]['16']['Paul and Silas in Prison'][2][:182]
 
-            result[bookname]['17']['Paul in Athens'][2] = result[bookname]['17']['Paul in Athens'][2][:269]
+            result[bookname]['17']['Paul in Athens'][2] = \
+                result[bookname]['17']['Paul in Athens'][2][:269]
 
-            result[bookname]['22']['Paul’s Testimony'][4] = result[bookname]['22']['Paul’s Testimony'][4][:161]
+            result[bookname]['22']['Paul’s Testimony'][4] = \
+                result[bookname]['22']['Paul’s Testimony'][4][:161]
 
             tmp = "8 " + result[bookname]['24']['The Accusation against Paul'][5][68:]
             result[bookname]['24']['The Accusation against Paul'][5] = \
@@ -654,7 +836,8 @@ class CSB(Bible):
             result[bookname]['24']['The Accusation against Paul'].insert(6, tmp)
 
         elif bookname == "Romans":
-            result[bookname]['15']['Glorifying God Together'][4] += result[bookname]['15']['Glorifying God Together'][5][4:]
+            result[bookname]['15']['Glorifying God Together'][4] += \
+                result[bookname]['15']['Glorifying God Together'][5][4:]
             result[bookname]['15']['Glorifying God Together'].pop(5)
 
         elif bookname == "2 Peter":

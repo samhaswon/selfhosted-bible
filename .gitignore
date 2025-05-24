@@ -20,10 +20,12 @@ scripts/*.xml
 
 bibles/json-bibles/amp.json
 bibles/json-bibles/amp.json.pbz2
+bibles/json-bibles/btx3.json.pbz2
 bibles/json-bibles/csb.json
 bibles/json-bibles/csb.json.pbz2
 bibles/json-bibles/esv.json
 bibles/json-bibles/esv.json.pbz2
+bibles/json-bibles/esv_min.json.pbz2
 bibles/json-bibles/msg.json
 bibles/json-bibles/msg.json.pbz2
 bibles/json-bibles/nasb1995.json
@@ -40,5 +42,6 @@ bibles/json-bibles/nlt.json
 bibles/json-bibles/nlt.json.pbz2
 bibles/json-bibles/rsv.json
 bibles/json-bibles/rsv.json.pbz2
+bibles/json-bibles/rv1960.json.pbz2
 /docker-compose.yml
 /biblestore/
