@@ -43,7 +43,10 @@ async function updateiframe(iframe, bookSelector, chapterSelector, versionSelect
     if (iframe.dataset.gridMode === 'search') {
         return;
     }
-    iframe.src = `/embed?version=${versionSelector.value}&book=${bookSelector.value}&chapter=${chapterSelector.value}`;
+    const version = encodeURIComponent(versionSelector.value);
+    const book = encodeURIComponent(bookSelector.value);
+    const chapter = encodeURIComponent(chapterSelector.value);
+    iframe.src = `/embed?version=${version}&book=${book}&chapter=${chapter}`;
 }
 
 function assignGridIds(itemRoot, index) {
