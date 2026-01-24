@@ -45,3 +45,6 @@ bibles/json-bibles/rsv.json.pbz2
 bibles/json-bibles/rv1960.json.pbz2
 /docker-compose.yml
 /biblestore/
+
+.vscode/
+AGENTS.md

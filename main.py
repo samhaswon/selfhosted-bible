@@ -448,6 +448,23 @@ def create_app() -> Flask:
         return response
 
     @cache
+    @app.route('/search_embed', methods=['GET'])
+    def search_embed() -> Response:
+        response = make_response(
+            minify.sub(
+                '',
+                render_template(
+                    'search_embed.html',
+                    title='search',
+                    debug=DEBUG,
+                    versions=sorted(searcher.versions)
+                )
+            )
+        )
+        response.cache_control.max_age = 60 * 60 * 24 * 7
+        return response
+
+    @cache
     @app.route('/manifest.json', methods=['GET'])
     def manifest() -> Response:
         return jsonify(
