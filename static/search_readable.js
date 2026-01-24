@@ -26,7 +26,8 @@ function updateResults(results) {
         const version = encodeURIComponent(versionSelection.value);
         const bookEncoded = encodeURIComponent(book);
         const chapterEncoded = encodeURIComponent(chapter);
-        const ref = `/goto/?version=${version}&book=${bookEncoded}&chapter=${chapterEncoded}`;
+        const embedPath = `/embed?version=${version}&book=${bookEncoded}&chapter=${chapterEncoded}`;
+        const ref = window.searchEmbed ? embedPath : `/goto/?version=${version}&book=${bookEncoded}&chapter=${chapterEncoded}`;
         const ref_child = document.createElement('a');
         ref_child.href = ref;
         ref_child.textContent = results[i][0];

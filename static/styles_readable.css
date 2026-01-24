@@ -484,7 +484,7 @@ label {
 .btn-nav {
     padding: 12px 14px;
     font-size: 14px;
-    font-weight: 400
+    font-weight: 400;
     line-height: 1.43;
     background-image: none;
     margin: 0;
@@ -536,7 +536,7 @@ label {
     }
 
     h4 {
-        color: #inherit
+        color: #inherit;
     }
 
     p {

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block navbar %}
+<div hidden aria-hidden="true">
+<button
+    type="button"
+    class="navbar-brand btn-nav"
+    data-theme-toggle
+    aria-label="🌞"
+    aria-hidden="true"
+    hidden>
+    🌞
+</button>
+</div>
+{% endblock navbar %}
+{% block content %}
+    <div class="container-fluid mw-100">
+        <div align="center">
+            <input class="passage-form" type="text" id="search-box" placeholder="Type to search..." style="width: 70%">
+            <label for="version-selection" hidden="hidden" aria-label="Version selection"></label>
+            <select class="passage-form" id="version-selection">
+                {% for version in versions %}
+                    <option {% if version == 'KJV' %}selected{% endif %} value="{{version}}">{{version}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <ul id="search-results" style="list-style-type:none;"></ul>
+
+    </div>
+
+    <script>window.searchEmbed = true;</script>
+    <script type="text/javascript" async="" src="{{ url_for('static', filename='search.js') }}"></script>
+
+{% endblock %}
+{% block nav_script %}
+{% endblock nav_script %}

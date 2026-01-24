@@ -4,12 +4,13 @@
 {% block content %}
 <div class="container-fluid mw-100">
     <form method="post" role="presentation">
+        <div id="grid-container">
         {% for i in range(4) %}
             {% if i % 2 == 0 %}<div class="container">{% endif %}
-                <div class="item">
+                <div class="item" data-grid-item="true" data-grid-index="{{ i }}">
                 <div align="center">
-                <label for="book-{{ i }}" hidden="hidden" aria-label="Book selection {{ i }}"></label>
-                <select class="passage-form" id="book-{{ i }}" name="book" required>
+                <label data-grid-role="book-label" for="book-{{ i }}" hidden="hidden" aria-label="Book selection {{ i }}"></label>
+                <select class="passage-form" data-grid-role="book" id="book-{{ i }}" name="book" required>
                     <option selected value="Genesis">Genesis</option>
                     <option value="Exodus">Exodus</option>
                     <option value="Leviticus">Leviticus</option>
@@ -77,19 +78,113 @@
                     <option value="Jude">Jude</option>
                     <option value="Revelation">Revelation</option>
                 </select>
-                <label for="chapter-{{ i }}" hidden="hidden" aria-label="Chapter selection {{ i }}"></label>
-                <select class="passage-form" id="chapter-{{ i }}" name="chapter"></select>
-                <label for="version-selection-{{ i }}" hidden="hidden" aria-label="Version selection {{ i }}"></label>
-                <select class="passage-form" id="version-selection-{{ i }}">
+                <label data-grid-role="chapter-label" for="chapter-{{ i }}" hidden="hidden" aria-label="Chapter selection {{ i }}"></label>
+                <select class="passage-form" data-grid-role="chapter" id="chapter-{{ i }}" name="chapter"></select>
+                <label data-grid-role="version-label" for="version-selection-{{ i }}" hidden="hidden" aria-label="Version selection {{ i }}"></label>
+                <select class="passage-form" data-grid-role="version" id="version-selection-{{ i }}">
                     {% for version in versions %}
                         <option {% if version == 'KJV' %}selected{% endif %} value="{{version}}">{{version}}</option>
                     {% endfor %}
-                </select></div><br>
-                <iframe style="border: none; width: 100%; height: 70vh;" id="bible-frame-{{ i }}" title="Bible frame {{ i }}" referrerpolicy="origin" loading="lazy" src="/embed?version=KJV&book=Genesis&chapter=1"></iframe>
+                </select>
+                {% if i < 2 %}
+                    <button class="passage-form" data-search-toggle="true" data-grid-index="{{ i }}" type="button" aria-label="Toggle search view">
+                        Search
+                    </button>
+                {% endif %}
+                </div><br>
+                <iframe class="grid-iframe" data-grid-role="iframe" style="border: none; width: 100%; height: 70vh;" id="bible-frame-{{ i }}" title="Bible frame {{ i }}" referrerpolicy="origin" loading="lazy" src="/embed?version=KJV&book=Genesis&chapter=1"></iframe>
                 </div>
                 {% if i % 2 == 0 %}<br><span style="width: 2%">&nbsp;</span><br>{% endif %}
             {% if i % 2 != 0 %}</div><hr>{% endif %}
         {% endfor %}
+        </div>
     </form>
+    <div class="container" align="center">
+        <button class="passage-form" id="add-grid-row" type="button" aria-label="Add row">+</button>
+    </div>
 </div>
+<template id="grid-item-template">
+    <div class="item" data-grid-item="true">
+        <div align="center">
+            <label data-grid-role="book-label" hidden="hidden" aria-label="Book selection"></label>
+            <select class="passage-form" data-grid-role="book" name="book" required>
+                <option selected value="Genesis">Genesis</option>
+                <option value="Exodus">Exodus</option>
+                <option value="Leviticus">Leviticus</option>
+                <option value="Numbers">Numbers</option>
+                <option value="Deuteronomy">Deuteronomy</option>
+                <option value="Joshua">Joshua</option>
+                <option value="Judges">Judges</option>
+                <option value="Ruth">Ruth</option>
+                <option value="1 Samuel">1 Samuel</option>
+                <option value="2 Samuel">2 Samuel</option>
+                <option value="1 Kings">1 Kings</option>
+                <option value="2 Kings">2 Kings</option>
+                <option value="1 Chronicles">1 Chronicles</option>
+                <option value="2 Chronicles">2 Chronicles</option>
+                <option value="Ezra">Ezra</option>
+                <option value="Nehemiah">Nehemiah</option>
+                <option value="Esther">Esther</option>
+                <option value="Job">Job</option>
+                <option value="Psalms">Psalms</option>
+                <option value="Proverbs">Proverbs</option>
+                <option value="Ecclesiastes">Ecclesiastes</option>
+                <option value="Song of Solomon">Song of Solomon</option>
+                <option value="Isaiah">Isaiah</option>
+                <option value="Jeremiah">Jeremiah</option>
+                <option value="Lamentations">Lamentations</option>
+                <option value="Ezekiel">Ezekiel</option>
+                <option value="Daniel">Daniel</option>
+                <option value="Hosea">Hosea</option>
+                <option value="Joel">Joel</option>
+                <option value="Amos">Amos</option>
+                <option value="Obadiah">Obadiah</option>
+                <option value="Jonah">Jonah</option>
+                <option value="Micah">Micah</option>
+                <option value="Nahum">Nahum</option>
+                <option value="Habakkuk">Habakkuk</option>
+                <option value="Zephaniah">Zephaniah</option>
+                <option value="Haggai">Haggai</option>
+                <option value="Zechariah">Zechariah</option>
+                <option value="Malachi">Malachi</option>
+                <option value="Matthew">Matthew</option>
+                <option value="Mark">Mark</option>
+                <option value="Luke">Luke</option>
+                <option value="John">John</option>
+                <option value="Acts">Acts</option>
+                <option value="Romans">Romans</option>
+                <option value="1 Corinthians">1 Corinthians</option>
+                <option value="2 Corinthians">2 Corinthians</option>
+                <option value="Galatians">Galatians</option>
+                <option value="Ephesians">Ephesians</option>
+                <option value="Philippians">Philippians</option>
+                <option value="Colossians">Colossians</option>
+                <option value="1 Thessalonians">1 Thessalonians</option>
+                <option value="2 Thessalonians">2 Thessalonians</option>
+                <option value="1 Timothy">1 Timothy</option>
+                <option value="2 Timothy">2 Timothy</option>
+                <option value="Titus">Titus</option>
+                <option value="Philemon">Philemon</option>
+                <option value="Hebrews">Hebrews</option>
+                <option value="James">James</option>
+                <option value="1 Peter">1 Peter</option>
+                <option value="2 Peter">2 Peter</option>
+                <option value="1 John">1 John</option>
+                <option value="2 John">2 John</option>
+                <option value="3 John">3 John</option>
+                <option value="Jude">Jude</option>
+                <option value="Revelation">Revelation</option>
+            </select>
+            <label data-grid-role="chapter-label" hidden="hidden" aria-label="Chapter selection"></label>
+            <select class="passage-form" data-grid-role="chapter" name="chapter"></select>
+            <label data-grid-role="version-label" hidden="hidden" aria-label="Version selection"></label>
+            <select class="passage-form" data-grid-role="version">
+                {% for version in versions %}
+                    <option {% if version == 'KJV' %}selected{% endif %} value="{{version}}">{{version}}</option>
+                {% endfor %}
+            </select>
+        </div><br>
+        <iframe class="grid-iframe" data-grid-role="iframe" style="border: none; width: 100%; height: 70vh;" title="Bible frame" referrerpolicy="origin" loading="lazy" src="/embed?version=KJV&book=Genesis&chapter=1"></iframe>
+    </div>
+</template>
 {% endblock %}
