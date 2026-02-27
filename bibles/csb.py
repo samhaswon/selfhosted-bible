@@ -2,22 +2,20 @@
 Class for the CSB version
 """
 
-from typing import Dict
+from typing import Dict, Any
 import re
 
 from xml.etree import ElementTree
 from requests import get, HTTPError
-# (testing cache) import requests_cache
 
 # pylint: disable=import-error
-from bibles.bible import Bible
-from bibles.compresscache import CompressCache
-from bibles.passage import PassageInvalid, PassageNotFound
+from bibles.api_bible import APIBible
+from bibles.passage import PassageNotFound
 
 
 # You get a lot from the ABC, so there is no need for more.
 # pylint: disable=too-few-public-methods
-class CSB(Bible):
+class CSB(APIBible):
     """
     Class for the CSB version
     """
@@ -25,9 +23,7 @@ class CSB(Bible):
         """
         Create an instance of the CSB
         """
-        super().__init__()
-        self.__compress_cache = CompressCache("csb")
-        # (testing cache) requests_cache.install_cache('verses', expire_after=999999999**99)
+        super().__init__(cache_name="csb")
 
         # Used to work with the "API" while validating input
         self.__file_aliases: Dict[str, str] = {
@@ -98,45 +94,17 @@ class CSB(Bible):
             'Jude': '65-Jude.xml',
             'Revelation': '66-Rev.xml',
         }
-        # Caching
-        try:
-            self.__cache: dict = self.__compress_cache.load()
-        except FileNotFoundError:
-            # Initialize empty cache
-            self.__cache: dict = {
-                book.name: {
-                    str(chapter): {}
-                    for chapter in range(1, book.chapter_count + 1)}
-                for book in super().books
-            }
 
-    def get_passage(self, book: str, chapter: int) -> dict:
-        """
-        Gets a given passage of the CSB. Note: this is slow as it gets the whole book.
-        :param book: Book to get.
-        :param chapter: Chapter of the book.
-        :return: dictionary of the passage
-        """
-        if not super().has_passage(book, chapter):
-            raise PassageInvalid(f"{book} {chapter}")
-        # Dump the cache every time a new book is gotten. This doesn't lead to much disk activity
-        if len(self.__cache[book][str(chapter)]) <= 0:
-            self.__get_book(book)
-            self.__compress_cache.save(self.__cache)
-        return {
-            'book': book,
-            'chapter': chapter,
-            'verses': self.__cache[book][str(chapter)]
-        }
-
-    def __get_book(self, book: str) -> None:
+    def api_return(self, book: str, chapter: Any) -> None:
         """
         So, I'm not a fan of doing this how I am. The API only has the full books afaik.
         Their search method gets all 66, so it was not made to be the most efficient.
         Though, this does cache it, which is efficient (~5µs access times on my dev machine).
         :param book: Book to get, pre validated
+        :param chapter: Anything, just for APIBible compatability.
         :return: The full book as a dictionary
         """
+        print(f"[CSB] Getting {book} ({chapter})")
         try:
             # The pseudo API. This is pretty much just grabbing and parsing XML files.
             uri = "https://read.csbible.com/wp-content/themes/lwcsbread/CSB_XML//"
@@ -847,4 +815,6 @@ class CSB(Bible):
             result[bookname]['7']['A Multitude from the Great Tribulation'][5] = \
                 result[bookname]['7']['A Multitude from the Great Tribulation'][5][:178]
 
-        self.__cache[bookname] = result[bookname]
+        for chapter in result[bookname]:
+            self.cache[bookname][str(chapter)] = {}
+            self.cache[bookname][str(chapter)]['verses'] = result[bookname][str(chapter)]

@@ -3,6 +3,7 @@ The Legacy Standard Bible (LSB)
 """
 from bibles.bolls_bible import BollsBible
 
+# pylint: disable=duplicate-code
 class LSB(BollsBible):
     """LSB"""
     def __init__(self) -> None:

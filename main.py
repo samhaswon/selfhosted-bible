@@ -25,7 +25,7 @@ from navigate import NavigatePassage, NavigateRel, NavigateVersion
 # Bible + Exception Imports
 from bibles import *
 
-DEBUG = False
+debug = False
 
 
 # pylint: disable=too-many-locals,undefined-variable,too-many-statements,consider-iterating-dictionary
@@ -37,7 +37,7 @@ def create_app() -> Flask:
     app.config['SECRET_KEY'] = str(sha256(str(time.localtime()).encode("utf-8")))
     Compress(app)
 
-    if DEBUG:
+    if debug:
         app.jinja_env.auto_reload = True
 
     minify = re.compile(r'<!--.*?-->|(\s{2,}\B)|\n')
@@ -59,6 +59,7 @@ def create_app() -> Flask:
         except IndexError:
             pass
 
+    # pylint: disable=duplicate-code
     bibles = {
               'ACV': ACV(),
               'AKJV': AKJV(),
@@ -125,7 +126,7 @@ def create_app() -> Flask:
         html: str = render_template(
             'index.html',
             title='Home',
-            debug=DEBUG,
+            debug=debug,
             form=form,
             error_mess=error_mess,
             version_select=version_select,
@@ -186,7 +187,7 @@ def create_app() -> Flask:
         if version_sel in bibles.keys():
             try:
                 content: dict = bibles[version_sel].get_passage(book_sel, int(chapter_sel))
-            except (PassageInvalid, ValueError):
+            except (PassageInvalid, PassageNotFound, ValueError):
                 return abort(400)
         else:
             content = {
@@ -202,7 +203,7 @@ def create_app() -> Flask:
         html = render_template(
             'chapter.html',
             title=book_sel + " " + chapter_sel,
-            debug=DEBUG,
+            debug=debug,
             form=form,
             content=content,
             version=version_sel,
@@ -279,7 +280,7 @@ def create_app() -> Flask:
         html = render_template(
             'chapter_split.html',
             title=book_sel + " " + chapter_sel,
-            debug=DEBUG,
+            debug=debug,
             form=form,
             content=content,
             chapter_num=chapter_sel,
@@ -303,7 +304,7 @@ def create_app() -> Flask:
                 '',
                 render_template(
                     "grid.html",
-                    debug=DEBUG,
+                    debug=debug,
                     versions=bibles.keys()
                 )
             )
@@ -324,7 +325,7 @@ def create_app() -> Flask:
                 '',
                 render_template(
                     "copyright.html",
-                    debug=DEBUG
+                    debug=debug
                 )
             )
         )
@@ -368,7 +369,7 @@ def create_app() -> Flask:
                 render_template(
                     'embed.html',
                     title=book + " " + chapter_ref,
-                    debug=DEBUG,
+                    debug=debug,
                     content=content,
                     version=version
                 )
@@ -440,7 +441,7 @@ def create_app() -> Flask:
                 render_template(
                     'search.html',
                     title='search',
-                    debug=DEBUG,
+                    debug=debug,
                     versions=sorted(searcher.versions)
                 )
             )
@@ -457,7 +458,7 @@ def create_app() -> Flask:
                 render_template(
                     'search_embed.html',
                     title='search',
-                    debug=DEBUG,
+                    debug=debug,
                     versions=sorted(searcher.versions)
                 )
             )
@@ -575,7 +576,7 @@ def create_app() -> Flask:
 
 
 if __name__ == '__main__':
-    DEBUG = True
+    debug = True
     # Dev start is also: `flask --app main.py run`
     app_create: Flask = create_app()
     app_create.run()
