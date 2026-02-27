@@ -16,6 +16,7 @@ from .esv import ESV
 from .gnv import GNV
 from .kjv import KJV
 from .kjv1611 import KJV1611
+from .lsb import LSB
 from .lsv import LSV
 from .msg import MSG
 from .nasb1995 import NASB1995

@@ -235,6 +235,14 @@ Geneva Bible (1599)
 </details>
 
 <details>
+    <summary>LSB Notice</summary>
+
+> Scripture quotations taken from the (LSB®) Legacy Standard Bible®, Copyright © 2021 by The Lockman Foundation. 
+> Used by permission. All rights reserved. 
+> Managed in partnership with Three Sixteen Publishing Inc. [LSBible.org](http://lsbible.org/) and [316publishing.com](http://316publishing.com/).
+</details>
+
+<details>
     <summary>LSV Notice</summary>
 
 > Scripture quotations marked “LSV” are taken from the Literal Standard Version (Creative Commons Attribution-ShareAlike 

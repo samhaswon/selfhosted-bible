@@ -29,7 +29,9 @@ ENV PYTHONUNBUFFERED=TRUE
 COPY --link --from=build-stage /svc /usr/src/app
 WORKDIR /usr/src/app
 RUN echo "***** Installing dependencies *****" && \
-    pip install --no-index --find-links=/usr/src/app/wheels -r requirements.txt
+    pip install --no-index --find-links=/usr/src/app/wheels -r requirements.txt && \
+    echo "***** Downloading search indices *****" && \
+    python -c  "from multi_bible_search import BibleSearch; bible_search = BibleSearch()"
 
 # Setup app
 COPY --chmod=0755 . .
