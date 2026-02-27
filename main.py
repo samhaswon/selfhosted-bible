@@ -74,6 +74,7 @@ def create_app() -> Flask:
               'GNV': GNV(),
               'KJV': KJV(),
               'KJV 1611': KJV1611(),
+              'LSB': LSB(),
               'LSV': LSV(),
               'MSG': MSG(),
               'NASB 1995': NASB1995(),

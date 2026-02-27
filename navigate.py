@@ -126,6 +126,7 @@ class NavigateVersion(FlaskForm):
                                      ('GNV', 'Geneva Bible (GNV)'),
                                      ('KJV', 'King James Version (KJV, 1729)'),
                                      ('KJV 1611', 'King James Version 1611 (KJV, 1611)'),
+                                     ('LSB', 'The Legacy Standard Bible (LSB)'),
                                      ('LSV', 'Literal Standard Version (LSV)'),
                                      ('MSG', 'The Message (MSG)'),
                                      ('NASB 1995', 'New American Standard Bible (NASB, 1995)'),
