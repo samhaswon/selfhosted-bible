@@ -137,6 +137,7 @@ class Bible(ABC):
                 if chapter == self.__books_of_the_bible[key]:
                     return next(it_books, "Genesis"), "1"
                 return book, str(chapter + 1)
+        raise KeyError("Could not find the next passage")
 
     @dispatch(str, str)
     def previous_passage(self, book: str, chapter: str) -> Tuple[str, str]:
@@ -165,6 +166,7 @@ class Bible(ABC):
                     return previous_key, str(self.__books_of_the_bible[previous_key])
                 return book, str(chapter - 1)
             previous_key = key
+        raise KeyError("Could not find the previous passage")
 
     def has_passage(self, book_name: str, chapter: int) -> bool:
         """

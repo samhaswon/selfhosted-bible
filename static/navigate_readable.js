@@ -31,12 +31,12 @@ async function chapterOptions(count, chapterSelectElement, preferredChapter = nu
 async function updateChapterSelect() {
   // get the selected book
   const book = bookSelect.value;
-  chapterOptions(bookChapters[book], chapterSelect);
+  await chapterOptions(bookChapters[book], chapterSelect);
 }
 async function updateThisChapterSelect(bookSelector, chapterSelector) {
   // get the selected book
   const book = bookSelector.value;
-  chapterOptions(bookChapters[book], chapterSelector);
+  await chapterOptions(bookChapters[book], chapterSelector);
 }
 
 async function updateiframe(iframe, bookSelector, chapterSelector, versionSelector) {
@@ -98,14 +98,14 @@ function initGridItem(itemRoot) {
         return;
     }
 
-    updateThisChapterSelect(bookSelector, chapterSelector);
+    updateThisChapterSelect(bookSelector, chapterSelector).then(r => {});
 
     bookSelector.addEventListener('change', async function() {
-        updateThisChapterSelect(bookSelector, chapterSelector);
+        await updateThisChapterSelect(bookSelector, chapterSelector);
     });
 
     const updateFrame = async function() {
-        updateiframe(bibleFrame, bookSelector, chapterSelector, versionSelector);
+        await updateiframe(bibleFrame, bookSelector, chapterSelector, versionSelector);
     };
     bookSelector.addEventListener('change', updateFrame);
     chapterSelector.addEventListener('change', updateFrame);
@@ -141,7 +141,7 @@ function createGridItem(index) {
     const chapterSelector = itemRoot.querySelector('[data-grid-role="chapter"]');
     const bookSelector = itemRoot.querySelector('[data-grid-role="book"]');
     if (bookSelector && chapterSelector) {
-        chapterOptions(bookChapters[bookSelector.value], chapterSelector, 1);
+        chapterOptions(bookChapters[bookSelector.value], chapterSelector, 1).then(r => {});
     }
     return { fragment, itemRoot };
 }
@@ -201,7 +201,7 @@ function toggleSearchView(index) {
     }
     if (bibleFrame.dataset.gridMode === 'search') {
         delete bibleFrame.dataset.gridMode;
-        updateiframe(bibleFrame, bookSelector, chapterSelector, versionSelector);
+        updateiframe(bibleFrame, bookSelector, chapterSelector, versionSelector).then(r => {});
     } else {
         bibleFrame.dataset.gridMode = 'search';
         bibleFrame.src = '/search_embed';
@@ -217,7 +217,7 @@ if (bookSelect) {
     bookSelect.addEventListener('change', updateChapterSelect);
 
     // trigger the change event on the book select when the page loads
-    updateChapterSelect();
+    updateChapterSelect().then(r => {});
 } else if (gridContainer) {
     try {
         loadExistingGridItems();

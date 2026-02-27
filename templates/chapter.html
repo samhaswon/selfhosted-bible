@@ -15,7 +15,7 @@
         <h2>{{ content.get('book') }} {{ content.get('chapter') }}</h2>
         <span class=".h6 h6">© {{ version }}</span>
         <!-- For accessibility -->
-        <span style="padding: 0%; position: absolute;"><h3></h3></span>
+        <span style="padding: 0; position: absolute;"><h3></h3></span>
         {% for heading, verses in content.get('verses').items() %}
             {% if heading != 'none'%}
                 <h4><em>{{ heading }}</em></h4>

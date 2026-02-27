@@ -201,3 +201,4 @@ class Compress:
                                    quality=app.config['COMPRESS_BR_LEVEL'],
                                    lgwin=app.config['COMPRESS_BR_WINDOW'],
                                    lgblock=app.config['COMPRESS_BR_BLOCK']))
+        return bytes([])
