@@ -3,10 +3,10 @@ NIV (1984)
 """
 import re
 from typing import List
-from bs4 import BeautifulSoup
 import requests
 from bibles.passage import PassageInvalid, PassageNotFound
 from bibles.bible import Bible
+from bibles.bolls_translate import translate
 from bibles.compresscache import CompressCache
 
 
@@ -30,16 +30,7 @@ class NIV1984(Bible):
                 } for book in super().books
             }
 
-        self.__headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) '
-                          'Gecko/20100101 Firefox/112.0',
-            'Accept': 'application/xml, text/xml, */*; q=0.01',
-            'Accept-Language': 'en-US,en;q=0.5',
-            'X-Requested-With': 'XMLHttpRequest',
-            'Sec-Fetch-Dest': 'empty',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Site': 'same-origin'
-        }
+        self.__api_url: str = "https://bolls.life/get-chapter/NIV/"
 
     def get_passage(self, book: str, chapter: int) -> dict:
         """
@@ -74,19 +65,20 @@ class NIV1984(Bible):
         :param chapter: chapter number to get (pre-validated)
         :return: None
         """
+        tag_remover: re.Pattern = re.compile(r'<.*?>')
         try:
-            book_url_name = f"{re.sub(r' ', '-', book.lower())}"
-            content_url = (
-                f"https://www.studylight.org/bible/eng/n84/"
-                f"{book_url_name}/{chapter}.html"
-            )
-            html_content = requests.get(
-                content_url,
-                headers=self.__headers,
+            response = requests.get(
+                f"{self.__api_url}{translate(book)}/{chapter}/",
                 timeout=20
-            ).text
-            verses = self.__parse(html_content)
-            self.__cache[book][str(chapter)] = verses
+            )
+            response.raise_for_status()
+            response = response.json()
+            tmp_verses: List[str] = []
+            for verse in response:
+                tmp_verses.append(
+                    str(verse['verse']) + " " + tag_remover.sub('', verse['text'])
+                )
+            self.__cache[book][str(chapter)] = tmp_verses
         except KeyError as exc:
             raise PassageInvalid(book + " " + str(chapter)) from exc
         except requests.HTTPError as exc:
@@ -95,35 +87,3 @@ class NIV1984(Bible):
         # Save for every even chapter query
         if chapter % 2 == 0:
             self.__compress_cache.save(self.__cache)
-
-    @staticmethod
-    def __parse(content: str) -> List[str]:
-        # Parse the HTML content
-        soup = BeautifulSoup(content, 'html.parser')
-
-        body = soup.body
-        body_div = [x for x in body.find_all("div") if len(x.attrs) == 0][0]
-
-        spans = body_div.find_all("span")
-
-        verses = []
-        for span in spans:
-            span_text = span.text
-            if len(span_text) > 1000:
-                continue
-            if len(verses) > 0 and verses[-1][:3] == span_text[:3]:
-                continue
-            verses.append(span_text)
-
-        verses = [
-            re.sub(
-                r"\s\s+| ",
-                " ",
-                re.sub(
-                    r"\(F\d+\)|\s$",
-                    "",
-                    text
-                )
-            ) for text in verses
-        ]
-        return verses
