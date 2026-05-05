@@ -36,6 +36,11 @@ RUN echo "***** Installing dependencies *****" && \
 # Setup app
 COPY --chmod=0755 . .
 
+# Create a non-root user to run the app
+RUN addgroup -S app && adduser -S -G app app
+RUN chown -R app /usr/src/app/
+USER app
+
 EXPOSE 5000
 
 STOPSIGNAL SIGKILL

@@ -2,6 +2,7 @@
 Test a lot of queries
 """
 import unittest
+# pylint: disable=unused-wildcard-import
 from bibles import *
 
 
@@ -26,6 +27,7 @@ class ManyBibleTest(unittest.TestCase):
             'GNV': GNV(),
             'KJV': KJV(),
             'KJV 1611': KJV1611(),
+            'LSB': LSB(),
             'LSV': LSV(),
             'MSG': MSG(),
             'NASB 1995': NASB1995(),
@@ -54,7 +56,10 @@ class ManyBibleTest(unittest.TestCase):
                     for heading in passage_result.keys():
                         # Tokenize each verse, adding its reference
                         for passage_r in passage_result[heading]:
-                            self.assertTrue(len(passage_r) >= 1, msg=f"{version_string}; {book} {chapter}")
+                            self.assertTrue(
+                                len(passage_r) >= 1,
+                                msg=f"{version_string}; {book} {chapter}"
+                            )
 
 
 if __name__ == '__main__':

@@ -498,10 +498,9 @@ label {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    border: 1px solid transparent;
     border-radius: 4px;
     background-color: #e6e6e6;
-    border-color: transparent;
+    border: 1px solid transparent;
     height: auto;
 }
 

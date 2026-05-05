@@ -17,7 +17,6 @@ class NonValidatingSelectField(SelectField):
         :param form: form to validate
         :return: None
         """
-        pass
 
 
 class NavigatePassage(FlaskForm):

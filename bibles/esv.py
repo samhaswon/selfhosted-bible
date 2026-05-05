@@ -9,12 +9,11 @@ from bs4 import BeautifulSoup, Tag, NavigableString
 from requests import get, HTTPError
 
 # pylint: disable=import-error
-from bibles.bible import Bible
-from bibles.compresscache import CompressCache
-from bibles.passage import PassageInvalid, PassageNotFound
+from bibles.api_bible import APIBible
+from bibles.passage import PassageNotFound
 
 
-class ESV(Bible):
+class ESV(APIBible):
     """
     Class for the ESV
     """
@@ -24,9 +23,8 @@ class ESV(Bible):
         :param key_in: (True, "API key"),
         with the default (False, "") being reading from the file api-key.txt
         """
-        super().__init__()
+        super().__init__(cache_name="esv")
         self.__debug = debug
-        self.__compress_cache = CompressCache("esv")
         # API Setup
         try:
             if len(key_in) < 0:
@@ -37,43 +35,6 @@ class ESV(Bible):
         except FileNotFoundError:
             self.__api_key = ""
         self.__api_url: str = 'https://api.esv.org/v3/passage/text/'
-        # Caching
-        try:
-            self.__cache: dict = self.__compress_cache.load()
-        except FileNotFoundError:
-            # Initialize empty cache
-            self.__cache: dict = {
-                book.name: {
-                    str(chapter): {} for chapter in range(1, book.chapter_count + 1)
-                } for book in super().books
-            }
-
-    # pylint: disable=inconsistent-return-statements
-    def get_passage(self, book: str, chapter: int) -> dict:
-        """
-        Gets a book of the ESV.
-        :param book: The name of the book to get from.
-        :param chapter: The chapter to get.
-        :return: The dictionary of the chapter.
-        :raises: PassageInvalid for invalid passages.
-        """
-        if super().has_passage(book, chapter):
-            try:
-                # Try to use the cache to retrieve the verse
-                if len(self.__cache[book][str(chapter)]['verses']):
-                    return {
-                        'book': book,
-                        'chapter': chapter,
-                        'verses': self.__cache[book][str(chapter)]['verses'],
-                        'footnotes':
-                            self.__cache[book][str(chapter)]['footnotes']
-                            if 'footnotes' in self.__cache[book][str(chapter)]
-                            else ""
-                    }
-            except KeyError:
-                return self.__api_return(book, chapter)
-        else:
-            raise PassageInvalid(book + " " + str(chapter))
 
     def __get_chapter_esv(self, chapter_in) -> tuple:
         """
@@ -251,7 +212,7 @@ class ESV(Bible):
         return list(filter(None, [sub(r"\s+$", "", verse) for verse in pre]))
 
     # pylint: disable=too-many-branches
-    def __api_return(self, book: str, chapter: int) -> dict:
+    def api_return(self, book: str, chapter: int) -> dict:
         """
         Gets the given verse from the API,
         and clears the cache in accordance with the ESV API caching limits.
@@ -269,16 +230,15 @@ class ESV(Bible):
         if self.__debug:
             return passage
 
-
         # Make sure the cache is within guidelines
         verse_count = 0
-        for book_iter in self.__cache.keys():
-            for chapter_iter in self.__cache[book_iter].keys():
+        for book_iter in self.cache.keys():
+            for chapter_iter in self.cache[book_iter].keys():
                 try:
-                    for heading in self.__cache[book_iter][chapter_iter]['verses'].keys():
-                        verse_count += len(self.__cache[book_iter][chapter_iter]['verses'][heading])
-                except KeyError:
-                    # Empty entry
+                    for heading in self.cache[book_iter][chapter_iter]['verses'].keys():
+                        verse_count += len(self.cache[book_iter][chapter_iter]['verses'][heading])
+                except (KeyError, TypeError):
+                    # Empty entry or unpopulated cache
                     pass
 
         # If the cache is outside the guidelines,
@@ -286,30 +246,33 @@ class ESV(Bible):
         # This also has the side benefit of keeping the cache small.
         if verse_count + len(passage['verses']) >= 500:
             verse_count_to_remove: int = verse_count + len(passage['verses']) - 500
-            for book_iter in self.__cache.keys():
-                for chapter_iter in self.__cache[book_iter].keys():
+            for book_iter in self.cache.keys():
+                for chapter_iter in self.cache[book_iter].keys():
                     # Clear the entry iff it has data
                     try:
-                        if size := len(self.__cache[book_iter][chapter_iter]['verses']):
-                            self.__cache[book_iter][chapter_iter] = {}
+                        if size := len(self.cache[book_iter][chapter_iter]['verses']):
+                            self.cache[book_iter][chapter_iter] = {}
                             verse_count_to_remove -= size
-                    except KeyError:
+                    except (KeyError, TypeError):
+                        # Empty entry or unpopulated cache
                         pass
                     # Break whenever enough has been cleared
                     if verse_count_to_remove <= 0:
                         break
 
             # Cache the passage and save
-            self.__cache[book][str(chapter)] = {
+            self.cache[book][str(chapter)] = {
                 'verses': passage['verses'],
                 'footnotes': passage['footnotes']
             }
-            self.__compress_cache.save(self.__cache)
+            self.compress_cache.save(self.cache)
         else:
-            self.__cache[book][str(chapter)] = {
+            self.cache[book][str(chapter)] = {
                 'verses': passage['verses'],
                 'footnotes': passage['footnotes']
             }
+        if chapter % 2 == 0:
+            self.compress_cache.save(self.cache)
         return passage
 
     def __non_api_fetch(self, book: str, chapter: str) -> None:
@@ -351,7 +314,7 @@ class ESV(Bible):
             }
 
             response = get(
-                f"{uri}{book if book != 'Psalms' else 'Psalm'}+{chapter}", 
+                f"{uri}{book if book != 'Psalms' else 'Psalm'}+{chapter}",
                 headers=headers,
                 timeout=30
             )
@@ -362,23 +325,23 @@ class ESV(Bible):
         for book_ref in result.keys():
             for chapter_ref in result[book_ref].keys():
                 if book_ref == 'Psalm':
-                    self.__cache['Psalms'][str(chapter_ref)]['verses'] = \
+                    self.cache['Psalms'][str(chapter_ref)]['verses'] = \
                         result[book_ref][chapter_ref]
                 elif book_ref == 'Obadia':
-                    self.__cache['Obadiah']['1']['verses'] = result['Obadia']['Obadiah']
+                    self.cache['Obadiah']['1']['verses'] = result['Obadia']['Obadiah']
                 elif book_ref == 'Philemo':
-                    self.__cache['Philemon']['1']['verses'] = result['Philemo']['Philemon']
+                    self.cache['Philemon']['1']['verses'] = result['Philemo']['Philemon']
                 elif book_ref == '2':
-                    self.__cache['2 John']['1']['verses'] = result['2']['John']
+                    self.cache['2 John']['1']['verses'] = result['2']['John']
                 elif book_ref == '3':
-                    self.__cache['3 John']['1']['verses'] = result['3']['John']
+                    self.cache['3 John']['1']['verses'] = result['3']['John']
                 elif book_ref == 'Jud':
-                    self.__cache['Jude']['1']['verses'] = result['Jud']['Jude']
+                    self.cache['Jude']['1']['verses'] = result['Jud']['Jude']
                 else:
-                    self.__cache[book_ref][str(chapter_ref)]['verses'] = \
+                    self.cache[book_ref][str(chapter_ref)]['verses'] = \
                         result[book_ref][chapter_ref]
         if int(chapter) % 2 == 0:
-            self.__compress_cache.save(self.__cache)
+            self.compress_cache.save(self.cache)
 
 
     # pylint: disable=too-many-locals,too-many-statements
