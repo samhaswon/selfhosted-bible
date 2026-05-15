@@ -23,7 +23,7 @@ class CSB(APIBible):
         """
         Create an instance of the CSB
         """
-        super().__init__(cache_name="csb")
+        super().__init__(cache_name="csb", has_headings=True)
 
         # Used to work with the "API" while validating input
         self.__file_aliases: Dict[str, str] = {

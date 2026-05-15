@@ -10,12 +10,14 @@ from bibles.passage import PassageInvalid, PassageNotFound
 
 class APIBible(Bible, ABC):
     """ABC API Bible Implementation."""
-    def __init__(self, cache_name: str) -> None:
+    def __init__(self, cache_name: str, has_headings: bool = False) -> None:
         """
         :param cache_name: name of the cache file.
+        :param has_headings: boolean to indicate if the Bible version has headings.
         """
         super().__init__()
         self.compress_cache = CompressCache(cache_name)
+        self.has_headings = has_headings
 
         # Caching
         try:
@@ -54,6 +56,13 @@ class APIBible(Bible, ABC):
                             self.cache[book][str(chapter)]['footnotes']
                             if 'footnotes' in self.cache[book][str(chapter)]
                             else ""
+                    }
+                if self.has_headings:
+                    # Versions without headings
+                    return {
+                        'book': book,
+                        'chapter': chapter,
+                        'verses': self.cache[book][str(chapter)]
                     }
                 # Versions without headings
                 return {

@@ -60,8 +60,13 @@ class TestCSB(TestCase):
             self.csb.get_passage(book, 1)
             end = time.perf_counter()
             print(f"Total time parsing {book}: {end - start}")
-        with bz2.open("../bibles/json-bibles/csb.json.pbz2", "rt", encoding='utf-8') as cache_file:
-            self.assertNotIn("<", cache_file.read())
+        try:
+            with bz2.open("../bibles/json-bibles/csb.json.pbz2", "rt", encoding='utf-8') as cache_file:
+                self.assertNotIn("<", cache_file.read())
+        # Running with PyCharm
+        except FileNotFoundError:
+            with bz2.open("./bibles/json-bibles/csb.json.pbz2", "rt", encoding='utf-8') as cache_file:
+                self.assertNotIn("<", cache_file.read())
 
     def test_close_to_kjv(self):
         """
