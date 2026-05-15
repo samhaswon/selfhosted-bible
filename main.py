@@ -142,9 +142,8 @@ def create_app() -> Flask:
         Reading view of a passage in a selected version
         :return: Page of the selected passage
         """
-        book_sel: str = \
-            str(session.get('select_book') if session.get('select_book') is not None else "Genesis")
-        chapter_sel: str = str(session.get('select_chapter') if session.get('select_chapter') else "1")
+        book_sel = session.get('select_book', 'Genesis')
+        chapter_sel = session.get('select_chapter', '1')
 
         form = NavigateRel()
 
@@ -163,9 +162,8 @@ def create_app() -> Flask:
                 session['select_book'], session['select_chapter'] = \
                     bibles['KJV'].previous_passage(book_sel, chapter_sel)
 
-            book_sel = \
-                str(session.get('select_book') if session.get('select_book') is not None else "Genesis")
-            chapter_sel = str(session.get('select_chapter') if session.get('select_chapter') else "1")
+            book_sel = str(session.get('select_book', "Genesis"))
+            chapter_sel = str(session.get('select_chapter', "1"))
 
         if passage_form.validate_on_submit() and passage_form.submit.data:
             passage_form.submit.data = False
@@ -178,8 +176,7 @@ def create_app() -> Flask:
                 return redirect(url_for('chapter_split'))
             session['select_version'] = version_select.select_version.data
 
-        version_sel: list | str = session.get('select_version')[0] if \
-            session.get('select_version') else 'ESV'
+        version_sel: list | str = session.get('select_version', ['ESV'])[0]
 
         version_select.select_version.data = [version_sel]
 
@@ -219,9 +216,8 @@ def create_app() -> Flask:
         Split between selected versions
         :return: Split view page of a passage in selected versions
         """
-        book_sel: str = \
-            str(session.get('select_book') if session.get('select_book') is not None else "Genesis")
-        chapter_sel: str = str(session.get('select_chapter') if session.get('select_chapter') else "1")
+        book_sel = session.get('select_book', 'Genesis')
+        chapter_sel = session.get('select_chapter', '1')
 
         form = NavigateRel()
 
@@ -240,9 +236,8 @@ def create_app() -> Flask:
                 session['select_book'], session['select_chapter'] = \
                     bibles['KJV'].previous_passage(book_sel, chapter_sel)
 
-            book_sel = \
-                str(session.get('select_book') if session.get('select_book') is not None else "Genesis")
-            chapter_sel = str(session.get('select_chapter') if session.get('select_chapter') else "1")
+            book_sel = str(session.get('select_book', "Genesis"))
+            chapter_sel = str(session.get('select_chapter', "1"))
 
         if passage_form.validate_on_submit() and passage_form.submit.data:
             passage_form.submit.data = False
@@ -255,8 +250,7 @@ def create_app() -> Flask:
                 return redirect(url_for('chapter'))
             session['select_version'] = version_select.select_version.data
 
-        version_sel: list[str] | str = session.get('select_version') if session.get('select_version') is not None \
-            else ['ESV', 'KJV']
+        version_sel: list[str] | str = session.get('select_version', ['ESV', 'KJV'])
 
         version_select.select_version.data = version_sel
 
