@@ -1,4 +1,4 @@
-requests==2.34.0
+requests==2.34.2
 multipledispatch==1.0.0
 Flask==3.1.3
 Flask-WTF==1.3.0
