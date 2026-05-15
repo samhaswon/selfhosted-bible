@@ -5,8 +5,23 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    target-branch: "dev"
+    cooldown:
+      default-days: 5
+      semver-major-days: 10
+      semver-minor-days: 7
+      semver-patch-days: 3
+      include:
+        - "*"
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: "weekly"
     target-branch: "dev"
+    cooldown:
+      default-days: 5
+      semver-major-days: 10
+      semver-minor-days: 7
+      semver-patch-days: 3
+      include:
+        - "*"
