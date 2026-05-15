@@ -3,9 +3,9 @@ Authors: William Fagan, Samuel Howard
 Copyright (c) 2013-2017 William Fagan
 License: The MIT License (MIT)
 """
+from __future__ import annotations
 from gzip import GzipFile
 from io import BytesIO
-from typing import Union, List
 import zlib
 
 import brotli
@@ -42,7 +42,7 @@ class Compress:
         :param app: The app to enable compression for.
         :return: None.
         """
-        defaults: List[tuple] = [
+        defaults: list[tuple] = [
             ('COMPRESS_MIMETYPES', ['text/html', 'text/css', 'text/xml', 'application/json',
                                     'application/javascript', 'image/x-icon', 'image/svg+xml']),
             ('COMPRESS_LEVEL', 6),
@@ -68,7 +68,7 @@ class Compress:
                 app.config['COMPRESS_MIMETYPES']):
             app.after_request(self.after_request)
 
-    def _choose_compress_algorithm(self, accept_encoding_header) -> Union[str, None]:
+    def _choose_compress_algorithm(self, accept_encoding_header) -> str | None:
         """
         Determine which compression algorithm we're going to use based on the
         client request. The `Accept-Encoding` header may list one or more desired

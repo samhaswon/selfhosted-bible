@@ -2,7 +2,6 @@
 Base class for Bible objects
 """
 from abc import ABC, abstractmethod
-from typing import List, Tuple
 from multipledispatch import dispatch
 
 from bibles.book import Book
@@ -17,7 +16,7 @@ class Bible(ABC):
         """
         Instantiate the abstract Bible class and its attribute
         """
-        books_of_the_bible: List[Tuple[str, int]] = [("Genesis", 50),
+        books_of_the_bible: list[tuple[str, int]] = [("Genesis", 50),
                                                      ("Exodus", 40),
                                                      ("Leviticus", 27),
                                                      ("Numbers", 36),
@@ -83,13 +82,13 @@ class Bible(ABC):
                                                      ("3 John", 1),
                                                      ("Jude", 1),
                                                      ("Revelation", 22)]
-        self.__books: List[Book] = [
+        self.__books: list[Book] = [
             Book(title, chapters) for title, chapters in books_of_the_bible
         ]
         self.__books_of_the_bible: dict = dict(books_of_the_bible)
 
     @property
-    def books(self) -> List[Book]:
+    def books(self) -> list[Book]:
         """
         List of book objects for each book in the Bible
         """
@@ -113,7 +112,7 @@ class Bible(ABC):
         raise NotImplementedError
 
     @dispatch(str, str)
-    def next_passage(self, book: str, chapter: str) -> Tuple[str, str]:
+    def next_passage(self, book: str, chapter: str) -> tuple[str, str]:
         """
         Get the passage after the given one.
         :param book: The current book.
@@ -124,7 +123,7 @@ class Bible(ABC):
 
     # pylint: disable=function-redefined,inconsistent-return-statements
     @dispatch(str, int)
-    def next_passage(self, book: str, chapter: int) -> Tuple[str, str]:
+    def next_passage(self, book: str, chapter: int) -> tuple[str, str]:
         """
         Get the passage after the given one.
         :param book: The current book.
@@ -140,7 +139,7 @@ class Bible(ABC):
         raise KeyError("Could not find the next passage")
 
     @dispatch(str, str)
-    def previous_passage(self, book: str, chapter: str) -> Tuple[str, str]:
+    def previous_passage(self, book: str, chapter: str) -> tuple[str, str]:
         """
         Get the passage before the given one.
         :param book: The current book.
@@ -151,7 +150,7 @@ class Bible(ABC):
 
     # pylint: disable=function-redefined,inconsistent-return-statements
     @dispatch(str, int)
-    def previous_passage(self, book: str, chapter: int) -> Tuple[str, str]:
+    def previous_passage(self, book: str, chapter: int) -> tuple[str, str]:
         """
         Get the passage before the given one.
         :param book: The current book.

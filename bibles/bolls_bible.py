@@ -1,8 +1,8 @@
 """
 Bolls Bible base class
 """
+from __future__ import annotations
 import re
-from typing import List
 import requests
 from bibles.passage import PassageInvalid, PassageNotFound
 from bibles.bible import Bible
@@ -75,7 +75,7 @@ class BollsBible(Bible):
             )
             response.raise_for_status()
             response = response.json()
-            tmp_verses: List[str] = []
+            tmp_verses: list[str] = []
             for verse in response:
                 tmp_verses.append(
                     str(verse['verse']) + " " + tag_remover.sub('', verse['text'])

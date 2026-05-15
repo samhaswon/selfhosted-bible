@@ -1,8 +1,8 @@
 """
 Class for the CSB version
 """
-
-from typing import Dict, Any
+from __future__ import annotations
+from typing import Any
 import re
 
 from xml.etree import ElementTree
@@ -26,7 +26,7 @@ class CSB(APIBible):
         super().__init__(cache_name="csb", has_headings=True)
 
         # Used to work with the "API" while validating input
-        self.__file_aliases: Dict[str, str] = {
+        self.__file_aliases: dict[str, str] = {
             'Genesis': '01-Gen.xml',
             'Exodus': '02-Ex.xml',
             'Leviticus': '03-Lev.xml',
