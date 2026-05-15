@@ -118,6 +118,8 @@ class Compress:
         # there's a special wildcard algorithm request (`*`), choose the first supported
         # algorithm.
         for _, viable_algos in sorted(algos_by_quality.items(), reverse=True):
+            if viable_algos is None:
+                continue
             if len(viable_algos) == 1:
                 return viable_algos.pop()
             if len(viable_algos) > 1:

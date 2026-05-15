@@ -816,5 +816,9 @@ class CSB(APIBible):
                 result[bookname]['7']['A Multitude from the Great Tribulation'][5][:178]
 
         for chapter in result[bookname]:
-            self.cache[bookname][str(chapter)] = {}
-            self.cache[bookname][str(chapter)]['verses'] = result[bookname][str(chapter)]
+            if bookname == "Psalm":
+                self.cache["Psalms"][str(chapter)] = {}
+                self.cache["Psalms"][str(chapter)]['verses'] = result[bookname][str(chapter)]
+            else:
+                self.cache[bookname][str(chapter)] = {}
+                self.cache[bookname][str(chapter)]['verses'] = result[bookname][str(chapter)]
