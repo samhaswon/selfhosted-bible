@@ -119,7 +119,7 @@ version_choices = [
     ('EBR', 'Rotherham\'s Emphasized Bible (EBR)'),
     ('ESV', 'English Standard Version (ESV)'),
     ('GNV', 'Geneva Bible (GNV)'),
-    ('KJV', 'King James Version (KJV, 1729)'),
+    ('KJV', 'King James Version (KJV, 1769)'),
     ('KJV 1611', 'King James Version 1611 (KJV, 1611)'),
     ('LSB', 'The Legacy Standard Bible (LSB)'),
     ('LSV', 'Literal Standard Version (LSV)'),
