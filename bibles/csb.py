@@ -1,8 +1,8 @@
 """
 Class for the CSB version
 """
-
-from typing import Dict, Any
+from __future__ import annotations
+from typing import Any
 import re
 
 from xml.etree import ElementTree
@@ -23,10 +23,10 @@ class CSB(APIBible):
         """
         Create an instance of the CSB
         """
-        super().__init__(cache_name="csb")
+        super().__init__(cache_name="csb", has_headings=True)
 
         # Used to work with the "API" while validating input
-        self.__file_aliases: Dict[str, str] = {
+        self.__file_aliases: dict[str, str] = {
             'Genesis': '01-Gen.xml',
             'Exodus': '02-Ex.xml',
             'Leviticus': '03-Lev.xml',
@@ -816,5 +816,9 @@ class CSB(APIBible):
                 result[bookname]['7']['A Multitude from the Great Tribulation'][5][:178]
 
         for chapter in result[bookname]:
-            self.cache[bookname][str(chapter)] = {}
-            self.cache[bookname][str(chapter)]['verses'] = result[bookname][str(chapter)]
+            if bookname == "Psalm":
+                self.cache["Psalms"][str(chapter)] = {}
+                self.cache["Psalms"][str(chapter)]['verses'] = result[bookname][str(chapter)]
+            else:
+                self.cache[bookname][str(chapter)] = {}
+                self.cache[bookname][str(chapter)]['verses'] = result[bookname][str(chapter)]

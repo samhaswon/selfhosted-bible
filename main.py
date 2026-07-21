@@ -2,6 +2,7 @@
 """
 A self-hosted webapp of various Bible versions including the KJV, ESV, and ASV.
 """
+from __future__ import annotations
 from functools import cache
 from hashlib import sha256
 from itertools import zip_longest
@@ -9,7 +10,6 @@ from random import randint
 import re
 import sys
 import time
-from typing import Tuple, Union
 
 from flask import (
     Flask, jsonify, render_template,
@@ -100,7 +100,7 @@ def create_app() -> Flask:
 
     @app.route('/', methods=['GET', 'POST'])
     @app.route('/index.html', methods=['GET', 'POST'])
-    def main_page() -> Union[str, Response]:
+    def main_page() -> str | Response:
         """
         Main page for selecting version(s) and passage
         :return: Main menu page
@@ -137,14 +137,13 @@ def create_app() -> Flask:
 
     @app.route('/chapter', methods=['GET', 'POST'])
     @app.route('/chapter.html', methods=['GET', 'POST'])
-    def chapter() -> Union[str, Response]:
+    def chapter() -> str | Response:
         """
         Reading view of a passage in a selected version
         :return: Page of the selected passage
         """
-        book_sel: str = \
-            session.get('select_book') if session.get('select_book') is not None else "Genesis"
-        chapter_sel: str = session.get('select_chapter') if session.get('select_chapter') else "1"
+        book_sel = session.get('select_book', 'Genesis')
+        chapter_sel = session.get('select_chapter', '1')
 
         form = NavigateRel()
 
@@ -163,9 +162,8 @@ def create_app() -> Flask:
                 session['select_book'], session['select_chapter'] = \
                     bibles['KJV'].previous_passage(book_sel, chapter_sel)
 
-            book_sel = \
-                session.get('select_book') if session.get('select_book') is not None else "Genesis"
-            chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
+            book_sel = str(session.get('select_book', "Genesis"))
+            chapter_sel = str(session.get('select_chapter', "1"))
 
         if passage_form.validate_on_submit() and passage_form.submit.data:
             passage_form.submit.data = False
@@ -178,8 +176,7 @@ def create_app() -> Flask:
                 return redirect(url_for('chapter_split'))
             session['select_version'] = version_select.select_version.data
 
-        version_sel: list = session.get('select_version')[0] if \
-            session.get('select_version') else 'ESV'
+        version_sel: list | str = session.get('select_version', ['ESV'])[0]
 
         version_select.select_version.data = [version_sel]
 
@@ -214,14 +211,13 @@ def create_app() -> Flask:
 
     @app.route('/chapter_split', methods=['GET', 'POST'])
     @app.route('/chapter_split.html', methods=['GET', 'POST'])
-    def chapter_split() -> Union[str, Response]:
+    def chapter_split() -> str | Response:
         """
         Split between selected versions
         :return: Split view page of a passage in selected versions
         """
-        book_sel: str = \
-            session.get('select_book') if session.get('select_book') is not None else "Genesis"
-        chapter_sel: str = session.get('select_chapter') if session.get('select_chapter') else "1"
+        book_sel = session.get('select_book', 'Genesis')
+        chapter_sel = session.get('select_chapter', '1')
 
         form = NavigateRel()
 
@@ -240,9 +236,8 @@ def create_app() -> Flask:
                 session['select_book'], session['select_chapter'] = \
                     bibles['KJV'].previous_passage(book_sel, chapter_sel)
 
-            book_sel = \
-                session.get('select_book') if session.get('select_book') is not None else "Genesis"
-            chapter_sel = session.get('select_chapter') if session.get('select_chapter') else "1"
+            book_sel = str(session.get('select_book', "Genesis"))
+            chapter_sel = str(session.get('select_chapter', "1"))
 
         if passage_form.validate_on_submit() and passage_form.submit.data:
             passage_form.submit.data = False
@@ -255,8 +250,7 @@ def create_app() -> Flask:
                 return redirect(url_for('chapter'))
             session['select_version'] = version_select.select_version.data
 
-        version_sel: list = session.get('select_version') if session.get('select_version') \
-            else ['ESV', 'KJV']
+        version_sel: list[str] | str = session.get('select_version', ['ESV', 'KJV'])
 
         version_select.select_version.data = version_sel
 
@@ -401,16 +395,29 @@ def create_app() -> Flask:
         :return: Search results with references and verse content.
         """
         version = request.args.get('version')
-        query = request.args.get('query')
+        query = request.args.get('query', type=str)
+        page = request.args.get('page', type=int, default=1)
 
-        if version not in bibles.keys():
+        if version is None or version not in bibles.keys():
+            return abort(400)
+
+        if query is None:
+            return abort(400)
+
+        if not isinstance(page, int):
             return abort(400)
 
         # Make sure the query is a reasonable length (max is 528 in the KJV for reference).
         if len(query) > 700:
             query = query[:700]
 
-        results = searcher.search(query, version=version, max_results=100)
+        if page == 1:
+            results = searcher.search(query, version=version, max_results=100)
+        else:
+            results = searcher.search(query, version=version, max_results=100 * page)[-100:]
+        # Since there are 100 results per result slice, if there are less than 100, there are no more pages.
+        more_pages = len(results) == 100
+
         references = {}
         for result in results:
             space_index = result.rfind(" ")
@@ -430,7 +437,7 @@ def create_app() -> Flask:
                         else:
                             references[result] = verse[verse.find(" ") + 1:]
         reference_list = list(references.items())
-        return jsonify({'results': reference_list})
+        return jsonify({'results': reference_list, 'page': page, 'morePages': more_pages})
 
     @cache
     @app.route('/search', methods=['GET'])
@@ -520,7 +527,7 @@ def create_app() -> Flask:
 
     @app.route('/500', methods=['GET'])
     @app.errorhandler(500)
-    def server_error(e=None) -> Tuple[str, int]:
+    def server_error(e=None) -> tuple[str, int]:
         """
         Error 500 handler
         :param e: error
@@ -534,7 +541,7 @@ def create_app() -> Flask:
 
     @app.route('/404', methods=['GET'])
     @app.errorhandler(404)
-    def not_found(e = "") -> Tuple[str, int]:
+    def not_found(e = "") -> tuple[str, int]:
         """
         Error 404 handler
         :param e: error
@@ -545,7 +552,7 @@ def create_app() -> Flask:
 
     @app.route('/400', methods=['GET'])
     @app.errorhandler(400)
-    def bad_request(e="") -> Tuple[str, int]:
+    def bad_request(e="") -> tuple[str, int]:
         """
         Error 400 handler
         :param e: error
@@ -555,7 +562,7 @@ def create_app() -> Flask:
         return minify.sub('', render_template("400.html")), 400
 
     @app.errorhandler(414)
-    def request_too_long(e) -> Tuple[str, int]:
+    def request_too_long(e) -> tuple[str, int]:
         """
         Error 414 handler
         :param e: error

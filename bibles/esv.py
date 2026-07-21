@@ -1,9 +1,9 @@
 """
 Class for the ESV
 """
+from __future__ import annotations
 from re import split as resplit
 from re import sub, search, match
-from typing import List
 
 from bs4 import BeautifulSoup, Tag, NavigableString
 from requests import get, HTTPError
@@ -202,7 +202,7 @@ class ESV(APIBible):
         return passage[passage.find('('):].replace("\\n\\n", "\n").replace("\\n", "\n")
 
     @staticmethod
-    def __split_verses(verses_in: str) -> List[str]:
+    def __split_verses(verses_in: str) -> list[str]:
         """
         Splits a given string of verses by the "[]" parts of the verse marker.
         :param verses_in: string of combined verses.
@@ -369,7 +369,7 @@ class ESV(APIBible):
         # Go through each chapter
         # pylint: disable=too-many-nested-blocks
         for chapter in body:
-            reference = chapter.attrs['data-reference']
+            reference: str = str(chapter.attrs['data-reference'])
             book = reference[:reference.rfind(" ")]
             chapter_ref = reference[reference.rfind(" ") + 1:]
             counter = 0     # For Song of Solomon

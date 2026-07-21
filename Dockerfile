@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM python:3-alpine as build-stage
+FROM python:3.14-alpine as build-stage
 
 RUN mkdir /svc
 WORKDIR /svc
@@ -21,7 +21,7 @@ RUN echo "***** Getting required packages *****" && \
 RUN echo "***** Building dependencies *****" && \
     pip wheel -r /svc/requirements.txt --wheel-dir=/svc/wheels
 
-FROM python:3-alpine as application
+FROM python:3.14-alpine as application
 
 ENV PYTHONUNBUFFERED=TRUE
 
