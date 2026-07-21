@@ -396,6 +396,7 @@ def create_app() -> Flask:
         """
         version = request.args.get('version')
         query = request.args.get('query', type=str)
+        page = request.args.get('page', type=int, default=1)
 
         if version is None or version not in bibles.keys():
             return abort(400)
@@ -403,11 +404,20 @@ def create_app() -> Flask:
         if query is None:
             return abort(400)
 
+        if not isinstance(page, int):
+            return abort(400)
+
         # Make sure the query is a reasonable length (max is 528 in the KJV for reference).
         if len(query) > 700:
             query = query[:700]
 
-        results = searcher.search(query, version=version, max_results=100)
+        if page == 1:
+            results = searcher.search(query, version=version, max_results=100)
+        else:
+            results = searcher.search(query, version=version, max_results=100 * page)[-100:]
+        # Since there are 100 results per result slice, if there are less than 100, there are no more pages.
+        more_pages = len(results) == 100
+
         references = {}
         for result in results:
             space_index = result.rfind(" ")
@@ -427,7 +437,7 @@ def create_app() -> Flask:
                         else:
                             references[result] = verse[verse.find(" ") + 1:]
         reference_list = list(references.items())
-        return jsonify({'results': reference_list})
+        return jsonify({'results': reference_list, 'page': page, 'morePages': more_pages})
 
     @cache
     @app.route('/search', methods=['GET'])
