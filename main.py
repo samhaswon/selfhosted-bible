@@ -414,7 +414,11 @@ def create_app() -> Flask:
         if page == 1:
             results = searcher.search(query, version=version, max_results=100)
         else:
-            results = searcher.search(query, version=version, max_results=100 * page)[-100:]
+            results = searcher.search(query, version=version, max_results=100 * page)
+            if len(results) == 100 * page:
+                results = results[-100:]
+            else:
+                results = results[100 * (page - 1):]
         # Since there are 100 results per result slice, if there are less than 100, there are no more pages.
         more_pages = len(results) == 100
 
